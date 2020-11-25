@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "26808280553",
+    "firebase_url": "https://eatwithme-66603.firebaseio.com",
+    "project_id": "eatwithme-66603",
+    "storage_bucket": "eatwithme-66603.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26808280553:android:1695515c6cd28a86199778",
+        "android_client_info": {
+          "package_name": "com.brugia.eatwithme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "26808280553-r5k0nb1jc0fmq19utt2gtrgp96193lpb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDf7Df669RtvB0PIf94pDzlgsVB8bLSnOs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "26808280553-r5k0nb1jc0fmq19utt2gtrgp96193lpb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
