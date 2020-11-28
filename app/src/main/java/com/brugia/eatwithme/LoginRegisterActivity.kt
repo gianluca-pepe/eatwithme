@@ -23,9 +23,9 @@ class LoginRegisterActivity : AppCompatActivity() {
 
             // show firebase login/register UI
             val providers = arrayListOf(
-                AuthUI.IdpConfig.EmailBuilder().build()
-                // AuthUI.IdpConfig.GoogleBuilder().build(),
-                // AuthUI.IdpConfig.FacebookBuilder().build()
+                AuthUI.IdpConfig.EmailBuilder().build(),
+                AuthUI.IdpConfig.GoogleBuilder().build(),
+                AuthUI.IdpConfig.FacebookBuilder().build()
             )
 
             startActivityForResult(

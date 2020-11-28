@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">EatWithMe</string>
+    <string name="facebook_application_id">696989651252245</string>
+    <string name="facebook_login_protocol_scheme">fb696989651252245</string>
 </resources>
