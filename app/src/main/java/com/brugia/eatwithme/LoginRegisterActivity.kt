@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.firebase.ui.auth.AuthMethodPickerLayout
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
@@ -28,10 +29,13 @@ class LoginRegisterActivity : AppCompatActivity() {
                 AuthUI.IdpConfig.FacebookBuilder().build()
             )
 
+
             startActivityForResult(
                 AuthUI.getInstance()
                     .createSignInIntentBuilder()
                     .setAvailableProviders(providers)
+                    .setLogo(R.drawable.logo_login) // Set logo drawable
+                    .setTheme(R.style.firebase_theme)
                     .build(),
                 RC_SIGN_IN)
 
@@ -46,14 +50,19 @@ class LoginRegisterActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
-            Toast.makeText(this, "ciao", Toast.LENGTH_SHORT).show()
+
+            Toast.makeText(this, "You've logged in succesfully!", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, MainActivity::class.java))
+
         } else {
             // Sign in failed. If response is null the user canceled the
             // sign-in flow using the back button. Otherwise check
             // response.getError().getErrorCode() and handle the error.
             // ...
-            Toast.makeText(this, "error", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "An error occour", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, LoginRegisterActivity::class.java))
+            this.finish()
+
         }
     }
 }
