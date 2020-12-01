@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view"
+    tools:context=".MainActivity">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/tableSummaryFragment"
+            android:icon="@drawable/ic_baseline_restaurant_24"
+            android:title="Trova tavolo" />
+        <item
+            android:icon="@drawable/ic_baseline_info_24"
+            android:title="About" />
+        <item
+            android:icon="@drawable/ic_baseline_history_24"
+            android:title="I miei tavoli" />
+        <item
+            android:icon="@drawable/ic_baseline_calendar_today_24"
+            android:title="Crea tavolo" />
+    </group>
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/ic_baseline_login_24"
+        android:title="Logout" />
+</menu>

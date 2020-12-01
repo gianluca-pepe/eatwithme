@@ -47,6 +47,7 @@ class LoginRegisterActivity : AppCompatActivity() {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
             Toast.makeText(this, "ciao", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, MainActivity::class.java))
         } else {
             // Sign in failed. If response is null the user canceled the
             // sign-in flow using the back button. Otherwise check
