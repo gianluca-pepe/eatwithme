@@ -11,10 +11,10 @@
         android:layout_weight="1">
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/table_list_img"
             android:layout_width="101dp"
             android:layout_height="111dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_weight="1"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -24,17 +24,17 @@
             tools:srcCompat="@mipmap/ic_launcher" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/table_list_btn_view"
             android:layout_width="122dp"
             android:layout_height="50dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:text="View table"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+            app:layout_constraintTop_toBottomOf="@+id/table_list_title" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/table_list_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
@@ -43,7 +43,7 @@
             android:text="Pranzo conoscitivo Trastevere"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
+            app:layout_constraintStart_toEndOf="@+id/table_list_img"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -52,8 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"
+            app:layout_constraintStart_toEndOf="@+id/table_list_img"
+            app:layout_constraintTop_toBottomOf="@+id/table_list_title"
             app:srcCompat="@drawable/ic_baseline_groups_24" />
 
         <ImageView
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="3dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
+            app:layout_constraintStart_toEndOf="@+id/table_list_img"
             app:layout_constraintTop_toBottomOf="@+id/imageView7"
             app:srcCompat="@drawable/ic_baseline_calendar_today_24" />
 
@@ -72,38 +72,38 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="3dp"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
+            app:layout_constraintStart_toEndOf="@+id/table_list_img"
             app:layout_constraintTop_toBottomOf="@+id/imageView8"
             app:srcCompat="@drawable/ic_baseline_access_time_24" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/table_list_lbl_num_partecipants"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="3/8"
             app:layout_constraintStart_toEndOf="@+id/imageView7"
-            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+            app:layout_constraintTop_toBottomOf="@+id/table_list_title" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/table_list_lbl_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="2020/12/20"
             app:layout_constraintStart_toEndOf="@+id/imageView8"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+            app:layout_constraintTop_toBottomOf="@+id/table_list_lbl_num_partecipants" />
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/table_list_lbl_hour"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="1:15 pm"
             app:layout_constraintStart_toEndOf="@+id/imageView9"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintTop_toBottomOf="@+id/table_list_lbl_date" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

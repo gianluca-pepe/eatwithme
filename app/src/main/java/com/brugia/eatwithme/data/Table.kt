@@ -1,16 +1,20 @@
-/*
-* Class that represents tables
-*/
+
 package com.brugia.eatwithme.data
 
+import androidx.annotation.DrawableRes
 import java.time.LocalDateTime
 
 
-class Table constructor(
+data class Table(
     val id: Long,
     var name: String,
     var description: String,
-    var tableDate: LocalDateTime,
+    @DrawableRes
+    val image: Int?,
+    //var tableDate: LocalDateTime,
+    var tableDate: String,
+    var tableHour: String,
     var maxPartecipants: Int,
-    var partecipants: ArrayList<Person>
+    var numPartecipants: Int,
+    //var partecipants: ArrayList<Person>
 )

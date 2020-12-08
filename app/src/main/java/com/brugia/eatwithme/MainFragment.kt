@@ -7,8 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
-import android.widget.Toast
-import android.widget.Toast.makeText
+
+
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
+/*
+import com.brugia.eatwithme.addTable.AddTableActivity
+import com.brugia.eatwithme.tableDetail.TableDetailActivity
+import com.brugia.eatwithme.addTable.FLOWER_DESCRIPTION
+import com.brugia.eatwithme.addTable.FLOWER_NAME
+*/
+import com.brugia.eatwithme.data.Table
+import com.brugia.eatwithme.tablelist.TablesListViewModel
+import com.brugia.eatwithme.tablelist.TablesAdapter
+import com.brugia.eatwithme.tablelist.TablesListViewModelFactory
+
 
 /**
  * A simple [Fragment] subclass.
@@ -19,6 +32,12 @@ class MainFragment : Fragment() {
 
     lateinit var seek: SeekBar
     lateinit var txtkm: TextView
+
+    private val newTableActivityRequestCode = 1
+    private val tablesListViewModel by viewModels<TablesListViewModel> {
+        TablesListViewModelFactory(this)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +80,38 @@ class MainFragment : Fragment() {
         })
         /* End SeekBar management*/
 
+
+        /* Tables list management (RecyclerView) */
+        val tablesAdapter = TablesAdapter { table -> adapterOnClick(table) }
+
+        val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view_table_list)
+        recyclerView.adapter = tablesAdapter
+
+        tablesListViewModel.tablesLiveData.observe(viewLifecycleOwner, {
+            it?.let {
+                tablesAdapter.submitList(it as MutableList<Table>)
+               // headerAdapter.updateFlowerCount(it.size)
+            }
+        })
+
+        /*
+        val fab: View = view.findViewById(R.id.fab)
+        fab.setOnClickListener {
+            fabOnClick()
+        }
+        */
+        /* End Tables list management (RecyclerView) */
+
+
+    }
+
+    /* Opens Table detail when RecyclerView item is clicked. */
+    private fun adapterOnClick(table: Table) {
+        /*
+        val intent = Intent(this, TableDetailActivity()::class.java)
+        intent.putExtra(TABLE_ID, table.id)
+        startActivity(intent)
+        */
     }
 
 }
