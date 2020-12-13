@@ -10,6 +10,14 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.EatWithMe">
+
+        <!-- Recommended for Android 9 (API level 28) and lower. -->
+        <!-- Required for Android 10 (API level 29) and higher. -->
+        <service
+            android:name="MyNavigationService"
+            android:foregroundServiceType="location">
+        </service>
+
         <activity android:name=".LoginRegisterActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -30,5 +38,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="@string/facebook_login_protocol_scheme" /> </intent-filter> </activity>
     </application>
+
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 </manifest>

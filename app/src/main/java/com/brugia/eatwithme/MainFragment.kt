@@ -1,5 +1,7 @@
 package com.brugia.eatwithme
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 
 
 import androidx.fragment.app.viewModels
@@ -18,6 +22,9 @@ import com.brugia.eatwithme.addTable.FLOWER_DESCRIPTION
 import com.brugia.eatwithme.addTable.FLOWER_NAME
 */
 import com.brugia.eatwithme.data.Table
+import com.brugia.eatwithme.location.GpsUtils
+import com.brugia.eatwithme.location.LocationViewModel
+import com.brugia.eatwithme.location.LocationViewModelFactory
 import com.brugia.eatwithme.tablelist.TablesListViewModel
 import com.brugia.eatwithme.tablelist.TablesAdapter
 import com.brugia.eatwithme.tablelist.TablesListViewModelFactory
@@ -38,10 +45,29 @@ class MainFragment : Fragment() {
         TablesListViewModelFactory(this)
     }
 
+    private val locationViewModel by viewModels<LocationViewModel> {
+        LocationViewModelFactory(this.requireActivity().application)
+    }
+
+    private lateinit var gpsHandler : GpsUtils
+
+    private val requestLocationPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                // Callback called when the user interacts with system dialog requesting permission
+                if (isGranted) {
+                    // Permission is granted.
+                    // retrieve tables using location in locationViewModel
+                } else {
+                    // retrieve tables using default user's location
+                }
+            }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        gpsHandler = GpsUtils(this.requireActivity())
+        // Check GPS settings
+        gpsHandler.checkGPS()
     }
 
     override fun onCreateView(
@@ -54,11 +80,9 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         /* SeekBar management*/
         seek = view.findViewById<SeekBar>(R.id.seekBar)
         txtkm = view.findViewById<TextView>(R.id.txtchilometri)
-
 
         seek?.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
@@ -66,7 +90,8 @@ class MainFragment : Fragment() {
                                            progress: Int, fromUser: Boolean) {
                 // write custom code for progress is changed
                 //Toast.makeText(getActivity(), "Progress is: " +  seek.progress+"/"+seek.max, Toast.LENGTH_SHORT).show()
-                txtkm.text = seek.progress.toString() + " Km"
+                //txtkm.text = seek.progress.toString() + " Km"
+                locationViewModel.setRadius(seek.progress)
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
@@ -76,6 +101,8 @@ class MainFragment : Fragment() {
             override fun onStopTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is stopped
               //Toast.makeText(getActivity(),  "Progress is: " + seek.progress + "%", Toast.LENGTH_SHORT).show()
+
+                checkLocationPermission()
             }
         })
         /* End SeekBar management*/
@@ -91,6 +118,12 @@ class MainFragment : Fragment() {
             it?.let {
                 tablesAdapter.submitList(it as MutableList<Table>)
                // headerAdapter.updateFlowerCount(it.size)
+            }
+        })
+
+        locationViewModel.radius.observe(viewLifecycleOwner, {
+            it?.let {
+                txtkm.text = it.toString()
             }
         })
 
@@ -113,5 +146,24 @@ class MainFragment : Fragment() {
         startActivity(intent)
         */
     }
+
+
+    private fun checkLocationPermission() {
+        when {
+            isPermissionGranted() -> { }
+            //shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {}
+            else -> {
+                // You can directly ask for the permission.
+                // onRequestPermissionsResult(...) gets the result of this request.
+                requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
+    }
+
+    private fun isPermissionGranted(): Boolean =
+            ContextCompat.checkSelfPermission(
+                    this.requireActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
 
 }
