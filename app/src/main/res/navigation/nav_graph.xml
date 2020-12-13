@@ -9,7 +9,11 @@
         android:id="@+id/tableSummaryFragment"
         android:name="com.brugia.eatwithme.TableSummaryFragment"
         android:label="Dettagli Tavolo"
-        tools:layout="@layout/fragment_table_summary" />
+        tools:layout="@layout/fragment_table_summary" >
+        <action
+            android:id="@+id/action_tableSummaryFragment_to_tableLobbyFragment"
+            app:destination="@id/tableLobbyFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.brugia.eatwithme.MainFragment"
@@ -19,4 +23,9 @@
             android:id="@+id/action_mainFragment_to_tableSummaryFragment"
             app:destination="@id/tableSummaryFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/tableLobbyFragment"
+        android:name="com.brugia.eatwithme.TableLobbyFragment"
+        android:label="Tavolo"
+        tools:layout="@layout/fragment_table_lobby" />
 </navigation>
