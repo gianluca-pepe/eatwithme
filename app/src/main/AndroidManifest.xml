@@ -3,6 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.brugia.eatwithme">
 
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the "MyLocation" functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,34 +19,48 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EatWithMe">
 
-        <!-- Recommended for Android 9 (API level 28) and lower. -->
-        <!-- Required for Android 10 (API level 29) and higher. -->
         <service
             android:name="MyNavigationService"
             android:foregroundServiceType="location">
         </service>
 
-        <activity android:name=".LoginRegisterActivity"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${mapsApiKey}" />
+
+        <activity android:name=".LoginRegisterActivity" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            tools:replace="android:value"
-            android:value="@string/facebook_application_id"/>
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges= "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:value="@string/facebook_application_id"
+            tools:replace="android:value" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-        <activity android:name="com.facebook.CustomTabActivity" android:exported="true">
-            <intent-filter> <action android:name="android.intent.action.VIEW" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/facebook_login_protocol_scheme" /> </intent-filter> </activity>
-    </application>
 
+                <data android:scheme="@string/facebook_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+    </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 </manifest>
