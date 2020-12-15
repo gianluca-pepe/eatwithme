@@ -3,7 +3,10 @@ package com.brugia.eatwithme
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -52,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             this.logout()
             return@setOnMenuItemClickListener true
         }
+
     }
 
     private fun logout(){

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -138,7 +139,10 @@ class MainFragment : Fragment() {
         */
         /* End Tables list management (RecyclerView) */
 
-
+        val imgMarker = view.findViewById<ImageView>(R.id.imgMarker)
+        imgMarker.setOnClickListener {
+            this.findNavController().navigate(R.id.mapsFragment)
+        }
     }
 
     /* Opens Table detail when RecyclerView item is clicked. */

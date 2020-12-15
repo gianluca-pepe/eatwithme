@@ -27,5 +27,14 @@
         android:id="@+id/tableLobbyFragment"
         android:name="com.brugia.eatwithme.TableLobbyFragment"
         android:label="Tavolo"
-        tools:layout="@layout/fragment_table_lobby" />
+        tools:layout="@layout/fragment_table_lobby" >
+        <action
+            android:id="@+id/action_tableLobbyFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.brugia.eatwithme.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" />
 </navigation>
