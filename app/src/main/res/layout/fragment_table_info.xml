@@ -8,7 +8,7 @@
     tools:context=".TableInfo">
 
     <ImageView
-        android:id="@+id/imgTavolo4"
+        android:id="@+id/table_image"
         android:layout_width="92dp"
         android:layout_height="92dp"
         android:layout_marginStart="24dp"
@@ -21,7 +21,7 @@
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <TextView
-        android:id="@+id/nomeTavolo4"
+        android:id="@+id/table_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -30,15 +30,15 @@
         android:text="Pranzo Filosofico"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/descrTavolo4"
+        app:layout_constraintBottom_toTopOf="@+id/table_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imgTavolo4"
+        app:layout_constraintStart_toEndOf="@+id/table_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:id="@+id/descrTavolo4"
+        android:id="@+id/table_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -48,7 +48,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imgTavolo4"
-        app:layout_constraintTop_toBottomOf="@+id/nomeTavolo4" />
+        app:layout_constraintStart_toEndOf="@+id/table_image"
+        app:layout_constraintTop_toBottomOf="@+id/table_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

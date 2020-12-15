@@ -16,5 +16,6 @@ data class Table(
     var tableHour: String,
     var maxPartecipants: Int,
     var numPartecipants: Int,
+    var city: String,
     //var partecipants: ArrayList<Person>
 )

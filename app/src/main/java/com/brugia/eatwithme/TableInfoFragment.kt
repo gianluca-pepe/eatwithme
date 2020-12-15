@@ -5,26 +5,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.fragment.app.activityViewModels
+import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val NAME = "Nome tavolo"
-private const val DESCRIPTION = "Descrizione tavolo"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [TableInfosFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TableInfoFragment : Fragment() {
-    private var name: String? = null
-    private var description: String? = null
+    private val tableViewModel by activityViewModels<SelectedTableViewModel>()
+    private lateinit var nameTextView: TextView
+    private lateinit var descriptionTextView: TextView
+    private lateinit var tableImageView: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            name = it.getString(NAME)
-            description = it.getString(DESCRIPTION)
-        }
     }
 
     override fun onCreateView(
@@ -35,23 +28,19 @@ class TableInfoFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_table_info, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param name The name of a table.
-         * @param description Short description describing a table.
-         * @return A new instance of fragment tableInfos.
-         */
-        // TODO: Add image param
-        @JvmStatic
-        fun newInstance(name: String, description: String) =
-                TableInfoFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(NAME, name)
-                        putString(DESCRIPTION, description)
-                    }
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        nameTextView = view.findViewById(R.id.table_name)
+        descriptionTextView = view.findViewById(R.id.table_description)
+        tableImageView = view.findViewById(R.id.table_image)
+
+        tableViewModel.getSelectedTable().observe(viewLifecycleOwner, {
+            it?.let {
+                nameTextView.text = it.name
+                descriptionTextView.text = it.description
+                // set image
+            }
+        })
     }
 }

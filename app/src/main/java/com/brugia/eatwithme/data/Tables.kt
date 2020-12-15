@@ -16,7 +16,8 @@ fun tableList(resources: Resources): List<Table> {
                     maxPartecipants = 10,
                     numPartecipants = 3,
                     tableDate = "2020/12/13",
-                    tableHour = "13:30"
+                    tableHour = "13:30",
+                    city = "Roma"
             ),
             Table(
                     id = 2,
@@ -26,7 +27,8 @@ fun tableList(resources: Resources): List<Table> {
                     maxPartecipants = 4,
                     numPartecipants = 2,
                     tableDate = "2020/12/14",
-                    tableHour = "12:45"
+                    tableHour = "12:45",
+                    city = "Velletri",
             ),
             Table(
                     id = 3,
@@ -36,7 +38,8 @@ fun tableList(resources: Resources): List<Table> {
                     maxPartecipants = 8,
                     numPartecipants = 7,
                     tableDate = "2020/12/14",
-                    tableHour = "13:15"
+                    tableHour = "13:15",
+                    city = "Latina",
             ),
             Table(
                     id = 4,
@@ -46,7 +49,8 @@ fun tableList(resources: Resources): List<Table> {
                     maxPartecipants = 12,
                     numPartecipants = 5,
                     tableDate = "2020/12/14",
-                    tableHour = "20:00"
+                    tableHour = "20:00",
+                    city = "Aprilia",
             ),
             Table(
                     id = 5,
@@ -56,7 +60,8 @@ fun tableList(resources: Resources): List<Table> {
                     maxPartecipants = 12,
                     numPartecipants = 5,
                     tableDate = "2020/12/14",
-                    tableHour = "20:10"
+                    tableHour = "20:10",
+                    city = "Firenze"
             ),
             Table(
                     id = 6,
@@ -66,7 +71,8 @@ fun tableList(resources: Resources): List<Table> {
                     maxPartecipants = 4,
                     numPartecipants = 1,
                     tableDate = "2020/12/16",
-                    tableHour = "13:15"
+                    tableHour = "13:15",
+                    city = "Milano"
             )
     )
 }

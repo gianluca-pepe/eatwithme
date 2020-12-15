@@ -11,9 +11,11 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 
 
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 /*
 import com.brugia.eatwithme.addTable.AddTableActivity
@@ -25,6 +27,7 @@ import com.brugia.eatwithme.data.Table
 import com.brugia.eatwithme.location.GpsUtils
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
+import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.brugia.eatwithme.tablelist.TablesListViewModel
 import com.brugia.eatwithme.tablelist.TablesAdapter
 import com.brugia.eatwithme.tablelist.TablesListViewModelFactory
@@ -48,9 +51,7 @@ class MainFragment : Fragment() {
     private val locationViewModel by viewModels<LocationViewModel> {
         LocationViewModelFactory(this.requireActivity().application)
     }
-
     private lateinit var gpsHandler : GpsUtils
-
     private val requestLocationPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()
             ) { isGranted: Boolean ->
@@ -62,6 +63,8 @@ class MainFragment : Fragment() {
                     // retrieve tables using default user's location
                 }
             }
+
+    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -145,6 +148,8 @@ class MainFragment : Fragment() {
         intent.putExtra(TABLE_ID, table.id)
         startActivity(intent)
         */
+        selectedTableViewModel.setSelectedTable(table)
+        this.findNavController().navigate(R.id.action_select_table)
     }
 
 

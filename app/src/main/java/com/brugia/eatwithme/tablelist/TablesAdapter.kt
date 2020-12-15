@@ -5,6 +5,7 @@ package com.brugia.eatwithme.tablelist
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
@@ -27,7 +28,7 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
         private var currentTable: Table? = null
 
         init {
-            itemView.setOnClickListener {
+            itemView.findViewById<Button>(R.id.table_list_btn_view).setOnClickListener {
                 currentTable?.let {
                     onClick(it)
                 }

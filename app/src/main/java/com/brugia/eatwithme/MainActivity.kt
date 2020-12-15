@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         // Fragments in which action bar will have hamburger icon instead of back arrow
         val topLevelDestinations = setOf(
             R.id.mainFragment,
-            R.id.tableSummaryFragment
         )
         appBarConfiguration = AppBarConfiguration(topLevelDestinations, drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)

@@ -13,7 +13,16 @@ class TablesListViewModel(val dataSource: TablesDataSource) : ViewModel() {
     val tablesLiveData = dataSource.getTableList()
 
     /* If the name and description are present, create new Table and add it to the datasource */
-    fun insertTable(tableName: String?, tableDescription: String?, tableImage: Int?, tableDate: String, tableHour: String, maxPartecipants: Int, numPartecipants: Int) {
+    fun insertTable(
+            tableName: String?,
+            tableDescription: String?,
+            tableImage: Int?,
+            tableDate: String,
+            tableHour: String,
+            maxPartecipants: Int,
+            numPartecipants: Int,
+            city: String,
+    ) {
         if (tableName == null || tableDescription == null) {
             return
         }
@@ -27,7 +36,8 @@ class TablesListViewModel(val dataSource: TablesDataSource) : ViewModel() {
                 tableDate,
                 tableHour,
                 maxPartecipants,
-                numPartecipants
+                numPartecipants,
+                city
         )
 
         dataSource.addTable(newTable)
