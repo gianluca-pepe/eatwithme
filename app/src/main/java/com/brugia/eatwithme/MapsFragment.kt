@@ -6,6 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.viewModels
+import com.brugia.eatwithme.location.GpsUtils
+import com.brugia.eatwithme.location.LocationViewModel
+import com.brugia.eatwithme.location.LocationViewModelFactory
+import com.brugia.eatwithme.tablelist.TablesListViewModel
+import com.brugia.eatwithme.tablelist.TablesListViewModelFactory
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -15,6 +22,25 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsFragment : Fragment() {
+    //Init with Rome city center
+    private var currentLatitude: Double = 41.902782
+    private var currentLongitude : Double = 12.496366
+
+    private val locationViewModel by viewModels<LocationViewModel> {
+        LocationViewModelFactory(this.requireActivity().application)
+    }
+    private lateinit var gpsHandler : GpsUtils
+    private val requestLocationPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                // Callback called when the user interacts with system dialog requesting permission
+                if (isGranted) {
+                    // Permission is granted.
+                    // retrieve tables using location in locationViewModel
+                } else {
+                    // retrieve tables using default user's location
+                }
+            }
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -26,9 +52,14 @@ class MapsFragment : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-        val rome = LatLng(41.902782, 12.496366)
-        googleMap.addMarker(MarkerOptions().position(rome).title("Marker in Rome"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(rome,10.0f))
+
+        locationViewModel.getLocationData().observe(viewLifecycleOwner, {
+            it?.let {
+                val currentPos = LatLng(it.latitude, it.longitude)
+                googleMap.addMarker(MarkerOptions().position(currentPos).title("My current position"))
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPos,10.0f))
+            }
+        })
 
     }
 
@@ -44,5 +75,16 @@ class MapsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+    }
+
+
+    private fun startLocationUpdate() {
+        locationViewModel.getLocationData().observe(viewLifecycleOwner, {
+            it?.let {
+                this.currentLatitude = it.latitude
+                this.currentLongitude = it.longitude
+                //println(it)
+            }
+        })
     }
 }
