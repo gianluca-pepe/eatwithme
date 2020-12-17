@@ -22,9 +22,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsFragment : Fragment() {
-    //Init with Rome city center
-    private var currentLatitude: Double = 41.902782
-    private var currentLongitude : Double = 12.496366
 
     private val locationViewModel by viewModels<LocationViewModel> {
         LocationViewModelFactory(this.requireActivity().application)
@@ -77,14 +74,4 @@ class MapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
     }
 
-
-    private fun startLocationUpdate() {
-        locationViewModel.getLocationData().observe(viewLifecycleOwner, {
-            it?.let {
-                this.currentLatitude = it.latitude
-                this.currentLongitude = it.longitude
-                //println(it)
-            }
-        })
-    }
 }
