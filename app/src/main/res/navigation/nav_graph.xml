@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/tableSummaryFragment"
         android:name="com.brugia.eatwithme.TableSummaryFragment"
-        android:label="Dettagli Tavolo"
-        tools:layout="@layout/fragment_table_summary" >
+        android:label="Table detail"
+        tools:layout="@layout/fragment_table_summary">
         <action
             android:id="@+id/action_join_table"
             app:destination="@id/tableLobbyFragment" />
@@ -26,8 +26,8 @@
     <fragment
         android:id="@+id/tableLobbyFragment"
         android:name="com.brugia.eatwithme.TableLobbyFragment"
-        android:label="Tavolo"
-        tools:layout="@layout/fragment_table_lobby" >
+        android:label="Tables list"
+        tools:layout="@layout/fragment_table_lobby">
         <action
             android:id="@+id/action_tableLobbyFragment_to_mapsFragment"
             app:destination="@id/mapsFragment" />
@@ -35,6 +35,6 @@
     <fragment
         android:id="@+id/mapsFragment"
         android:name="com.brugia.eatwithme.MapsFragment"
-        android:label="fragment_maps"
+        android:label="Change location"
         tools:layout="@layout/fragment_maps" />
 </navigation>

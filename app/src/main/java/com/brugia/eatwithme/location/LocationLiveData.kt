@@ -54,7 +54,7 @@ class LocationLiveData(context: Context) : LiveData<LocationModel>() {
         }
     }
 
-    private fun setLocationData(location: Location) {
+    fun setLocationData(location: Location) {
         value = LocationModel(
                 longitude = location.longitude,
                 latitude = location.latitude

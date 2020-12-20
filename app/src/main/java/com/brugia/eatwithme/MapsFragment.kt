@@ -1,13 +1,22 @@
 package com.brugia.eatwithme
 
+import android.app.Activity
+import android.content.ContentValues.TAG
+import android.content.Intent
+import android.location.Location
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.brugia.eatwithme.location.GpsUtils
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
@@ -20,8 +29,19 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import org.w3c.dom.Text
+
 
 class MapsFragment : Fragment() {
+
+    lateinit var txtPos: TextView
+
+    private val AUTOCOMPLETE_REQUEST_CODE = 1
 
     private val locationViewModel by viewModels<LocationViewModel> {
         LocationViewModelFactory(this.requireActivity().application)
@@ -72,6 +92,67 @@ class MapsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+
+        txtPos = view.findViewById<TextView>(R.id.txtPlaceName)
+
+        // Initialize the SDK
+        Places.initialize(this.requireActivity().application, BuildConfig.MAPS_KEY)
+        // Create a new PlacesClient instance
+        val placesClient = Places.createClient(this.requireActivity().application)
+        val btnChangePos = view.findViewById<Button>(R.id.btnChangePos)
+        btnChangePos.setOnClickListener {
+            // Set the fields to specify which types of place data to
+            // return after the user has made a selection.
+            val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS, Place.Field.LAT_LNG)
+            // Start the autocomplete intent.
+            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                    .build(this.requireActivity().application)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    data?.let {
+                        val place = Autocomplete.getPlaceFromIntent(data)
+                        with(place) {
+                            println("Lat & lon: $latLng Place: $name, Address: $address, Address components: $addressComponents, ID: $id")
+                        }
+                        var lat = place.latLng?.latitude
+                        var lng = place.latLng?.longitude
+                        var latlng: Location = Location("Google Maps");
+                        if (lat != null) {
+                            latlng.latitude = lat
+                        }
+                        if (lng != null) {
+                            latlng.longitude = lng
+                        }
+                        //Update position on the map
+                        locationViewModel.setLocation(latlng)//Update the location
+                        mapFragment?.getMapAsync(callback)
+                        //Update address label
+                        txtPos.text = place.address
+                    }
+                }
+                AutocompleteActivity.RESULT_ERROR -> {
+                    // TODO: Handle the error.
+                    data?.let {
+                        val status = Autocomplete.getStatusFromIntent(data)
+                        println(status.statusMessage.toString())
+                    }
+                }
+                Activity.RESULT_CANCELED -> {
+                    // The user canceled the operation.
+                }
+            }
+            return
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
 }

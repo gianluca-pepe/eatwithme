@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
 }
-
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -25,6 +24,8 @@ android {
 
         // Inject the Maps API key into the manifest
         manifestPlaceholders = [ mapsApiKey : properties.getProperty("MAPS_API_KEY", "") ]
+        //Add the MAPS_KEY string to BuildConfig (so that can be used in code..)
+        buildConfigField "String", "MAPS_KEY", "\"" + properties.getProperty("MAPS_API_KEY", "") + "\""
     }
 
     buildTypes {
@@ -92,4 +93,7 @@ dependencies {
 
     // Jetpack Compose Integration
     implementation "androidx.navigation:navigation-compose:1.0.0-alpha02"
+
+    // dependency to the Places SDK
+    implementation 'com.google.android.libraries.places:places:2.4.0'
 }

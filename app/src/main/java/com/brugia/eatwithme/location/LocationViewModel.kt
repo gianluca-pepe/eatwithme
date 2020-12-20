@@ -1,6 +1,7 @@
 package com.brugia.eatwithme.location
 
 import android.app.Application
+import android.location.Location
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,6 +20,9 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
 
     fun setRadius(newRadius: Int) {
         radius.value = newRadius
+    }
+    fun setLocation(loc: Location) {
+        this.location.setLocationData(loc)
     }
 
     fun getLocationData() = location
