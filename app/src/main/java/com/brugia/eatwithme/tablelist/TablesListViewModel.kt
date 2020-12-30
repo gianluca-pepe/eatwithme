@@ -5,13 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.brugia.eatwithme.MainFragment
 import com.brugia.eatwithme.data.TablesDataSource
-import com.brugia.eatwithme.data.Table
-import kotlin.random.Random
 
 class TablesListViewModel(val dataSource: TablesDataSource) : ViewModel() {
 
     val tablesLiveData = dataSource.getTableList()
-
+/*
     /* If the name and description are present, create new Table and add it to the datasource */
     fun insertTable(
             tableName: String?,
@@ -42,6 +40,7 @@ class TablesListViewModel(val dataSource: TablesDataSource) : ViewModel() {
 
         dataSource.addTable(newTable)
     }
+ */
 }
 
 class TablesListViewModelFactory(private val context: MainFragment) : ViewModelProvider.Factory {

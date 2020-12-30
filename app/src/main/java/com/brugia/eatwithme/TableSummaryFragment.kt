@@ -1,5 +1,6 @@
 package com.brugia.eatwithme
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -26,6 +27,7 @@ class TableSummaryFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_table_summary, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -37,10 +39,10 @@ class TableSummaryFragment : Fragment() {
 
         tableViewModel.getSelectedTable().observe(viewLifecycleOwner, {
             it?.let {
-                tableHourTextView.text = it.tableHour
-                tableDateTextView.text = it.tableDate
-                tableCityTextView.text = it.city
-                tableParticipantsTextView.text = "${it.numPartecipants} / ${it.maxPartecipants}"
+                tableHourTextView.text = it.tableHour()
+                tableDateTextView.text = it.tableDateText()
+                tableCityTextView.text = it.location["label"].toString()
+                tableParticipantsTextView.text = "${it.participants["num"]} / ${it.participants["max"]}"
             }
         })
 

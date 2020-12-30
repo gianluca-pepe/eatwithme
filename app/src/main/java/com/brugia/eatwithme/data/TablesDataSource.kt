@@ -5,11 +5,51 @@ package com.brugia.eatwithme.data
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.brugia.eatwithme.R
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 /* Handles operations on tablesLiveData and holds details about it. */
 class TablesDataSource(resources: Resources) {
-    private val initialTableList = tableList(resources)
-    private val tablesLiveData = MutableLiveData(initialTableList)
+    private val tablesLiveData: MutableLiveData<List<Table>> by lazy {
+        MutableLiveData<List<Table>>()
+    }
+    private val db = Firebase.firestore
+    private var tempList = mutableListOf<Table>()
+
+    init {
+        db.collection("Tables")
+                .get()
+                .addOnSuccessListener { results ->
+
+                    for(doc in results) {
+                        try {
+                            val newTable = Table(
+                                    id = doc.id,
+                                    ownerId = doc.getString("ownerId"),
+                                    name = doc.getString("name"),
+                                    description = doc.getString("description"),
+                                    timestamp = doc.getTimestamp("timestamp"),
+                                    location = hashMapOf(
+                                            "latlog" to doc.getGeoPoint("location.latlog"),
+                                            "label" to doc.getString("location.label")
+                                    ),
+                                    participants = hashMapOf(
+                                            "num" to doc.getLong("participants.num")!!.toInt(),
+                                            "max" to doc.getLong("participants.max")!!.toInt(),
+                                    ),
+                                    image = R.drawable.logo_login
+                            )
+
+                            if (!newTable.isFull()) tempList.add(newTable)
+
+                        } catch(e:Exception) {
+                            println(e)
+                        }
+                    }
+                    tablesLiveData.postValue(tempList)
+                }
+    }
 
     /* Adds table to liveData and posts value. */
     fun addTable(table: Table) {
@@ -34,7 +74,7 @@ class TablesDataSource(resources: Resources) {
     }
 
     /* Returns table given an ID. */
-    fun getTableForId(id: Long): Table? {
+    fun getTableForId(id: String): Table? {
         tablesLiveData.value?.let { tables ->
             return tables.firstOrNull{ it.id == id}
         }
@@ -45,11 +85,12 @@ class TablesDataSource(resources: Resources) {
         return tablesLiveData
     }
 
-    /* Returns a random table asset for tables that are added. */
+    /* Returns a random table asset for tables that are added.
     fun getRandomTableImageAsset(): Int? {
         val randomNumber = (initialTableList.indices).random()
         return initialTableList[randomNumber].image
     }
+     */
 
     companion object {
         private var INSTANCE: TablesDataSource? = null

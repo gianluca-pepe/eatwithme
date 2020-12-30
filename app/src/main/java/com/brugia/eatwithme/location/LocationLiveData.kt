@@ -12,7 +12,6 @@ import com.google.android.gms.location.LocationServices
 class LocationLiveData(context: Context) : LiveData<LocationModel>() {
 
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
     // Stop getting updates of location
     override fun onInactive() {
         super.onInactive()
@@ -20,19 +19,10 @@ class LocationLiveData(context: Context) : LiveData<LocationModel>() {
     }
 
     // First get the last known location, then start receiving updates
-    @SuppressLint("MissingPermission")
+    // Called when the number of active observers change from 0 to 1.
     override fun onActive() {
         super.onActive()
-        fusedLocationClient.lastLocation
-                .addOnSuccessListener { location: Location? ->
-                    println(location)
-                    if (location != null) {
-                        setLocationData(location)
-                    }
-                }
-                .addOnFailureListener {
-                    println(it)
-                }
+        getLastLocation()
         //startLocationUpdates()
     }
 
@@ -59,14 +49,44 @@ class LocationLiveData(context: Context) : LiveData<LocationModel>() {
                 longitude = location.longitude,
                 latitude = location.latitude
         )
+    }
 
-        println(value)
+    @SuppressLint("MissingPermission")
+    private fun getLastLocation() {
+        println("Last location request")
+        fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    println("success $location")
+                    if (location != null) {
+                        setLocationData(location)
+                    } else {
+                        singleLocationUpdate()
+                    }
+                }
+                .addOnFailureListener {
+                    println(it)
+                }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun singleLocationUpdate() {
+        println("single location request")
+        fusedLocationClient.requestLocationUpdates(
+                singleLocationRequest,
+                locationCallback,
+                null
+        )
     }
 
     companion object {
         val locationRequest: LocationRequest = LocationRequest.create().apply {
             interval = 10000
             fastestInterval = 5000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        val singleLocationRequest: LocationRequest = LocationRequest.create().apply {
+            numUpdates = 1
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
     }

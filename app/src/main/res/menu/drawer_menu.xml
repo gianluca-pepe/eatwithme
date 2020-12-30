@@ -17,6 +17,7 @@
             android:icon="@drawable/ic_baseline_history_24"
             android:title="I miei tavoli" />
         <item
+            android:id="@+id/createTableFragment"
             android:icon="@drawable/ic_baseline_calendar_today_24"
             android:title="Crea tavolo" />
     </group>

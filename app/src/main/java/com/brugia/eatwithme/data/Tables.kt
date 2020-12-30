@@ -5,7 +5,7 @@ import android.content.res.Resources
 import com.brugia.eatwithme.R
 
 
-/* Returns initial list of tables. */
+/* Returns initial list of tables.
 fun tableList(resources: Resources): List<Table> {
     return listOf(
             Table(
@@ -76,5 +76,5 @@ fun tableList(resources: Resources): List<Table> {
             )
     )
 }
-
+*/
 

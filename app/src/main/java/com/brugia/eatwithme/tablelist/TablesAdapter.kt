@@ -40,9 +40,9 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
             currentTable = table
 
             tableTextViewTitle.text = table.name
-            tableTextViewPartecipants.text = table.numPartecipants.toString() + "/" + table.maxPartecipants.toString()
-            tableTextViewDate.text = table.tableDate
-            tableTextViewHour.text = table.tableHour
+            tableTextViewPartecipants.text = table.participants["num"].toString() + "/" + table.participants["max"].toString()
+            tableTextViewDate.text = table.tableDateText()
+            tableTextViewHour.text = table.tableHour()
 
             if (table.image != null) {
                 tableImageView.setImageResource(table.image)

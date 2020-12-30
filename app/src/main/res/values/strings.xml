@@ -4,4 +4,5 @@
     <string name="facebook_login_protocol_scheme">fb696989651252245</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create_table_title">Create Table</string>
 </resources>

@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_select_table"
             app:destination="@id/tableSummaryFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_createTableFragment2"
+            app:destination="@id/createTableFragment" />
     </fragment>
     <fragment
         android:id="@+id/tableLobbyFragment"
@@ -37,4 +40,9 @@
         android:name="com.brugia.eatwithme.MapsFragment"
         android:label="Change location"
         tools:layout="@layout/fragment_maps" />
+    <fragment
+        android:id="@+id/createTableFragment"
+        android:name="com.brugia.eatwithme.CreateTableFragment"
+        android:label="Create Table"
+        tools:layout="@layout/fragment_create_table" />
 </navigation>
