@@ -85,7 +85,7 @@ class MyProfileViewModel: ViewModel() {
     }
 
     //Update person data on db
-    fun updateCurrentPerson(name:String?, surname:String?, telephone:String?, birthday:String?, profile_pic:String? = null, preferences: ArrayList<String> = arrayListOf<String>()){
+    fun updateCurrentPerson(name:String?, surname:String?, telephone:String?, birthday:String?, preferences: ArrayList<String> = arrayListOf<String>()){
         //Obtain the document whoose id field is = personID
         val docRef = db.collection("Users").document(personID)
 
@@ -102,7 +102,6 @@ class MyProfileViewModel: ViewModel() {
                                 telephone = telephone,
                                 email = FirebaseAuth.getInstance().currentUser?.email,
                                 birthday = birthday,
-                                profile_pic = profile_pic,
                                 preferences = arrayListOf<String>()
                         )
 
@@ -113,8 +112,7 @@ class MyProfileViewModel: ViewModel() {
                                     "surname" to it.surname,
                                     "telephone" to it.telephone,
                                     "email" to it.email,
-                                    "birthday" to it.birthday,
-                                    "profile_pic" to it.profile_pic
+                                    "birthday" to it.birthday
                             ))
                         }
 
@@ -127,6 +125,37 @@ class MyProfileViewModel: ViewModel() {
                     Log.w(TAG, "Error getting documents: ", exception)
                 }
 
+    }
+
+    fun updatePersonPic(profile_pic: String?){
+        //Obtain the document whoose id field is = personID
+        val docRef = db.collection("Users").document(personID)
+
+        docRef.get()
+            .addOnSuccessListener { document ->
+                //document exists?
+                if (document.data != null) {
+                    //Load the current document
+                    //Log.d(TAG, "${document.id} => ${document.data}")
+                    myprofileLiveData.value = myprofileLiveData.value?.copy(
+                        profile_pic = profile_pic
+                    )
+
+                    //Update the document inside DB
+                    myprofileLiveData.value?.let {
+                        db.collection("Users").document(personID).update(mapOf(
+                            "profile_pic" to  it.profile_pic
+                        ))
+                    }
+
+                } else {
+                    //document not found
+                    Log.d(TAG, "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+            }
     }
 
     /*Delete current person data from DB (keep care to logout the person on the end and redirect to the login page..)*/

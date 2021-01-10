@@ -17,7 +17,7 @@
         android:hint="Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button3" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_upload_image" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/input_user_surname"
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <ImageView
-        android:id="@+id/imageView10"
+        android:id="@+id/img_userpic"
         android:layout_width="206dp"
         android:layout_height="213dp"
         android:layout_marginTop="16dp"
@@ -81,15 +81,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button3"
-        android:layout_width="203dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="12dp"
-        android:text="Change Profile pic"
+        android:id="@+id/btn_upload_image"
+        android:layout_width="140dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="8dp"
+        android:text="Save pic"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView10" />
+        app:layout_constraintHorizontal_bias="0.242"
+        app:layout_constraintStart_toEndOf="@+id/btn_choose_image"
+        app:layout_constraintTop_toBottomOf="@+id/img_userpic" />
 
     <Button
         android:id="@+id/btn_modify_profile"
@@ -124,4 +124,14 @@
         android:text="Birthday"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_user_birthday" />
+
+    <Button
+        android:id="@+id/btn_choose_image"
+        android:layout_width="140dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="12dp"
+        android:text="Upload pic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img_userpic" />
 </androidx.constraintlayout.widget.ConstraintLayout>
