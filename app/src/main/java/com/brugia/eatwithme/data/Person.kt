@@ -4,16 +4,18 @@
 
 package com.brugia.eatwithme.data
 
+import com.google.firebase.Timestamp
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-data class Person constructor(
-    val id: Long,
-    val name: String,
-    val surname: String,
-    val telephone: String,
-    val email: String,
-    val birthday: Date,
+data class Person(
+    val id: String? = null,
+    val name: String? = null,
+    val surname: String? = null,
+    val telephone: String? = null,
+    val email: String? = null,
+    val birthday: String? = null,
+    val profile_pic: String? = null,
     val preferences: ArrayList<String>
 )

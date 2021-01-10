@@ -31,17 +31,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_user_name" />
 
-    <com.google.android.material.textfield.TextInputEditText
+    <TextView
         android:id="@+id/input_user_birthday"
+        android:layout_width="224dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:hint="Birthday date"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.087"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_user_surname" />
+
+    <!--<com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/input_user_mail"
         android:layout_width="351dp"
         android:layout_height="54dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:hint="Birthday date"
+        android:hint="Email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_surname" />
+        app:layout_constraintTop_toBottomOf="@+id/input_user_telephone" />-->
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/input_user_telephone"
@@ -52,20 +65,9 @@
         android:layout_marginEnd="16dp"
         android:hint="Telephone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.535"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_birthday" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/input_user_mail"
-        android:layout_width="351dp"
-        android:layout_height="54dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="Email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_telephone" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <ImageView
         android:id="@+id/imageView10"
@@ -100,5 +102,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.519"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_mail" />
+        app:layout_constraintTop_toBottomOf="@+id/input_user_telephone" />
+
+    <ImageView
+        android:id="@+id/img_user_calendar"
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ic_baseline_calendar_today_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.113"
+        app:layout_constraintStart_toEndOf="@+id/input_user_birthday"
+        app:layout_constraintTop_toBottomOf="@+id/input_user_surname" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="2dp"
+        android:text="Birthday"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_user_birthday" />
 </androidx.constraintlayout.widget.ConstraintLayout>

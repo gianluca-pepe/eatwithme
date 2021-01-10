@@ -13,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.brugia.eatwithme.myprofile.MyProfileViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var destinationListener: NavController.OnDestinationChangedListener
+    private val personViewModel: MyProfileViewModel = MyProfileViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +35,10 @@ class MainActivity : AppCompatActivity() {
         if (FirebaseAuth.getInstance().currentUser == null) {
             startActivity(Intent(this, LoginRegisterActivity::class.java))
             this.finish()
+        }else{
+            personViewModel.checkPersonData()//check if person data are loaded and load them
         }
+
 
 
         val navHostFragment = supportFragmentManager.
