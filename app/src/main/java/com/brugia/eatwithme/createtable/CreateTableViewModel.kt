@@ -19,10 +19,7 @@ class CreateTableViewModel: ViewModel() {
     val tableLiveData: MutableLiveData<Table> = MutableLiveData(Table(
             ownerId = FirebaseAuth.getInstance().currentUser?.uid,
             timestamp = Timestamp(calendar.time),
-            participants = hashMapOf(
-                    "num" to 1,
-                    "max" to 10
-            )
+            participantsList = List(1) { FirebaseAuth.getInstance().currentUser!!.uid}
     ))
 
     fun setDate(year: Int, month: Int, day: Int) {
@@ -48,10 +45,7 @@ class CreateTableViewModel: ViewModel() {
         tableLiveData.value = tableLiveData.value?.copy(
                 name = name,
                 description = descr,
-                participants = hashMapOf(
-                        "num" to 1,
-                        "max" to maxParticipants
-                ),
+                maxParticipants = maxParticipants,
                 location = hashMapOf(
                         "label" to "null",
                         "latlog" to geoPoint

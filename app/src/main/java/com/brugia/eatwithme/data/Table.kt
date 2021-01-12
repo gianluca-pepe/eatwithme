@@ -3,24 +3,24 @@ package com.brugia.eatwithme.data
 
 import androidx.annotation.DrawableRes
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.GeoPoint
+import java.lang.Integer.parseInt
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
 
 data class Table(
-    var id: String? = null,
+    var id: String = "",
     var ownerId: String? = null,
     var name: String? = null,
     var description: String? = null,
     @DrawableRes
     val image: Int? = null,
     var timestamp: Timestamp? = null,
-    var participants: HashMap<String, Int> = hashMapOf(
-            "num" to 0,
-            "max" to 0,
-    ),
+    var maxParticipants: Int? = 0,
+    var participantsList: List<String> = emptyList(),
     var location: HashMap<String, Any?> = hashMapOf(
         "latlog" to GeoPoint(0.0, 0.0),
         "label" to null
@@ -30,6 +30,9 @@ data class Table(
 
     private val tableDate: Date?
         get() = timestamp?.let { Date(it.seconds*1000) }
+
+    val numParticipants: Int
+        get() = participantsList.size
 
     fun tableHour():String {
         tableDate?.let{
@@ -46,12 +49,6 @@ data class Table(
     }
 
     fun isFull():Boolean {
-        if ( participants["num"] == null )
-            return true
-
-        if ( participants["max"] == null )
-            return true
-
-        return participants["num"]!! >= participants["max"]!!
+        return maxParticipants!! <= numParticipants
     }
 }

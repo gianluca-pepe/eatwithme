@@ -18,4 +18,8 @@ data class Person(
     val birthday: String? = null,
     val profile_pic: String? = null,
     val preferences: ArrayList<String>
-)
+) {
+    fun isProfileIncomplete(): Boolean {
+        return name.isNullOrEmpty() || surname.isNullOrEmpty() || birthday.isNullOrEmpty()
+    }
+}

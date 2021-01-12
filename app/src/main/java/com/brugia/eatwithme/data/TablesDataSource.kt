@@ -34,10 +34,8 @@ class TablesDataSource(resources: Resources) {
                                             "latlog" to doc.getGeoPoint("location.latlog"),
                                             "label" to doc.getString("location.label")
                                     ),
-                                    participants = hashMapOf(
-                                            "num" to doc.getLong("participants.num")!!.toInt(),
-                                            "max" to doc.getLong("participants.max")!!.toInt(),
-                                    ),
+                                    maxParticipants = doc.getLong("maxParticipants")?.toInt(),
+                                    participantsList = doc.get("participantsList") as List<String>,
                                     image = R.drawable.logo_login
                             )
 

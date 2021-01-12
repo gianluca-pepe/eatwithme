@@ -40,7 +40,7 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
             currentTable = table
 
             tableTextViewTitle.text = table.name
-            tableTextViewPartecipants.text = table.participants["num"].toString() + "/" + table.participants["max"].toString()
+            tableTextViewPartecipants.text = table.numParticipants.toString() + "/" + table.maxParticipants.toString()
             tableTextViewDate.text = table.tableDateText()
             tableTextViewHour.text = table.tableHour()
 

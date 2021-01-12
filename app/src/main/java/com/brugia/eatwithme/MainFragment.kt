@@ -54,8 +54,7 @@ class MainFragment : Fragment() {
     }
     private lateinit var gpsHandler : GpsUtils
     private val requestLocationPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()
-            ) { isGranted: Boolean ->
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 // Callback called when the user interacts with system dialog requesting permission
                 if (isGranted) {
                     // Permission is granted.
@@ -153,7 +152,11 @@ class MainFragment : Fragment() {
         startActivity(intent)
         */
         selectedTableViewModel.setSelectedTable(table)
-        this.findNavController().navigate(R.id.action_select_table)
+        if (selectedTableViewModel.doesUserParticipate()) {
+            this.findNavController().navigate(R.id.tableLobbyFragment)
+        } else {
+            this.findNavController().navigate(R.id.action_select_table)
+        }
     }
 
 

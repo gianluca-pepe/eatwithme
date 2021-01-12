@@ -5,4 +5,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="create_table_title">Create Table</string>
+    <string name="incomplete_account_message">Per favore aggiorna il tuo profilo con le tue
+        informazioni
+    </string>
+    <string name="incomplete_account_title">Account non completo</string>
+    <string name="incomplete_account_neg_button">Non Ora</string>
+    <string name="incomplete_account_pos_button">Modifica Profilo</string>
+    <string name="generic_error_title">Errore</string>
+    <string name="generic_error_message">Siamo spiacenti, l\'operazione non è andata a buon fine</string>
+    <string name="generic_error_button">ok</string>
 </resources>
