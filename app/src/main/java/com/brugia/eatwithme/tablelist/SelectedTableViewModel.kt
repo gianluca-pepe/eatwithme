@@ -22,8 +22,10 @@ class SelectedTableViewModel: ViewModel() {
     private val auth_id = Firebase.auth.uid
     private val db = Firebase.firestore
 
-    fun setSelectedTable(table: Table) {
-        _selectedTable.value = table
+    fun setSelectedTable(table: Table?) {
+        table?.let {
+            _selectedTable.value = table
+        }
     }
 
     fun getSelectedTable() = _selectedTable

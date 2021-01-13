@@ -8,14 +8,22 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.brugia.eatwithme.createtable.CreateTableViewModel
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
 import com.brugia.eatwithme.datetimepickers.TimePickerFragment
 import com.brugia.eatwithme.location.LocationModel
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
+import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import org.w3c.dom.Text
 import java.lang.Integer.parseInt
 
 
@@ -25,6 +33,7 @@ class CreateTableFragment : Fragment() {
     private val locationViewModel by viewModels<LocationViewModel> {
         LocationViewModelFactory(this.requireActivity().application)
     }
+    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel>()
     private val datePicker = DatePickerFragment(::onDateSet)
     private val timePicker = TimePickerFragment(::onTimeSet)
 
@@ -54,9 +63,10 @@ class CreateTableFragment : Fragment() {
         timeTextView.setOnClickListener { this.showTimePickerDialog() }
         createTableButton.setOnClickListener { this.onCreateTable() }
 
-        newTableViewModel.tableLiveData.observe(viewLifecycleOwner, {
+        newTableViewModel.table.observe(viewLifecycleOwner, {
             dateTextView.text = it.tableDateText()
             timeTextView.text = it.tableHour()
+            maxParticipantsInputView.setText(it.maxParticipants.toString())
         })
 
         locationViewModel.getLocationData().observe(viewLifecycleOwner, {
@@ -89,12 +99,42 @@ class CreateTableFragment : Fragment() {
     }
 
     private fun onCreateTable() {
+        var err = false
+        if(maxParticipantsInputView.text.isNullOrEmpty() || parseInt(maxParticipantsInputView.text.toString()) < 2) {
+            //val maxParticipantsLayout = maxParticipantsInputView.parent as TextInputLayout
+            maxParticipantsInputView.error = "Almeno 2 partecipanti"
+            err = true
+        }
+
+        if(nameInputView.text.toString().length <= 3) {
+            val nameInputLayout = nameInputView.parent.parent as TextInputLayout
+            nameInputLayout.error = "Inserisci un nome lungo almeno 3 caratteri"
+            err = true
+        }
+
+        if (err) return
+
         newTableViewModel.createTable(
                 nameInputView.text.toString(),
                 descriptionInputView.text.toString(),
                 parseInt(maxParticipantsInputView.text.toString()),
                 location
         )
+
+        newTableViewModel.creationState.observe(viewLifecycleOwner, {
+            if ( it == true ) {
+                selectedTableViewModel.setSelectedTable(newTableViewModel.table.value)
+                findNavController().navigate(R.id.tableLobbyFragment)
+            } else {
+                AlertDialog.Builder(this.requireContext())
+                        .setTitle(R.string.generic_error_title)
+                        .setMessage(R.string.generic_error_message)
+                        .setPositiveButton(R.string.generic_error_button) { dialog, which ->
+                            findNavController().navigate(R.id.mainFragment)
+                        }
+                        .create().show()
+            }
+        })
     }
 
 }

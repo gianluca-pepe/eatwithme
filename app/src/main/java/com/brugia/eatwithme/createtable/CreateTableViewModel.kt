@@ -1,5 +1,6 @@
 package com.brugia.eatwithme.createtable
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.brugia.eatwithme.data.Table
@@ -15,16 +16,23 @@ class CreateTableViewModel: ViewModel() {
 
     private val calendar: Calendar = Calendar.getInstance()
     private val db = Firebase.firestore
+    private var _creationState = MutableLiveData<Boolean>()
+    val creationState: LiveData<Boolean>
+        get() = _creationState
 
-    val tableLiveData: MutableLiveData<Table> = MutableLiveData(Table(
+    private val _tableLiveData: MutableLiveData<Table> = MutableLiveData(Table(
             ownerId = FirebaseAuth.getInstance().currentUser?.uid,
             timestamp = Timestamp(calendar.time),
-            participantsList = List(1) { FirebaseAuth.getInstance().currentUser!!.uid}
+            participantsList = List(1) { FirebaseAuth.getInstance().currentUser!!.uid},
+            maxParticipants = 2,
     ))
+    val table: LiveData<Table>
+        get() = _tableLiveData
+
 
     fun setDate(year: Int, month: Int, day: Int) {
         calendar.set(year,month,day)
-        tableLiveData.value = tableLiveData.value?.copy(
+        _tableLiveData.value = _tableLiveData.value?.copy(
                 timestamp = Timestamp(calendar.time)
         )
     }
@@ -32,7 +40,7 @@ class CreateTableViewModel: ViewModel() {
     fun setDate(hour: Int, minutes: Int) {
         calendar.set(Calendar.HOUR, hour)
         calendar.set(Calendar.MINUTE, minutes)
-        tableLiveData.value = tableLiveData.value?.copy(
+        _tableLiveData.value = _tableLiveData.value?.copy(
                 timestamp = Timestamp(calendar.time)
         )
     }
@@ -42,7 +50,7 @@ class CreateTableViewModel: ViewModel() {
                 if (location == null) GeoPoint(0.0,0.0)
                 else GeoPoint(location.latitude, location.longitude)
 
-        tableLiveData.value = tableLiveData.value?.copy(
+        _tableLiveData.value = _tableLiveData.value?.copy(
                 name = name,
                 description = descr,
                 maxParticipants = maxParticipants,
@@ -52,8 +60,13 @@ class CreateTableViewModel: ViewModel() {
                 )
         )
 
-        tableLiveData.value?.let {
-            db.collection("Tables").add(it)
+        _tableLiveData.value?.let {
+            db.collection("Tables").add(it).addOnSuccessListener {
+                _creationState.value = true
+            }.addOnFailureListener { e ->
+                _creationState.value = false
+                println(e)
+            }
         }
     }
 }
