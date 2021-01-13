@@ -2,10 +2,7 @@ package com.brugia.eatwithme.location
 
 import android.app.Application
 import android.location.Location
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.brugia.eatwithme.MainFragment
 import com.brugia.eatwithme.data.TablesDataSource
 import com.brugia.eatwithme.tablelist.TablesListViewModel
@@ -17,6 +14,9 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     val radius: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()
     }
+    private var _addressLiveData = MutableLiveData<String>()
+    val address: LiveData<String>
+        get() = _addressLiveData
 
     fun setRadius(newRadius: Int) {
         radius.value = newRadius
@@ -26,6 +26,12 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getLocationData() = location
+
+    fun setAddress(address: String?) {
+        address?.let {
+            _addressLiveData.value = it
+        }
+    }
 }
 
 class LocationViewModelFactory(private val context: Application) : ViewModelProvider.Factory {

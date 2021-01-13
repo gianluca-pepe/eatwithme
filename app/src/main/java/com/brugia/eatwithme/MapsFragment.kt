@@ -2,6 +2,7 @@ package com.brugia.eatwithme
 
 import android.app.Activity
 import android.content.ContentValues.TAG
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.location.Location
 import androidx.fragment.app.Fragment
@@ -15,9 +16,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.brugia.eatwithme.location.GpsUtils
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
 import com.brugia.eatwithme.tablelist.TablesListViewModel
@@ -43,10 +44,9 @@ class MapsFragment : Fragment() {
 
     private val AUTOCOMPLETE_REQUEST_CODE = 1
 
-    private val locationViewModel by viewModels<LocationViewModel> {
+    private val locationViewModel by activityViewModels<LocationViewModel> {
         LocationViewModelFactory(this.requireActivity().application)
     }
-    private lateinit var gpsHandler : GpsUtils
     private val requestLocationPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()
             ) { isGranted: Boolean ->
@@ -134,6 +134,18 @@ class MapsFragment : Fragment() {
                         }
                         //Update position on the map
                         locationViewModel.setLocation(latlng)//Update the location
+                        locationViewModel.setAddress(place.address)
+                        val customLocation = activity?.getSharedPreferences(
+                                getString(R.string.custom_location_file_key),
+                                MODE_PRIVATE
+                        )
+                        customLocation?.edit()?.putFloat(
+                                getString(R.string.latitude),
+                                latlng.latitude.toFloat()
+                        )?.putFloat(
+                                getString(R.string.longitude),
+                                latlng.longitude.toFloat()
+                        )?.apply()
                         mapFragment?.getMapAsync(callback)
                         //Update address label
                         txtPos.text = place.address

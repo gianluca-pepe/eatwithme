@@ -100,15 +100,25 @@ class CreateTableFragment : Fragment() {
 
     private fun onCreateTable() {
         var err = false
-        if(maxParticipantsInputView.text.isNullOrEmpty() || parseInt(maxParticipantsInputView.text.toString()) < 2) {
+        if (maxParticipantsInputView.text.isNullOrEmpty() || parseInt(maxParticipantsInputView.text.toString()) < 2) {
             //val maxParticipantsLayout = maxParticipantsInputView.parent as TextInputLayout
             maxParticipantsInputView.error = "Almeno 2 partecipanti"
             err = true
         }
 
-        if(nameInputView.text.toString().length <= 3) {
+        if (nameInputView.text.toString().length <= 3) {
             val nameInputLayout = nameInputView.parent.parent as TextInputLayout
             nameInputLayout.error = "Inserisci un nome lungo almeno 3 caratteri"
+            err = true
+        }
+
+        if (location == null) {
+            AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.missing_location_title)
+                    .setMessage(R.string.missing_location_message)
+                    .setPositiveButton(R.string.missing_location_pos_button) { _, _ ->
+                        findNavController().navigate(R.id.mapsFragment)
+                    }.create().show()
             err = true
         }
 

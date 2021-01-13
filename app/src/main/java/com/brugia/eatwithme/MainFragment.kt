@@ -25,7 +25,6 @@ import com.brugia.eatwithme.addTable.FLOWER_DESCRIPTION
 import com.brugia.eatwithme.addTable.FLOWER_NAME
 */
 import com.brugia.eatwithme.data.Table
-import com.brugia.eatwithme.location.GpsUtils
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
@@ -43,16 +42,17 @@ class MainFragment : Fragment() {
 
     lateinit var seek: SeekBar
     lateinit var txtkm: TextView
+    lateinit var address: TextView
 
     private val newTableActivityRequestCode = 1
     private val tablesListViewModel by viewModels<TablesListViewModel> {
         TablesListViewModelFactory(this)
     }
 
-    private val locationViewModel by viewModels<LocationViewModel> {
+    private val locationViewModel by activityViewModels<LocationViewModel> {
         LocationViewModelFactory(this.requireActivity().application)
     }
-    private lateinit var gpsHandler : GpsUtils
+
     private val requestLocationPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 // Callback called when the user interacts with system dialog requesting permission
@@ -68,9 +68,9 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        gpsHandler = GpsUtils(this.requireActivity())
+        //gpsHandler = GpsUtils(this.requireActivity())
         // Check GPS settings
-        gpsHandler.checkGPS()
+        //gpsHandler.checkGPS()
     }
 
     override fun onCreateView(
@@ -105,7 +105,7 @@ class MainFragment : Fragment() {
                 // write custom code for progress is stopped
               //Toast.makeText(getActivity(),  "Progress is: " + seek.progress + "%", Toast.LENGTH_SHORT).show()
 
-                checkLocationPermission()
+                //checkLocationPermission()
             }
         })
         /* End SeekBar management*/
@@ -142,6 +142,11 @@ class MainFragment : Fragment() {
         imgMarker.setOnClickListener {
             this.findNavController().navigate(R.id.mapsFragment)
         }
+
+        address = view.findViewById(R.id.addressTextView)
+        locationViewModel.address.observe(viewLifecycleOwner, {
+            address.text = it
+        })
     }
 
     /* Opens Table detail when RecyclerView item is clicked. */
@@ -158,24 +163,4 @@ class MainFragment : Fragment() {
             this.findNavController().navigate(R.id.action_select_table)
         }
     }
-
-
-    private fun checkLocationPermission() {
-        when {
-            isPermissionGranted() -> { }
-            //shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {}
-            else -> {
-                // You can directly ask for the permission.
-                // onRequestPermissionsResult(...) gets the result of this request.
-                requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
-        }
-    }
-
-    private fun isPermissionGranted(): Boolean =
-            ContextCompat.checkSelfPermission(
-                    this.requireActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-
 }
