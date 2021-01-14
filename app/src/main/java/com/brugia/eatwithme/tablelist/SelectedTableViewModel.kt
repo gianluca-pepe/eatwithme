@@ -61,6 +61,7 @@ class SelectedTableViewModel: ViewModel() {
 
     private fun createParticipantsList() {
         auth_id?.let {
+            _personsList.value = mutableListOf()
             _personsListTemp = mutableListOf()
             _selectedTable.value?.participantsList?.forEach { id ->
                 db.collection("Users").document(id).get().addOnSuccessListener {

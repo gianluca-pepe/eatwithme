@@ -30,7 +30,6 @@ class PersonsAdapter(): ListAdapter<Person, PersonsAdapter.PersonViewHolder>(Per
             personSurnameTextView.text = person.surname
 
             if (person.profile_pic != null) {
-                println(person.profile_pic)
                 val imgRef = Firebase.storage.reference.child("profile-pic/${person.id}")
                 GlideApp.with(itemView)
                         .load(imgRef)
