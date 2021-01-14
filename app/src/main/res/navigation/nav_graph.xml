@@ -59,6 +59,6 @@
     <fragment
         android:id="@+id/myTablesFragment"
         android:name="com.brugia.eatwithme.mytables.MyTablesFragment"
-        android:label="fragment_my_tables"
+        android:label="My tables"
         tools:layout="@layout/fragment_my_tables" />
 </navigation>

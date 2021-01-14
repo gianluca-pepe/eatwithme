@@ -54,6 +54,7 @@ class TablesDataSource(resources: Resources) {
                         }
                     }
                     tablesLiveData.postValue(tempList)
+                    updateMyTables()
                 }
     }
 
@@ -130,7 +131,6 @@ class TablesDataSource(resources: Resources) {
     }
 
     fun getMyTablesList(): LiveData<List<Table>> {
-        updateMyTables()
         return myTablesLiveData
     }
     /* Returns a random table asset for tables that are added.
