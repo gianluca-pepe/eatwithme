@@ -8,20 +8,19 @@
     tools:context=".TableSummaryFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recycler_view_person_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="24dp"
         android:scrollbars="vertical"
+        app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/join_table_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8"
         tools:itemCount="8"
-        tools:listitem="@layout/recycler_view_item">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        tools:listitem="@layout/person_row_item" />
 
     <Button
         android:id="@+id/join_table_button"

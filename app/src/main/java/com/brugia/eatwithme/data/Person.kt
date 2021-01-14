@@ -19,17 +19,9 @@ data class Person(
     val email: String? = null,
     val birthday: String? = null,
     val profile_pic: String? = null,
-    val preferences: ArrayList<String>,
-    var default_location: HashMap<String, Any?> = hashMapOf(
-            "latlog" to GeoPoint(0.0, 0.0),
-            "label" to null
-    )
+    val preferences: ArrayList<String>? = null,
 ) {
     fun isProfileIncomplete(): Boolean {
         return name.isNullOrEmpty() || surname.isNullOrEmpty() || birthday.isNullOrEmpty()
-    }
-
-    fun hasDefaultLocation(): Boolean {
-        return default_location["label"] == null
     }
 }

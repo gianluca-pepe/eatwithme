@@ -12,13 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
 
-    <androidx.recyclerview.widget.RecyclerView
+    </androidx.fragment.app.FragmentContainerView>
+
+    <fragment
+        android:id="@+id/fragment2"
+        android:name="com.brugia.eatwithme.RestaurantItemFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="-148dp"
-        tools:layout_editor_absoluteY="-26dp"
-        tools:listitem="@layout/restaurant_row_item" />
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/table_info_lobby" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

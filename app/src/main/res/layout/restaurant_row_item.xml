@@ -8,7 +8,7 @@
               android:layout_height="wrap_content">
 
   <ImageView
-      android:id="@+id/imageView1"
+      android:id="@+id/restaurant_img"
       android:layout_width="115dp"
       android:layout_height="115dp"
       tools:src="@mipmap/ic_launcher" />
@@ -22,17 +22,17 @@
         android:layout_height="match_parent">
 
       <TextView
-          android:id="@+id/restaurantNameView"
+          android:id="@+id/restaurant_name"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
           android:layout_marginStart="24dp"
           android:layout_marginEnd="24dp"
-          android:lines="2"
+          android:maxLines="2"
           android:singleLine="false"
           android:textSize="18sp"
           android:textStyle="bold"
-          app:layout_constraintBottom_toTopOf="@+id/ratingBar"
+          app:layout_constraintBottom_toTopOf="@+id/restaurant_rating_bar"
           app:layout_constraintEnd_toEndOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
@@ -41,18 +41,18 @@
           tools:text="@tools:sample/lorem[10]" />
 
       <TextView
-          android:id="@+id/textView4"
+          android:id="@+id/restaurant_type_tag"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginStart="16dp"
           android:text="@tools:sample/lorem[0]"
           android:textAllCaps="true"
           android:textSize="10sp"
-          app:layout_constraintBaseline_toBaselineOf="@+id/button2"
+          app:layout_constraintBaseline_toBaselineOf="@+id/restaurant_vote_button"
           app:layout_constraintStart_toStartOf="parent" />
 
       <RatingBar
-          android:id="@+id/ratingBar"
+          android:id="@+id/restaurant_rating_bar"
           style="@style/Widget.AppCompat.RatingBar.Small"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -61,12 +61,12 @@
           android:numStars="5"
           android:rating="2.3"
           android:stepSize="0.1"
-          app:layout_constraintBottom_toTopOf="@+id/textView4"
-          app:layout_constraintStart_toStartOf="@+id/restaurantNameView"
-          app:layout_constraintTop_toBottomOf="@+id/restaurantNameView" />
+          app:layout_constraintBottom_toTopOf="@+id/restaurant_type_tag"
+          app:layout_constraintStart_toStartOf="@+id/restaurant_name"
+          app:layout_constraintTop_toBottomOf="@+id/restaurant_name" />
 
       <Button
-          android:id="@+id/button2"
+          android:id="@+id/restaurant_vote_button"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="Vota"

@@ -14,6 +14,10 @@ import androidx.navigation.fragment.findNavController
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
+import com.brugia.eatwithme.data.Person
+import com.brugia.eatwithme.tablelist.TablesAdapter
+import com.brugia.eatwithme.userlist.PersonsAdapter
 
 class TableSummaryFragment : Fragment() {
     private lateinit var tableDateTextView: TextView
@@ -58,12 +62,21 @@ class TableSummaryFragment : Fragment() {
                 this.joinTable(view)
             }
         }
+
+        /* Persons list management (RecyclerView) */
+        val personsAdapter = PersonsAdapter()
+
+        val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view_person_list)
+        recyclerView.adapter = personsAdapter
+
+        tableViewModel.personsList.observe(viewLifecycleOwner, {
+            personsAdapter.submitList(it)
+        })
     }
 
     fun joinTable(view: View) {
         val person = personViewModel.myprofileLiveData.value
         if (person == null) return
-        val navigateToLobby = {  }
         val navigateToMain = { findNavController().navigate(R.id.mainFragment) }
 
         if ( person.isProfileIncomplete() ) {

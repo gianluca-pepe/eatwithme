@@ -8,16 +8,34 @@
     android:paddingVertical="8dp">
 
   <ImageView
-      android:id="@+id/imageView1"
+      android:id="@+id/person_list_img"
       android:layout_width="50dp"
       android:layout_height="50dp"
       tools:src="@tools:sample/avatars" />
 
   <TextView
-      android:id="@+id/restaurantNameView"
+      android:id="@+id/person_list_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
+      android:layout_marginLeft="10dp"
+      android:maxWidth="150dp"
       android:padding="5dp"
+      android:singleLine="true"
+      android:textSize="18sp"
+      android:textStyle="bold"
       tools:text="@tools:sample/lorem" />
+
+  <TextView
+      android:id="@+id/person_list_surname"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:layout_weight="1"
+      android:maxWidth="150dp"
+      android:padding="5dp"
+      android:singleLine="true"
+      android:textSize="18sp"
+      android:textStyle="bold"
+      tools:text="@tools:sample/lorem[2]" />
 </LinearLayout>

@@ -19,12 +19,18 @@ class SelectedTableViewModel: ViewModel() {
     val joinState: LiveData<Boolean>
         get() = _joinState
 
+    private var _personsList = MutableLiveData<MutableList<Person>>()
+    private var _personsListTemp = mutableListOf<Person>()
+    val personsList: LiveData<MutableList<Person>>
+        get() = _personsList
+
     private val auth_id = Firebase.auth.uid
     private val db = Firebase.firestore
 
     fun setSelectedTable(table: Table?) {
         table?.let {
             _selectedTable.value = table
+            createParticipantsList()
         }
     }
 
@@ -51,5 +57,23 @@ class SelectedTableViewModel: ViewModel() {
         }
 
         return false
+    }
+
+    private fun createParticipantsList() {
+        auth_id?.let {
+            _personsListTemp = mutableListOf()
+            _selectedTable.value?.participantsList?.forEach { id ->
+                db.collection("Users").document(id).get().addOnSuccessListener {
+                    _personsListTemp.add(Person(
+                            id = it.getString("id"),
+                            name = it.getString("name"),
+                            surname = it.getString("surname"),
+                            profile_pic = it.getString("profile_pic")
+                    ))
+
+                    _personsList.value = _personsListTemp
+                }
+            }
+        }
     }
 }
