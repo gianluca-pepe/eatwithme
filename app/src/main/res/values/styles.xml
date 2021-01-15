@@ -13,7 +13,7 @@
         <!-- Remove bar -->
         <item name="android:windowNoTitle">true</item>
         <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@mipmap/background_login</item>
+        <!-- <item name="android:windowBackground">@mipmap/background_login</item> -->
         <!--<item name="android:scaleType">centerCrop</item>-->
         <item name="android:layout_height">wrap_content</item>
     </style>
