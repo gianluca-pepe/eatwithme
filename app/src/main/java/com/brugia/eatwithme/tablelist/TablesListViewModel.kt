@@ -5,12 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.brugia.eatwithme.MainFragment
 import com.brugia.eatwithme.data.TablesDataSource
-import com.brugia.eatwithme.mytables.MyTablesFragment
+import com.brugia.eatwithme.mytables.NextTables
+import com.brugia.eatwithme.mytables.PastTables
 
 class TablesListViewModel(val dataSource: TablesDataSource) : ViewModel() {
 
     val tablesLiveData = dataSource.getTableList()
-    val myTablesLiveData = dataSource.getMyTablesList()
+    val myNextTablesLiveData = dataSource.getMyNextTablesList()
+    val myPastTablesLiveData = dataSource.getMyPastTablesList()
 /*
     /* If the name and description are present, create new Table and add it to the datasource */
     fun insertTable(
@@ -58,7 +60,20 @@ class TablesListViewModelFactory(private val context: MainFragment) : ViewModelP
     }
 }
 
-class MyTablesListViewModelFactory(private val context: MyTablesFragment) : ViewModelProvider.Factory {
+class MyNextTablesListViewModelFactory(private val context: NextTables) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(TablesListViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return TablesListViewModel(
+                    dataSource = TablesDataSource.getDataSource(context.resources)
+            ) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+class MyPastTablesListViewModelFactory(private val context: PastTables) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TablesListViewModel::class.java)) {

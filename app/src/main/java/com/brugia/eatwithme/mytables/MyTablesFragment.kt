@@ -1,76 +1,73 @@
+/*
+* https://developer.android.com/guide/navigation/navigation-swipe-view-2
+*/
 package com.brugia.eatwithme.mytables
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.brugia.eatwithme.R
-import com.brugia.eatwithme.data.Table
-import com.brugia.eatwithme.tablelist.*
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class MyTablesFragment : Fragment() {
 
+    // tab titles
+    private val titles = arrayOf("Next tables", "Past tables")
 
-    private val myTablesListViewModel by viewModels<TablesListViewModel> {
-        MyTablesListViewModelFactory(this)
-    }
-    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel>()
+    // When requested, this adapter returns a DemoObjectFragment,
+    // representing an object in the collection.
+    private lateinit var tabTablesCollectionAdapter: TabTablesCollectionAdapter
+    private lateinit var viewPager: ViewPager2
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_my_tables, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        tabTablesCollectionAdapter = TabTablesCollectionAdapter(this)
+        viewPager = view.findViewById(R.id.pager)
+        viewPager.adapter = tabTablesCollectionAdapter
 
-        /* Tables list management (RecyclerView) */
-        val tablesAdapter = TablesAdapter { table -> adapterOnClick(table) }
+        val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.my_tables_list)
-        recyclerView.adapter = tablesAdapter
-
-        myTablesListViewModel.myTablesLiveData.observe(viewLifecycleOwner, {
-            it?.let {
-                tablesAdapter.submitList(it as MutableList<Table>)
-                // headerAdapter.updateFlowerCount(it.size)
-            }
-        })
-
-        /*
-        val fab: View = view.findViewById(R.id.fab)
-        fab.setOnClickListener {
-            fabOnClick()
-        }
-        */
-        /* End Tables list management (RecyclerView) */
-
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = titles[position]
+        }.attach()
     }
 
-    /* Opens Table detail when RecyclerView item is clicked. */
-    private fun adapterOnClick(table: Table) {
-        /*
-        val intent = Intent(this, TableDetailActivity()::class.java)
-        intent.putExtra(TABLE_ID, table.id)
-        startActivity(intent)
-        */
-        selectedTableViewModel.setSelectedTable(table)
-        if (selectedTableViewModel.doesUserParticipate()) {
-            this.findNavController().navigate(R.id.tableLobbyFragment)
-        } else {
-            this.findNavController().navigate(R.id.action_select_table)
+
+}
+
+class TabTablesCollectionAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+
+    lateinit var fragment: Fragment
+
+    override fun getItemCount(): Int = 2
+
+    override fun createFragment(position: Int): Fragment {
+        //println("position: $position")
+        // Return a NEW fragment instance in createFragment(int) according to the position
+        fragment = if(position == 1) {
+            PastTables()
+        }else{
+            NextTables()
         }
+        return fragment
     }
 }
