@@ -47,7 +47,7 @@ class CreateTableFragment : Fragment() {
     private lateinit var timeTextView: TextView
     private lateinit var createTableButton: Button
 
-    private lateinit var location: LocationModel
+    private var location: LocationModel? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -73,9 +73,7 @@ class CreateTableFragment : Fragment() {
         })
 
         locationViewModel.getLocationData().observe(viewLifecycleOwner, {
-            it?.let {
-                location = it
-            }
+            location = it
         })
 
         return view

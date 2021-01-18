@@ -123,9 +123,9 @@ class MapsFragment : Fragment() {
                         with(place) {
                             println("Lat & lon: $latLng Place: $name, Address: $address, Address components: $addressComponents, ID: $id")
                         }
-                        var lat = place.latLng?.latitude
-                        var lng = place.latLng?.longitude
-                        var latlng: Location = Location("Google Maps");
+                        val lat = place.latLng?.latitude
+                        val lng = place.latLng?.longitude
+                        val latlng: Location = Location("Google Maps");
                         if (lat != null) {
                             latlng.latitude = lat
                         }

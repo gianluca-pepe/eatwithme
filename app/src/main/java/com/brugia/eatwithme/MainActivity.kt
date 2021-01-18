@@ -1,19 +1,11 @@
 package com.brugia.eatwithme
 
-import android.Manifest
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -32,8 +24,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var destinationListener: NavController.OnDestinationChangedListener
     private val personViewModel: MyProfileViewModel = MyProfileViewModel()
-    private lateinit var requestLocationPermissionLauncher : ActivityResultLauncher<String>
-    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,32 +57,7 @@ class MainActivity : AppCompatActivity() {
             return@setOnMenuItemClickListener true
         }
 
-        requestLocationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            // Callback called when the user interacts with system dialog requesting permission
-            if (!isGranted) {
-                // retrieve custom location previously stored
-                sharedPreferences = getSharedPreferences(getString(R.string.custom_location_file_key), MODE_PRIVATE)
-                val lat = sharedPreferences.getFloat(
-                        getString(R.string.latitude),
-                        0F
-                )
-                val long = sharedPreferences.getFloat(
-                        getString(R.string.longitude),
-                        0F
-                )
 
-                // if location has never been stored, ask the user to manually set it
-                if (lat == 0F || long == 0F) {
-                    AlertDialog.Builder(this)
-                            .setTitle(R.string.missing_location_title)
-                            .setMessage(R.string.missing_location_message)
-                            .setPositiveButton(R.string.missing_location_pos_button) { _, _ ->
-                                navController.navigate(R.id.mapsFragment)
-                            }.create().show()
-                }
-            }
-        }
-        checkLocationPermission()
     }
 
     private fun logout(){
@@ -105,22 +70,4 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
-
-    fun checkLocationPermission() {
-        when {
-            isPermissionGranted() -> { }
-            //shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {}
-            else -> {
-                // You can directly ask for the permission.
-                // onRequestPermissionsResult(...) gets the result of this request.
-                requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
-        }
-    }
-
-    fun isPermissionGranted(): Boolean =
-            ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
 }
