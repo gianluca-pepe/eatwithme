@@ -13,9 +13,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.brugia.eatwithme.R
 import com.brugia.eatwithme.data.Table
+import com.google.firebase.auth.FirebaseAuth
+
+val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
 
 class TablesAdapter(private val onClick: (Table) -> Unit) :
         ListAdapter<Table, TablesAdapter.TableViewHolder>(TableDiffCallback) {
+
+
 
     /* ViewHolder for Table, takes in the inflated view and the onClick behavior. */
     class TableViewHolder(itemView: View, val onClick: (Table) -> Unit) :
@@ -26,6 +31,7 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
         private val tableTextViewHour: TextView = itemView.findViewById(R.id.table_list_lbl_hour)
         private val tableImageView: ImageView = itemView.findViewById(R.id.table_list_img)
         private var currentTable: Table? = null
+        private val tableTextViewOwner: TextView = itemView.findViewById(R.id.table_list_owner)
 
         init {
             itemView.findViewById<Button>(R.id.table_list_btn_view).setOnClickListener {
@@ -48,6 +54,13 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
                 tableImageView.setImageResource(table.image)
             } else {
                 tableImageView.setImageResource(R.drawable.logo_login)//here we can put a default table image if missing
+            }
+
+            //Add owner label
+            if(personID == table.ownerId){
+                tableTextViewOwner.text = "Owner"
+            }else{
+                tableTextViewOwner.text = ""
             }
         }
     }
