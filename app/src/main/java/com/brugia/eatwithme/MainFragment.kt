@@ -24,10 +24,7 @@ import com.brugia.eatwithme.addTable.FLOWER_NAME
 import com.brugia.eatwithme.data.Table
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
-import com.brugia.eatwithme.tablelist.SelectedTableViewModel
-import com.brugia.eatwithme.tablelist.TablesListViewModel
-import com.brugia.eatwithme.tablelist.TablesAdapter
-import com.brugia.eatwithme.tablelist.TablesListViewModelFactory
+import com.brugia.eatwithme.tablelist.*
 
 
 /**
@@ -61,7 +58,9 @@ class MainFragment : Fragment() {
                 }
             }
 
-    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel>()
+    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
+        SelectedTableViewModelFactory(this.requireContext())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

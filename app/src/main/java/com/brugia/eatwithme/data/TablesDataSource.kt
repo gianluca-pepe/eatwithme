@@ -202,6 +202,36 @@ class TablesDataSource(resources: Resources) {
     }
      */
 
+    fun getParticipantsList(table: Table): ParticipantsListLiveData {
+        val result = ParticipantsListLiveData()
+        result.max = table.participantsList.size
+        for (id in table.participantsList) {
+            val personRef = db.collection("Users").document(id)
+            result.add(personRef)
+        }
+
+        return result
+    }
+
+    fun getParticipantsList(tableId: String): ParticipantsListLiveData {
+        val tableRef = db.collection("Tables").document(tableId)
+        val result = ParticipantsListLiveData()
+        tableRef.addSnapshotListener { tableSnapshot, error ->
+            if (tableSnapshot != null && tableSnapshot.exists()) {
+                val idList = tableSnapshot.get("participantsList") as ArrayList<String>
+                result.max = idList.size
+                for (id in idList) {
+                    val personRef = db.collection("Users").document(id)
+                    result.add(personRef)
+                }
+            } else {
+                println(error)
+            }
+        }
+
+        return result
+    }
+
     companion object {
         private var INSTANCE: TablesDataSource? = null
 

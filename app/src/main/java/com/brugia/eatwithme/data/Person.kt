@@ -6,22 +6,40 @@ package com.brugia.eatwithme.data
 
 import com.brugia.eatwithme.location.LocationModel
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.GeoPoint
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 data class Person(
-    val id: String? = null,
-    val name: String? = null,
-    val surname: String? = null,
-    val telephone: String? = null,
-    val email: String? = null,
-    val birthday: String? = null,
-    val profile_pic: String? = null,
-    val preferences: ArrayList<String>? = null,
+        var id: String? = null,
+        var name: String? = null,
+        var surname: String? = null,
+        var telephone: String? = null,
+        var email: String? = null,
+        var birthday: String? = null,
+        var profile_pic: String? = null,
+        var preferences: ArrayList<String>? = null,
 ) {
     fun isProfileIncomplete(): Boolean {
         return name.isNullOrEmpty() || surname.isNullOrEmpty() || birthday.isNullOrEmpty()
+    }
+
+    /**
+     * Build a Person from a DocumentSnapshot from firestore
+     */
+    constructor(snapshot: DocumentSnapshot) : this() {
+        id = snapshot.id
+        name = snapshot.getString("name")
+        surname = snapshot.getString("surname")
+        telephone = snapshot.getString("telephone")
+        email = snapshot.getString("email")
+        birthday = snapshot.getString("birthday")
+        profile_pic = snapshot.getString("profile_pic")
+        preferences = arrayListOf()
+        for(pref in snapshot.get("preferences") as ArrayList<String>) {
+            preferences?.add(pref)
+        }
     }
 }

@@ -12,13 +12,16 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
+import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.brugia.eatwithme.userlist.PersonsAdapter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
 class TableLobbyFragment : Fragment() {
 
-    private val tableViewModel by activityViewModels<SelectedTableViewModel>()
+    private val tableViewModel by activityViewModels<SelectedTableViewModel> {
+        SelectedTableViewModelFactory(this.requireContext())
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

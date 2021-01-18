@@ -21,6 +21,7 @@ import com.brugia.eatwithme.location.LocationModel
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
+import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import org.w3c.dom.Text
@@ -30,10 +31,12 @@ import java.lang.Integer.parseInt
 class CreateTableFragment : Fragment() {
 
     private val newTableViewModel: CreateTableViewModel = CreateTableViewModel()
-    private val locationViewModel by viewModels<LocationViewModel> {
+    private val locationViewModel by activityViewModels<LocationViewModel> {
         LocationViewModelFactory(this.requireActivity().application)
     }
-    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel>()
+    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
+        SelectedTableViewModelFactory(this.requireContext())
+    }
     private val datePicker = DatePickerFragment(::onDateSet)
     private val timePicker = TimePickerFragment(::onTimeSet)
 

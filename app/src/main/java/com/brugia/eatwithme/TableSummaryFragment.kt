@@ -16,6 +16,8 @@ import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.brugia.eatwithme.data.Person
+import com.brugia.eatwithme.location.LocationViewModelFactory
+import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.brugia.eatwithme.tablelist.TablesAdapter
 import com.brugia.eatwithme.userlist.PersonsAdapter
 
@@ -24,7 +26,9 @@ class TableSummaryFragment : Fragment() {
     private lateinit var tableHourTextView: TextView
     private lateinit var tableCityTextView: TextView
     private lateinit var tableParticipantsTextView: TextView
-    private val tableViewModel by activityViewModels<SelectedTableViewModel>()
+    private val tableViewModel by activityViewModels<SelectedTableViewModel> {
+        SelectedTableViewModelFactory(this.requireContext())
+    }
     private val personViewModel: MyProfileViewModel = MyProfileViewModel()
     init {
         personViewModel.getCurrentPerson()

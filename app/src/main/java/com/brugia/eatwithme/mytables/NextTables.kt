@@ -19,7 +19,9 @@ class NextTables : Fragment() {
     private val myNextTablesListViewModel by viewModels<TablesListViewModel> {
         MyNextTablesListViewModelFactory(this)
     }
-    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel>()
+    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
+        SelectedTableViewModelFactory(this.requireContext())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

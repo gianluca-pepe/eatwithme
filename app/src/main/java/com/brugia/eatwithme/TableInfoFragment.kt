@@ -9,9 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
+import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 
 class TableInfoFragment : Fragment() {
-    private val tableViewModel by activityViewModels<SelectedTableViewModel>()
+    private val tableViewModel by activityViewModels<SelectedTableViewModel> {
+        SelectedTableViewModelFactory(this.requireContext())
+    }
     private lateinit var nameTextView: TextView
     private lateinit var descriptionTextView: TextView
     private lateinit var tableImageView: ImageView

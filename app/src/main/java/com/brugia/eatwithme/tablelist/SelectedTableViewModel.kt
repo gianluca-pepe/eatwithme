@@ -1,27 +1,26 @@
 package com.brugia.eatwithme.tablelist
 
-import android.app.Application
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.brugia.eatwithme.data.Person
 import com.brugia.eatwithme.data.Table
-import com.brugia.eatwithme.location.LocationViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.brugia.eatwithme.data.TablesDataSource
 
-class SelectedTableViewModel: ViewModel() {
+class SelectedTableViewModel(val dataSource: TablesDataSource): ViewModel() {
     private val _selectedTable = MutableLiveData<Table>()
     private var _joinState = MutableLiveData<Boolean>()
     val joinState: LiveData<Boolean>
         get() = _joinState
 
-    private var _personsList = MutableLiveData<MutableList<Person>>()
-    private var _personsListTemp = mutableListOf<Person>()
-    val personsList: LiveData<MutableList<Person>>
+    private lateinit var _personsList : LiveData<List<Person>>
+    val personsList: LiveData<List<Person>>
         get() = _personsList
 
     private val auth_id = Firebase.auth.uid
@@ -30,7 +29,7 @@ class SelectedTableViewModel: ViewModel() {
     fun setSelectedTable(table: Table?) {
         table?.let {
             _selectedTable.value = table
-            createParticipantsList()
+            _personsList = dataSource.getParticipantsList(table)
         }
     }
 
@@ -58,23 +57,17 @@ class SelectedTableViewModel: ViewModel() {
 
         return false
     }
+}
 
-    private fun createParticipantsList() {
-        auth_id?.let {
-            _personsList.value = mutableListOf()
-            _personsListTemp = mutableListOf()
-            _selectedTable.value?.participantsList?.forEach { id ->
-                db.collection("Users").document(id).get().addOnSuccessListener {
-                    _personsListTemp.add(Person(
-                            id = it.getString("id"),
-                            name = it.getString("name"),
-                            surname = it.getString("surname"),
-                            profile_pic = it.getString("profile_pic")
-                    ))
+class SelectedTableViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
 
-                    _personsList.value = _personsListTemp
-                }
-            }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(SelectedTableViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return SelectedTableViewModel(
+                    dataSource = TablesDataSource.getDataSource(context.resources)
+            ) as T
         }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

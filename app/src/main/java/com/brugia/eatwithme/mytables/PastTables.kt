@@ -20,7 +20,9 @@ class PastTables : Fragment() {
     private val myPastTablesListViewModel by viewModels<TablesListViewModel> {
         MyPastTablesListViewModelFactory(this)
     }
-    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel>()
+    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
+        SelectedTableViewModelFactory(this.requireContext())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
