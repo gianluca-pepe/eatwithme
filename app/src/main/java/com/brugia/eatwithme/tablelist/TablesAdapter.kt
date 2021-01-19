@@ -51,7 +51,7 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
             tableTextViewHour.text = table.tableHour()
 
             if (table.image != null) {
-                tableImageView.setImageResource(table.image)
+                tableImageView.setImageResource(table.image!!)
             } else {
                 tableImageView.setImageResource(R.drawable.logo_login)//here we can put a default table image if missing
             }

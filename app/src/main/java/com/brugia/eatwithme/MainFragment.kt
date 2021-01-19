@@ -62,6 +62,11 @@ class MainFragment : Fragment() {
         SelectedTableViewModelFactory(this.requireContext())
     }
 
+    override fun onStop() {
+        tablesListViewModel.removeListeners()
+        super.onStop()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //gpsHandler = GpsUtils(this.requireActivity())
@@ -115,6 +120,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tablesListViewModel.populate()
         /* SeekBar management*/
         seek = view.findViewById<SeekBar>(R.id.seekBar)
         txtkm = view.findViewById<TextView>(R.id.txtchilometri)

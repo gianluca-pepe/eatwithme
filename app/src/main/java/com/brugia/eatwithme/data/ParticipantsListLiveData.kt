@@ -1,11 +1,6 @@
 package com.brugia.eatwithme.data
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.brugia.eatwithme.mytables.PastTables
-import com.brugia.eatwithme.tablelist.TablesListViewModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
@@ -25,17 +20,18 @@ class ParticipantsListLiveData(): LiveData<List<Person>>(), EventListener<Docume
             participantsListTemp.add(Person(snapshot))
             if (participantsListTemp.size >= max)
                 commit()
+        } else {
+            println(error)
         }
     }
 
-    fun add (personSnapshot: DocumentReference) {
-        documentReferences.add(personSnapshot)
-        personSnapshot.addSnapshotListener(this)
+    fun add (personRef: DocumentReference) {
+        documentReferences.add(personRef)
+        personRef.addSnapshotListener(this)
     }
 
     private fun commit () {
         value = participantsListTemp
-        println(value)
     }
 
     fun clear () {

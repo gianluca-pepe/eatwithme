@@ -1,9 +1,11 @@
 
 package com.brugia.eatwithme.tablelist
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.brugia.eatwithme.MainFragment
+import com.brugia.eatwithme.data.Table
 import com.brugia.eatwithme.data.TablesDataSource
 import com.brugia.eatwithme.mytables.NextTables
 import com.brugia.eatwithme.mytables.PastTables
@@ -45,6 +47,19 @@ class TablesListViewModel(val dataSource: TablesDataSource) : ViewModel() {
         dataSource.addTable(newTable)
     }
  */
+
+    fun populate() {
+        dataSource.listenRemote()
+    }
+    /**
+     * Tells the datasource to stop listening for updates
+     * Useful because we get charged for listening updates (should be free for low usage)
+     */
+    fun removeListeners() {
+        dataSource.allTablesRegistration.remove()
+        dataSource.myPastTablesRegistration.remove()
+        dataSource.myNextTablesRegistration.remove()
+    }
 }
 
 class TablesListViewModelFactory(private val context: MainFragment) : ViewModelProvider.Factory {

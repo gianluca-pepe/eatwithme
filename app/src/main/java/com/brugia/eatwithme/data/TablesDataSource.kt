@@ -8,7 +8,10 @@ import androidx.lifecycle.MutableLiveData
 import com.brugia.eatwithme.R
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.type.Date
@@ -36,42 +39,56 @@ class TablesDataSource(resources: Resources) {
     var myPastTablesList = mutableListOf<Table>()
     private val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
 
-    init {
+    private val allTablesQuery = db.collection("Tables")
+            .whereGreaterThanOrEqualTo("timestamp", todayDate)
 
-        db.collection("Tables")
-                .whereGreaterThanOrEqualTo("timestamp", todayDate)
-                .get()
-                .addOnSuccessListener { results ->
+    private val myNextTablesQuery = allTablesQuery
+            .whereArrayContains("participantsList", personID)
+            .orderBy("timestamp")
 
-                    for(doc in results) {
-                        try {
-                            val newTable = Table(
-                                    id = doc.id,
-                                    ownerId = doc.getString("ownerId"),
-                                    name = doc.getString("name"),
-                                    description = doc.getString("description"),
-                                    timestamp = doc.getTimestamp("timestamp"),
-                                    location = hashMapOf(
-                                            "latlog" to doc.getGeoPoint("location.latlog"),
-                                            "label" to doc.getString("location.label")
-                                    ),
-                                    maxParticipants = doc.getLong("maxParticipants")?.toInt(),
-                                    participantsList = doc.get("participantsList") as List<String>,
-                                    image = R.drawable.logo_login
-                            )
+    private val myPastTablesQuery = db.collection("Tables")
+            .whereArrayContains("participantsList", personID)
+            .whereLessThan("timestamp", todayDate)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
 
-                            if (!newTable.isFull()) tempList.add(newTable)
+    lateinit var allTablesRegistration: ListenerRegistration
+    lateinit var myNextTablesRegistration: ListenerRegistration
+    lateinit var myPastTablesRegistration: ListenerRegistration
 
-                        } catch (e: Exception) {
-                            println(e)
-                        }
-                    }
-                    tablesLiveData.postValue(tempList)
-                    getMyNextTables()
-                    getMyPastTables()
-                }
+    fun listenRemote() {
+        allTablesRegistration = allTablesQuery.addSnapshotListener { results, e ->
+            if (e != null) {
+                println( "[All tables list] Listen failed.")
+                println(e)
+                return@addSnapshotListener
+            }
+
+            updateTableList(tempList, results!!)
+            tablesLiveData.postValue(tempList)
+        }
+
+        myNextTablesRegistration = myNextTablesQuery.addSnapshotListener { results, e ->
+            if (e != null) {
+                println( "[My next tables list] Listen failed.")
+                println(e)
+                return@addSnapshotListener
+            }
+
+            updateTableList(myNextTablesList, results!!)
+            myNextTablesLiveData.postValue(myNextTablesList)
+        }
+
+        myPastTablesRegistration = myPastTablesQuery.addSnapshotListener { results, e ->
+            if (e != null) {
+                println("[My past tables list] Listen failed.")
+                println(e)
+                return@addSnapshotListener
+            }
+
+            updateTableList(myPastTablesList, results!!)
+            myPastTablesLiveData.postValue(myPastTablesList)
+        }
     }
-
     /* Adds table to liveData and posts value. */
     fun addTable(table: Table) {
         val currentList = tablesLiveData.value
@@ -115,42 +132,6 @@ class TablesDataSource(resources: Resources) {
     /*
     * This function returns next table (w.r.t. today included) in which the person appears
     * */
-    private fun getMyNextTables(){
-
-        db.collection("Tables")
-                .whereGreaterThanOrEqualTo("timestamp", todayDate)
-                .whereArrayContains("participantsList", personID)
-                .orderBy("timestamp")
-                .get()
-                .addOnSuccessListener { results ->
-
-                    for(doc in results) {
-                        try {
-                            val newTable = Table(
-                                    id = doc.id,
-                                    ownerId = doc.getString("ownerId"),
-                                    name = doc.getString("name"),
-                                    description = doc.getString("description"),
-                                    timestamp = doc.getTimestamp("timestamp"),
-                                    location = hashMapOf(
-                                            "latlog" to doc.getGeoPoint("location.latlog"),
-                                            "label" to doc.getString("location.label")
-                                    ),
-                                    maxParticipants = doc.getLong("maxParticipants")?.toInt(),
-                                    participantsList = doc.get("participantsList") as List<String>,
-                                    image = R.drawable.logo_login
-                            )
-
-                            if (!newTable.isFull()) myNextTablesList.add(newTable)
-
-                        } catch (e: Exception) {
-                            println(e)
-                        }
-                    }
-                    myNextTablesLiveData.postValue(myNextTablesList)
-                }
-    }
-
     fun getMyNextTablesList(): LiveData<List<Table>> {
         return myNextTablesLiveData
     }
@@ -158,43 +139,10 @@ class TablesDataSource(resources: Resources) {
     /*
     * This function returns next table (w.r.t. today included) in which the person appears
     * */
-    private fun getMyPastTables(){
-        db.collection("Tables")
-                .whereArrayContains("participantsList", personID)
-                .whereLessThan("timestamp", todayDate)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .get()
-                .addOnSuccessListener { results ->
-
-                    for(doc in results) {
-                        try {
-                            val newTable = Table(
-                                    id = doc.id,
-                                    ownerId = doc.getString("ownerId"),
-                                    name = doc.getString("name"),
-                                    description = doc.getString("description"),
-                                    timestamp = doc.getTimestamp("timestamp"),
-                                    location = hashMapOf(
-                                            "latlog" to doc.getGeoPoint("location.latlog"),
-                                            "label" to doc.getString("location.label")
-                                    ),
-                                    maxParticipants = doc.getLong("maxParticipants")?.toInt(),
-                                    participantsList = doc.get("participantsList") as List<String>,
-                                    image = R.drawable.logo_login
-                            )
-
-                            if (!newTable.isFull()) myPastTablesList.add(newTable)
-
-                        } catch (e: Exception) {
-                            println(e)
-                        }
-                    }
-                    myPastTablesLiveData.postValue(myPastTablesList)
-                }
-    }
     fun getMyPastTablesList(): LiveData<List<Table>> {
         return myPastTablesLiveData
     }
+
     /* Returns a random table asset for tables that are added.
     fun getRandomTableImageAsset(): Int? {
         val randomNumber = (initialTableList.indices).random()
@@ -230,6 +178,19 @@ class TablesDataSource(resources: Resources) {
         }
 
         return result
+    }
+
+    private fun updateTableList(list: MutableList<Table>, docs: QuerySnapshot) {
+        list.clear()
+        for(doc in docs) {
+            try {
+                val newTable = Table(doc)
+                list.add(newTable)
+                //if (!newTable.isFull()) list.add(newTable)
+            } catch (e: Exception) {
+                println(e)
+            }
+        }
     }
 
     companion object {
