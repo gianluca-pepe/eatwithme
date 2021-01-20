@@ -22,6 +22,7 @@ import androidx.fragment.app.activityViewModels
 
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 /*
 import com.brugia.eatwithme.addTable.AddTableActivity
@@ -62,8 +63,13 @@ class MainFragment : Fragment() {
         SelectedTableViewModelFactory(this.requireContext())
     }
 
+    private val tablesAdapter = TablesAdapter { table -> adapterOnClick(table) }
+    private lateinit var recyclerView: RecyclerView
+    private var isLoading: Boolean = false
+    private var endReached: Boolean = false
+
     override fun onStop() {
-        tablesListViewModel.removeListeners()
+        //tablesListViewModel.removeListeners()
         super.onStop()
     }
 
@@ -120,7 +126,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tablesListViewModel.populate()
+        //tablesListViewModel.populate()
         /* SeekBar management*/
         seek = view.findViewById<SeekBar>(R.id.seekBar)
         txtkm = view.findViewById<TextView>(R.id.txtchilometri)
@@ -150,16 +156,22 @@ class MainFragment : Fragment() {
 
 
         /* Tables list management (RecyclerView) */
-        val tablesAdapter = TablesAdapter { table -> adapterOnClick(table) }
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view_table_list)
+        recyclerView = view.findViewById(R.id.recycler_view_table_list)
         recyclerView.adapter = tablesAdapter
+        initScrollListener()
 
         tablesListViewModel.tablesLiveData.observe(viewLifecycleOwner, {
             it?.let {
-                tablesAdapter.submitList(it as MutableList<Table>)
-               // headerAdapter.updateFlowerCount(it.size)
+                tablesAdapter.submitList(it.toMutableList())
+                isLoading = false
             }
+        })
+
+        tablesListViewModel.endReached.observe(viewLifecycleOwner, {
+            if ( it )
+                isLoading = false
+            endReached = it
         })
 
         locationViewModel.radius.observe(viewLifecycleOwner, {
@@ -222,4 +234,33 @@ class MainFragment : Fragment() {
                     this.requireActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
+
+    private fun initScrollListener() {
+        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                val currentList = tablesAdapter.currentList.toMutableList()
+
+                if (!isLoading && !endReached) {
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    if (layoutManager.findLastVisibleItemPosition() + 1 == layoutManager.itemCount) {
+                        currentList.add(null)
+                        tablesAdapter.submitList(currentList)
+
+                        isLoading = true
+                        tablesListViewModel.loadMore()
+                    }
+                }
+
+                /**
+                 * Remove loading progress bar on end of query reached
+                 */
+                if (endReached && currentList.last() == null) {
+                    currentList.removeLast()
+                    tablesAdapter.submitList(currentList)
+                }
+            }
+        })
+    }
 }

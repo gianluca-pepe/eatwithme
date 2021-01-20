@@ -20,8 +20,17 @@ import java.util.*
 
 /* Handles operations on tablesLiveData and holds details about it. */
 class TablesDataSource(resources: Resources) {
-    private val tablesLiveData: MutableLiveData<List<Table>> by lazy {
-        MutableLiveData<List<Table>>()
+    private val currentTableNumber: Long
+        get() {
+            tablesLiveData.value?.let {
+                return it.size.toLong()
+            }
+
+            return 0
+        }
+
+    private val tablesLiveData: MutableLiveData<List<Table?>> by lazy {
+        MutableLiveData<List<Table?>>()
     }
     private val myNextTablesLiveData: MutableLiveData<List<Table>> by lazy {
         MutableLiveData<List<Table>>()
@@ -34,39 +43,60 @@ class TablesDataSource(resources: Resources) {
 
     private val todayDate = Timestamp.now()
 
-
     var myNextTablesList = mutableListOf<Table>()
     var myPastTablesList = mutableListOf<Table>()
     private val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
 
     private val allTablesQuery = db.collection("Tables")
-            .whereGreaterThanOrEqualTo("timestamp", todayDate)
+        .whereGreaterThanOrEqualTo("timestamp", todayDate)
 
     private val myNextTablesQuery = allTablesQuery
-            .whereArrayContains("participantsList", personID)
-            .orderBy("timestamp")
+        .whereArrayContains("participantsList", personID)
+        .orderBy("timestamp")
 
     private val myPastTablesQuery = db.collection("Tables")
-            .whereArrayContains("participantsList", personID)
-            .whereLessThan("timestamp", todayDate)
-            .orderBy("timestamp", Query.Direction.DESCENDING)
+        .whereArrayContains("participantsList", personID)
+        .whereLessThan("timestamp", todayDate)
+        .orderBy("timestamp", Query.Direction.DESCENDING)
 
     lateinit var allTablesRegistration: ListenerRegistration
     lateinit var myNextTablesRegistration: ListenerRegistration
     lateinit var myPastTablesRegistration: ListenerRegistration
 
-    fun listenRemote() {
-        allTablesRegistration = allTablesQuery.addSnapshotListener { results, e ->
-            if (e != null) {
-                println( "[All tables list] Listen failed.")
-                println(e)
-                return@addSnapshotListener
-            }
 
-            updateTableList(tempList, results!!)
-            tablesLiveData.postValue(tempList)
+    // LiveData so views can observe and be notified when there's no more table to load
+    private var _endReached: MutableLiveData<Boolean> = MutableLiveData<Boolean>(false)
+    val endReached: LiveData<Boolean> // constant so value can't be changed, real value is private
+        get() = _endReached
+
+    fun listenAllTables(size: Int = 2) {
+        if (endReached.value!!) return
+
+        allTablesRegistration = allTablesQuery
+            .whereEqualTo("isFull", false)
+            .limit(currentTableNumber + size)
+            .addSnapshotListener { results, e ->
+                if (e != null) {
+                    println( "[All tables list] Listen failed.")
+                    println(e)
+                    return@addSnapshotListener
+                }
+
+                /**
+                 * If the query retrieved the same number of tables, then we reached the end
+                 * and we should stop performing the same query ever again, set the flag
+                 */
+                if ( currentTableNumber == results!!.size().toLong() ) {
+                    _endReached.value = true
+                    return@addSnapshotListener
+                }
+
+                updateTableList(tempList, results!!)
+                tablesLiveData.postValue(tempList)
         }
+    }
 
+    fun listenMyTables() {
         myNextTablesRegistration = myNextTablesQuery.addSnapshotListener { results, e ->
             if (e != null) {
                 println( "[My next tables list] Listen failed.")
@@ -120,12 +150,12 @@ class TablesDataSource(resources: Resources) {
     /* Returns table given an ID. */
     fun getTableForId(id: String): Table? {
         tablesLiveData.value?.let { tables ->
-            return tables.firstOrNull{ it.id == id}
+            return tables.firstOrNull{ it?.id == id}
         }
         return null
     }
 
-    fun getTableList(): LiveData<List<Table>> {
+    fun getTableList(): LiveData<List<Table?>> {
         return tablesLiveData
     }
 

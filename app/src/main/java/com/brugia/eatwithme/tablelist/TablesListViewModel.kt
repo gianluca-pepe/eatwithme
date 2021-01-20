@@ -11,10 +11,16 @@ import com.brugia.eatwithme.mytables.NextTables
 import com.brugia.eatwithme.mytables.PastTables
 
 class TablesListViewModel(val dataSource: TablesDataSource) : ViewModel() {
-
+    private val BATCH_SIZE = 10
     val tablesLiveData = dataSource.getTableList()
     val myNextTablesLiveData = dataSource.getMyNextTablesList()
     val myPastTablesLiveData = dataSource.getMyPastTablesList()
+    val endReached = dataSource.endReached
+
+    init {
+        dataSource.listenAllTables(BATCH_SIZE)
+        dataSource.listenMyTables()
+    }
 /*
     /* If the name and description are present, create new Table and add it to the datasource */
     fun insertTable(
@@ -48,9 +54,6 @@ class TablesListViewModel(val dataSource: TablesDataSource) : ViewModel() {
     }
  */
 
-    fun populate() {
-        dataSource.listenRemote()
-    }
     /**
      * Tells the datasource to stop listening for updates
      * Useful because we get charged for listening updates (should be free for low usage)
@@ -59,6 +62,10 @@ class TablesListViewModel(val dataSource: TablesDataSource) : ViewModel() {
         dataSource.allTablesRegistration.remove()
         dataSource.myPastTablesRegistration.remove()
         dataSource.myNextTablesRegistration.remove()
+    }
+
+    fun loadMore() {
+        dataSource.listenAllTables(BATCH_SIZE)
     }
 }
 
