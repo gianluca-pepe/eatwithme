@@ -10,9 +10,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.brugia.eatwithme.createtable.CreateTableViewModel
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
@@ -24,8 +22,9 @@ import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import org.w3c.dom.Text
+import com.google.firebase.Timestamp
 import java.lang.Integer.parseInt
+import java.util.*
 
 
 class CreateTableFragment : Fragment() {
@@ -38,7 +37,15 @@ class CreateTableFragment : Fragment() {
         SelectedTableViewModelFactory(this.requireContext())
     }
     private val datePicker = DatePickerFragment(::onDateSet)
+    init {
+        datePicker.minDate = System.currentTimeMillis() - 1000
+    }
     private val timePicker = TimePickerFragment(::onTimeSet)
+    init {
+        val c = Calendar.getInstance()
+        timePicker.offsetMinutes = 30
+        newTableViewModel.setDate(c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE) + 30)
+    }
 
     private lateinit var nameInputView: TextInputEditText
     private lateinit var descriptionInputView: TextInputEditText
@@ -68,7 +75,7 @@ class CreateTableFragment : Fragment() {
 
         newTableViewModel.table.observe(viewLifecycleOwner, {
             dateTextView.text = it.tableDateText()
-            timeTextView.text = it.tableHour()
+            timeTextView.text = it.tableHourText()
             maxParticipantsInputView.setText(it.maxParticipants.toString())
         })
 
@@ -120,6 +127,12 @@ class CreateTableFragment : Fragment() {
                     .setPositiveButton(R.string.missing_location_pos_button) { _, _ ->
                         findNavController().navigate(R.id.mapsFragment)
                     }.create().show()
+            err = true
+        }
+
+        if (newTableViewModel.table.value?.timestamp?.seconds!! < Timestamp.now().seconds + 1800) {
+            timeTextView.error = ""
+            Toast.makeText(this.requireContext(), R.string.past_date_error, Toast.LENGTH_SHORT).show()
             err = true
         }
 

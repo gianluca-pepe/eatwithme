@@ -25,4 +25,6 @@
     <string name="missing_location_title">Posizione non impostata</string>
     <string name="missing_location_message">Seleziona una posizione per vedere i tavoli in zona.</string>
     <string name="missing_location_pos_button">Scegli posizione</string>
+
+    <string name="past_date_error">Date nel passato non ammesse.</string>
 </resources>

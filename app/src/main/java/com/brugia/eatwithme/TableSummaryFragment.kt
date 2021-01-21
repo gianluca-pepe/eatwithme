@@ -1,7 +1,6 @@
 package com.brugia.eatwithme
 
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,10 +14,7 @@ import com.brugia.eatwithme.myprofile.MyProfileViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.brugia.eatwithme.data.Person
-import com.brugia.eatwithme.location.LocationViewModelFactory
 import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
-import com.brugia.eatwithme.tablelist.TablesAdapter
 import com.brugia.eatwithme.userlist.PersonsAdapter
 
 class TableSummaryFragment : Fragment() {
@@ -54,7 +50,7 @@ class TableSummaryFragment : Fragment() {
 
         tableViewModel.getSelectedTable().observe(viewLifecycleOwner, {
             it?.let {
-                tableHourTextView.text = it.tableHour()
+                tableHourTextView.text = it.tableHourText()
                 tableDateTextView.text = it.tableDateText()
                 tableCityTextView.text = it.location["label"].toString()
                 tableParticipantsTextView.text = "${it.numParticipants} / ${it.maxParticipants}"

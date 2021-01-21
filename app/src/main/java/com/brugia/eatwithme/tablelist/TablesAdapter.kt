@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.brugia.eatwithme.R
 import com.brugia.eatwithme.data.Table
 import com.google.firebase.auth.FirebaseAuth
-import kotlin.reflect.typeOf
 
 val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
 
@@ -64,7 +63,7 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
             tableTextViewTitle.text = table.name
             tableTextViewPartecipants.text = table.numParticipants.toString() + "/" + table.maxParticipants.toString()
             tableTextViewDate.text = table.tableDateText()
-            tableTextViewHour.text = table.tableHour()
+            tableTextViewHour.text = table.tableHourText()
             if (table.image != null) {
                 tableImageView.setImageResource(table.image!!)
             } else {

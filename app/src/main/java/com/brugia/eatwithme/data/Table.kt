@@ -53,14 +53,14 @@ data class Table(
     val numParticipants: Int
         get() = participantsList.size
 
-    fun tableHour():String {
+    fun tableHourText ():String {
         tableDate?.let{
             return SimpleDateFormat("HH:mm").format(it)
         }
         return ""
     }
 
-    fun tableDateText(pattern:String = "MM/dd/yyyy"): String {
+    fun tableDateText (pattern:String = "MM/dd/yyyy"): String {
         tableDate?.let {
             return SimpleDateFormat(pattern).format(it)
         }

@@ -11,6 +11,11 @@ class DatePickerFragment(dateSetCallback: (Int, Int, Int) -> Unit):
     DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     private val dateSetCallback: (Int, Int, Int)-> Unit = dateSetCallback
+    var minDate: Long = 0
+        set(value) {
+            if (value > 0) field = value
+        }
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // Use the current date as the default date in the picker
@@ -20,7 +25,9 @@ class DatePickerFragment(dateSetCallback: (Int, Int, Int) -> Unit):
         val day = c.get(Calendar.DAY_OF_MONTH)
 
         // Create a new instance of DatePickerDialog and return it
-        return DatePickerDialog(this.requireActivity(), this, year, month, day)
+        val datePickerDialog = DatePickerDialog(this.requireActivity(), this, year, month, day)
+        datePickerDialog.datePicker.minDate = minDate
+        return datePickerDialog
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
