@@ -67,6 +67,7 @@ class CreateTableFragment : Fragment() {
         nameInputView = view.findViewById(R.id.newTableNameinput)
         descriptionInputView = view.findViewById(R.id.newTableDescrinput)
         maxParticipantsInputView = view.findViewById(R.id.maxParticipantsinput)
+        maxParticipantsInputView.setText("2")
         createTableButton = view.findViewById(R.id.createTableButton)
 
         dateTextView.setOnClickListener { this.showDatePickerDialog() }
@@ -76,13 +77,11 @@ class CreateTableFragment : Fragment() {
         newTableViewModel.table.observe(viewLifecycleOwner, {
             dateTextView.text = it.tableDateText()
             timeTextView.text = it.tableHourText()
-            maxParticipantsInputView.setText(it.maxParticipants.toString())
         })
 
         locationViewModel.getLocationData().observe(viewLifecycleOwner, {
             location = it
         })
-
         return view
     }
 
@@ -107,19 +106,51 @@ class CreateTableFragment : Fragment() {
     }
 
     private fun onCreateTable() {
-        var err = false
+        if ( isMaxParticipantsValid() && isNameValid() && isDateValid() && isLocationSet()) {
+            newTableViewModel.createTable(
+                    nameInputView.text.toString(),
+                    descriptionInputView.text.toString(),
+                    parseInt(maxParticipantsInputView.text.toString()),
+                    location
+            )
+
+            newTableViewModel.creationState.observe(viewLifecycleOwner, {
+                if ( it == true ) {
+                    selectedTableViewModel.setSelectedTable(newTableViewModel.table.value)
+                    findNavController().navigate(R.id.tableLobbyFragment)
+                } else {
+                    AlertDialog.Builder(this.requireContext())
+                            .setTitle(R.string.generic_error_title)
+                            .setMessage(R.string.generic_error_message)
+                            .setPositiveButton(R.string.generic_error_button) { dialog, which ->
+                                findNavController().navigate(R.id.mainFragment)
+                            }
+                            .create().show()
+                }
+            })
+        }
+    }
+
+    private fun isMaxParticipantsValid(): Boolean {
         if (maxParticipantsInputView.text.isNullOrEmpty() || parseInt(maxParticipantsInputView.text.toString()) < 2) {
-            //val maxParticipantsLayout = maxParticipantsInputView.parent as TextInputLayout
-            maxParticipantsInputView.error = "Almeno 2 partecipanti"
-            err = true
+            maxParticipantsInputView.error = getString(R.string.max_participants_too_low_error)
+            return false
         }
 
+        return true
+    }
+
+    private fun isNameValid(): Boolean {
         if (nameInputView.text.toString().length <= 3) {
             val nameInputLayout = nameInputView.parent.parent as TextInputLayout
-            nameInputLayout.error = "Inserisci un nome lungo almeno 3 caratteri"
-            err = true
+            nameInputLayout.error = getString(R.string.table_name_length_error)
+            return false
         }
 
+        return true
+    }
+
+    private fun isLocationSet(): Boolean {
         if (location == null) {
             AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.missing_location_title)
@@ -127,38 +158,20 @@ class CreateTableFragment : Fragment() {
                     .setPositiveButton(R.string.missing_location_pos_button) { _, _ ->
                         findNavController().navigate(R.id.mapsFragment)
                     }.create().show()
-            err = true
+            return false
         }
 
+        return true
+    }
+
+    private fun isDateValid(): Boolean {
         if (newTableViewModel.table.value?.timestamp?.seconds!! < Timestamp.now().seconds + 1800) {
             timeTextView.error = ""
             Toast.makeText(this.requireContext(), R.string.past_date_error, Toast.LENGTH_SHORT).show()
-            err = true
+            return false
         }
 
-        if (err) return
-
-        newTableViewModel.createTable(
-                nameInputView.text.toString(),
-                descriptionInputView.text.toString(),
-                parseInt(maxParticipantsInputView.text.toString()),
-                location
-        )
-
-        newTableViewModel.creationState.observe(viewLifecycleOwner, {
-            if ( it == true ) {
-                selectedTableViewModel.setSelectedTable(newTableViewModel.table.value)
-                findNavController().navigate(R.id.tableLobbyFragment)
-            } else {
-                AlertDialog.Builder(this.requireContext())
-                        .setTitle(R.string.generic_error_title)
-                        .setMessage(R.string.generic_error_message)
-                        .setPositiveButton(R.string.generic_error_button) { dialog, which ->
-                            findNavController().navigate(R.id.mainFragment)
-                        }
-                        .create().show()
-            }
-        })
+        return true
     }
 
 }

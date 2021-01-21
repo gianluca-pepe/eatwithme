@@ -27,4 +27,6 @@
     <string name="missing_location_pos_button">Scegli posizione</string>
 
     <string name="past_date_error">Date nel passato non ammesse.</string>
+    <string name="max_participants_too_low_error">Almeno 2 partecipanti</string>
+    <string name="table_name_length_error">Inserisci un nome lungo almeno 3 caratteri</string>
 </resources>
