@@ -38,7 +38,7 @@ class CreateTableViewModel: ViewModel() {
     }
 
     fun setDate(hour: Int, minutes: Int) {
-        calendar.set(Calendar.HOUR, hour)
+        calendar.set(Calendar.HOUR_OF_DAY, hour)
         calendar.set(Calendar.MINUTE, minutes)
         _tableLiveData.value = _tableLiveData.value?.copy(
                 timestamp = Timestamp(calendar.time)
