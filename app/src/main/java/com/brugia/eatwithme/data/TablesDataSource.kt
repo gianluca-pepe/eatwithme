@@ -73,7 +73,7 @@ class TablesDataSource(resources: Resources) {
         if (endReached.value!!) return
 
         allTablesRegistration = allTablesQuery
-            .whereEqualTo("isFull", false)
+            .whereEqualTo("full", false)
             .limit(currentTableNumber + size)
             .addSnapshotListener { results, e ->
                 if (e != null) {
