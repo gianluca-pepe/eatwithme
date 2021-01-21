@@ -58,16 +58,33 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
 
         /* Bind table to the respective views */
         override fun bind(table: Table?) {
+
             if (table == null) return
+
+            val hours = table.tableHourText()
             currentTable = table
             tableTextViewTitle.text = table.name
             tableTextViewPartecipants.text = table.numParticipants.toString() + "/" + table.maxParticipants.toString()
             tableTextViewDate.text = table.tableDateText()
-            tableTextViewHour.text = table.tableHourText()
+            tableTextViewHour.text = hours
+
+            /*
             if (table.image != null) {
                 tableImageView.setImageResource(table.image!!)
             } else {
-                tableImageView.setImageResource(R.drawable.logo_login)//here we can put a default table image if missing
+                tableImageView.setImageResource(R.drawable.logo_login)
+            }
+            */
+            
+            //Check the hour and set the image according it
+            if( hours >= "05:00" && hours < "11:30" ){
+                tableImageView.setImageResource(R.drawable.colazione)
+            }else if( hours >= "11:30" && hours < "15:00" ){
+                tableImageView.setImageResource(R.drawable.pranzo)
+            }else if( hours >= "19:00" && hours < "22:30" ){
+                tableImageView.setImageResource(R.drawable.cena)
+            }else{
+                tableImageView.setImageResource(R.drawable.cocktail)//in every other hours, just a cocktail..
             }
 
             //Add owner label
