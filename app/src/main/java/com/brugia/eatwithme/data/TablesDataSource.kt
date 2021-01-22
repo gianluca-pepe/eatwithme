@@ -8,18 +8,17 @@ import androidx.lifecycle.MutableLiveData
 import com.brugia.eatwithme.R
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.type.Date
+import org.w3c.dom.Document
 import java.text.SimpleDateFormat
 import java.util.*
 
 /* Handles operations on tablesLiveData and holds details about it. */
 class TablesDataSource(resources: Resources) {
+    private val BATCHSIZE: Long = 2
     private val currentTableNumber: Long
         get() {
             tablesLiveData.value?.let {
@@ -47,10 +46,15 @@ class TablesDataSource(resources: Resources) {
     var myPastTablesList = mutableListOf<Table>()
     private val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
 
-    private val allTablesQuery = db.collection("Tables")
+    private lateinit var lastDocument: DocumentSnapshot
+    private val initialAllTablesQuery = db.collection("Tables")
+        .whereEqualTo("full", false)
         .whereGreaterThanOrEqualTo("timestamp", todayDate)
+        .limit(BATCHSIZE)
+    private var allTablesQuery = initialAllTablesQuery
 
-    private val myNextTablesQuery = allTablesQuery
+    private val myNextTablesQuery = db.collection("Tables")
+        .whereGreaterThanOrEqualTo("timestamp", todayDate)
         .whereArrayContains("participantsList", personID)
         .orderBy("timestamp")
 
@@ -59,7 +63,6 @@ class TablesDataSource(resources: Resources) {
         .whereLessThan("timestamp", todayDate)
         .orderBy("timestamp", Query.Direction.DESCENDING)
 
-    lateinit var allTablesRegistration: ListenerRegistration
     lateinit var myNextTablesRegistration: ListenerRegistration
     lateinit var myPastTablesRegistration: ListenerRegistration
 
@@ -69,30 +72,23 @@ class TablesDataSource(resources: Resources) {
     val endReached: LiveData<Boolean> // constant so value can't be changed, real value is private
         get() = _endReached
 
-    fun listenAllTables(size: Int = 2) {
+    fun loadTablesBatch(refresh: Boolean = false) {
         if (endReached.value!!) return
 
-        allTablesRegistration = allTablesQuery
-            .whereEqualTo("full", false)
-            .limit(currentTableNumber + size)
-            .addSnapshotListener { results, e ->
-                if (e != null) {
-                    println( "[All tables list] Listen failed.")
-                    println(e)
-                    return@addSnapshotListener
-                }
+        if (this::lastDocument.isInitialized) {
+            allTablesQuery = allTablesQuery.startAfter(lastDocument)
+        }
 
-                /**
-                 * If the query retrieved the same number of tables, then we reached the end
-                 * and we should stop performing the same query ever again, set the flag
-                 */
-                if ( currentTableNumber == results!!.size().toLong() ) {
-                    _endReached.value = true
-                    return@addSnapshotListener
-                }
+        if (refresh) allTablesQuery = initialAllTablesQuery
 
-                updateTableList(tempList, results!!)
-                tablesLiveData.postValue(tempList)
+        allTablesQuery.get().addOnSuccessListener { results ->
+            if (results.isEmpty) {
+                _endReached.value = true
+                return@addOnSuccessListener
+            }
+            updateTableList(tempList, results!!)
+            tablesLiveData.postValue(tempList)
+            lastDocument = results.last()
         }
     }
 
@@ -103,7 +99,7 @@ class TablesDataSource(resources: Resources) {
                 println(e)
                 return@addSnapshotListener
             }
-
+            myNextTablesList.clear()
             updateTableList(myNextTablesList, results!!)
             myNextTablesLiveData.postValue(myNextTablesList)
         }
@@ -114,7 +110,7 @@ class TablesDataSource(resources: Resources) {
                 println(e)
                 return@addSnapshotListener
             }
-
+            myPastTablesList.clear()
             updateTableList(myPastTablesList, results!!)
             myPastTablesLiveData.postValue(myPastTablesList)
         }
@@ -211,7 +207,6 @@ class TablesDataSource(resources: Resources) {
     }
 
     private fun updateTableList(list: MutableList<Table>, docs: QuerySnapshot) {
-        list.clear()
         for(doc in docs) {
             try {
                 val newTable = Table(doc)

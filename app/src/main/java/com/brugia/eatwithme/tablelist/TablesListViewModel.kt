@@ -10,17 +10,10 @@ import com.brugia.eatwithme.data.TablesDataSource
 import com.brugia.eatwithme.mytables.NextTables
 import com.brugia.eatwithme.mytables.PastTables
 
-class TablesListViewModel(val dataSource: TablesDataSource) : ViewModel() {
-    private val BATCH_SIZE = 10
+class TablesListViewModel(private val dataSource: TablesDataSource) : ViewModel() {
     val tablesLiveData = dataSource.getTableList()
-    val myNextTablesLiveData = dataSource.getMyNextTablesList()
-    val myPastTablesLiveData = dataSource.getMyPastTablesList()
     val endReached = dataSource.endReached
 
-    init {
-        dataSource.listenAllTables(BATCH_SIZE)
-        dataSource.listenMyTables()
-    }
 /*
     /* If the name and description are present, create new Table and add it to the datasource */
     fun insertTable(
@@ -54,48 +47,12 @@ class TablesListViewModel(val dataSource: TablesDataSource) : ViewModel() {
     }
  */
 
-    /**
-     * Tells the datasource to stop listening for updates
-     * Useful because we get charged for listening updates (should be free for low usage)
-     */
-    fun removeListeners() {
-        dataSource.allTablesRegistration.remove()
-        dataSource.myPastTablesRegistration.remove()
-        dataSource.myNextTablesRegistration.remove()
-    }
-
-    fun loadMore() {
-        dataSource.listenAllTables(BATCH_SIZE)
+    fun loadMoreTables() {
+        dataSource.loadTablesBatch()
     }
 }
 
 class TablesListViewModelFactory(private val context: MainFragment) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TablesListViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return TablesListViewModel(
-                    dataSource = TablesDataSource.getDataSource(context.resources)
-            ) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
-
-class MyNextTablesListViewModelFactory(private val context: NextTables) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TablesListViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return TablesListViewModel(
-                    dataSource = TablesDataSource.getDataSource(context.resources)
-            ) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
-
-class MyPastTablesListViewModelFactory(private val context: PastTables) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TablesListViewModel::class.java)) {

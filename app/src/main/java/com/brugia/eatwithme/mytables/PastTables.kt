@@ -5,9 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.brugia.eatwithme.R
@@ -17,15 +15,11 @@ import com.brugia.eatwithme.tablelist.*
 
 class PastTables : Fragment() {
 
-    private val myPastTablesListViewModel by viewModels<TablesListViewModel> {
-        MyPastTablesListViewModelFactory(this)
+    private val myTablesListViewModel by activityViewModels<MyTablesListViewModel> {
+        MyTablesListViewModelFactory(this.requireContext())
     }
     private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
         SelectedTableViewModelFactory(this.requireContext())
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +39,7 @@ class PastTables : Fragment() {
         val recyclerView: RecyclerView = view.findViewById(R.id.my_past_tables_list)
         recyclerView.adapter = tablesAdapter
 
-        myPastTablesListViewModel.myPastTablesLiveData.observe(viewLifecycleOwner, {
+        myTablesListViewModel.myPastTablesLiveData.observe(viewLifecycleOwner, {
             it?.let {
                 tablesAdapter.submitList(it as MutableList<Table>)
                 // headerAdapter.updateFlowerCount(it.size)

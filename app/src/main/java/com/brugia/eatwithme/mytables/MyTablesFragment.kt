@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.brugia.eatwithme.R
@@ -19,15 +20,18 @@ class MyTablesFragment : Fragment() {
 
     // tab titles
     private val titles = arrayOf("Next tables", "Past tables")
-
+    private val myTablesListViewModel by activityViewModels<MyTablesListViewModel> {
+        MyTablesListViewModelFactory(this.requireContext())
+    }
     // When requested, this adapter returns a DemoObjectFragment,
     // representing an object in the collection.
     private lateinit var tabTablesCollectionAdapter: TabTablesCollectionAdapter
     private lateinit var viewPager: ViewPager2
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onStop() {
+        super.onStop()
+        myTablesListViewModel.removeListeners()
     }
 
 
@@ -35,6 +39,7 @@ class MyTablesFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        myTablesListViewModel.listenMyTables()
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_my_tables, container, false)
     }
