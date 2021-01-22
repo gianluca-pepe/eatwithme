@@ -43,6 +43,17 @@ class TableInfoFragment : Fragment() {
                 nameTextView.text = it.name
                 descriptionTextView.text = it.description
                 // set image
+                val hours = it.tableHourText()
+                //Check the hour and set the image according it
+                if( hours >= "05:00" && hours < "11:30" ){
+                    tableImageView.setImageResource(R.drawable.colazione)
+                }else if( hours >= "11:30" && hours < "15:00" ){
+                    tableImageView.setImageResource(R.drawable.pranzo)
+                }else if( hours >= "19:00" && hours < "22:30" ){
+                    tableImageView.setImageResource(R.drawable.cena)
+                }else{
+                    tableImageView.setImageResource(R.drawable.cocktail)//in every other hours, just a cocktail..
+                }
             }
         })
     }
