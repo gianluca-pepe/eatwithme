@@ -6,6 +6,8 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.brugia.eatwithme.R
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
@@ -18,7 +20,7 @@ import java.util.*
 
 /* Handles operations on tablesLiveData and holds details about it. */
 class TablesDataSource(resources: Resources) {
-    private val BATCHSIZE: Long = 2
+    private val BATCHSIZE: Long = 10
     private val currentTableNumber: Long
         get() {
             tablesLiveData.value?.let {
@@ -73,19 +75,24 @@ class TablesDataSource(resources: Resources) {
         get() = _endReached
 
     fun loadTablesBatch(refresh: Boolean = false) {
-        if (endReached.value!!) return
-
+        _endReached.value = false
         if (this::lastDocument.isInitialized) {
             allTablesQuery = allTablesQuery.startAfter(lastDocument)
         }
 
-        if (refresh) allTablesQuery = initialAllTablesQuery
+        if (refresh) {
+            allTablesQuery = initialAllTablesQuery
+            tempList.clear()
+        }
 
         allTablesQuery.get().addOnSuccessListener { results ->
             if (results.isEmpty) {
                 _endReached.value = true
+                println("fine raggiunta")
                 return@addOnSuccessListener
             }
+
+            println("query fatta con letture")
             updateTableList(tempList, results!!)
             tablesLiveData.postValue(tempList)
             lastDocument = results.last()

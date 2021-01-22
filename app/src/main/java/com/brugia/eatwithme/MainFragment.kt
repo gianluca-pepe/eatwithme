@@ -24,6 +24,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 /*
 import com.brugia.eatwithme.addTable.AddTableActivity
 import com.brugia.eatwithme.tableDetail.TableDetailActivity
@@ -65,20 +66,16 @@ class MainFragment : Fragment() {
 
     private val tablesAdapter = TablesAdapter { table -> adapterOnClick(table) }
     private lateinit var recyclerView: RecyclerView
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var isLoading: Boolean = false
     private var endReached: Boolean = false
-
-    override fun onStop() {
-        //tablesListViewModel.removeListeners()
-        super.onStop()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //gpsHandler = GpsUtils(this.requireActivity())
         // Check GPS settings
         //gpsHandler.checkGPS()
-
+        tablesListViewModel.loadMoreTables()
         requestLocationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             // Callback called when the user interacts with system dialog requesting permission
             if (!isGranted) {
@@ -165,13 +162,28 @@ class MainFragment : Fragment() {
             it?.let {
                 tablesAdapter.submitList(it.toMutableList())
                 isLoading = false
+
+                if (swipeRefreshLayout.isRefreshing)
+                    swipeRefreshLayout.isRefreshing = false
             }
         })
 
         tablesListViewModel.endReached.observe(viewLifecycleOwner, {
-            if ( it )
-                isLoading = false
             endReached = it
+            if ( endReached ) {
+                val currentList = tablesAdapter.currentList.toMutableList()
+                isLoading = false
+                /**
+                 * Remove loading progress bar on end of query reached
+                 */
+                if (currentList.last() == null) {
+                    currentList.removeLast()
+                    tablesAdapter.submitList(currentList)
+                    println("remove progressbar")
+                }
+
+                swipeRefreshLayout.isRefreshing = false
+            }
         })
 
         locationViewModel.radius.observe(viewLifecycleOwner, {
@@ -197,6 +209,15 @@ class MainFragment : Fragment() {
         locationViewModel.address.observe(viewLifecycleOwner, {
             address.text = it
         })
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeAllTablesContainer)
+        swipeRefreshLayout.setOnRefreshListener {
+            if (!isLoading) {
+                isLoading = true
+                tablesListViewModel.refresh()
+                println("refreshing")
+            }
+        }
 
         checkLocationPermission()
     }
@@ -239,26 +260,16 @@ class MainFragment : Fragment() {
         recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-
-                val currentList = tablesAdapter.currentList.toMutableList()
-
-                if (!isLoading && !endReached) {
+                if (!isLoading) {
+                    val currentList = tablesAdapter.currentList.toMutableList()
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                     if (layoutManager.findLastVisibleItemPosition() + 1 == layoutManager.itemCount) {
-                        currentList.add(null)
+                        currentList.add(null) // show progressBar
                         tablesAdapter.submitList(currentList)
 
                         isLoading = true
-                        tablesListViewModel.loadMore()
+                        tablesListViewModel.loadMoreTables()
                     }
-                }
-
-                /**
-                 * Remove loading progress bar on end of query reached
-                 */
-                if (endReached && currentList.last() == null) {
-                    currentList.removeLast()
-                    tablesAdapter.submitList(currentList)
                 }
             }
         })

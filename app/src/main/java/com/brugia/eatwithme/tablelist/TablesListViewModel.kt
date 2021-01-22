@@ -50,6 +50,10 @@ class TablesListViewModel(private val dataSource: TablesDataSource) : ViewModel(
     fun loadMoreTables() {
         dataSource.loadTablesBatch()
     }
+
+    fun refresh() {
+        dataSource.loadTablesBatch(true)
+    }
 }
 
 class TablesListViewModelFactory(private val context: MainFragment) : ViewModelProvider.Factory {
