@@ -26,7 +26,8 @@ data class Table(
     var location: HashMap<String, Any?> = hashMapOf(
         "latlog" to GeoPoint(0.0, 0.0),
         "label" to null
-    )
+    ),
+    var restaurantsList: List<Restaurant> = emptyList()
     //var partecipants: ArrayList<Person>
 ) {
 
@@ -44,6 +45,12 @@ data class Table(
         maxParticipants = doc.getLong("maxParticipants")?.toInt()
         participantsList = doc.get("participantsList") as List<String>
         image = R.drawable.logo_login
+        if(doc.get("restaurantsList") != null) {
+            restaurantsList = doc.get("restaurantsList") as List<Restaurant>
+        }else{
+            restaurantsList = listOf<Restaurant>()
+        }
+
     }
 
     //@Exclude // Exclude from data serialization to firestore

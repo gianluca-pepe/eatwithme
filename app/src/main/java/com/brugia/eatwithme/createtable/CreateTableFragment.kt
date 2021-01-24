@@ -1,7 +1,9 @@
 package com.brugia.eatwithme
 
+import android.content.ContentValues.TAG
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +16,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.brugia.eatwithme.createtable.CreateTableViewModel
+import com.brugia.eatwithme.data.Restaurant
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
 import com.brugia.eatwithme.datetimepickers.TimePickerFragment
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
+import com.brugia.eatwithme.placeapi.NearbyPlacesResponse
+import com.brugia.eatwithme.placeapi.PlacesService
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.google.android.material.textfield.TextInputEditText
@@ -55,7 +60,6 @@ class CreateTableFragment : Fragment() {
     private lateinit var createTableButton: Button
 
     private lateinit var location: Location
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -111,7 +115,7 @@ class CreateTableFragment : Fragment() {
                     nameInputView.text.toString(),
                     descriptionInputView.text.toString(),
                     parseInt(maxParticipantsInputView.text.toString()),
-                    location
+                    location,
             )
 
             newTableViewModel.creationState.observe(viewLifecycleOwner, {

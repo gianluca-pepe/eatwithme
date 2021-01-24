@@ -1,16 +1,25 @@
 package com.brugia.eatwithme.createtable
 
+import android.content.ContentValues
 import android.location.Location
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.brugia.eatwithme.BuildConfig
+import com.brugia.eatwithme.data.Restaurant
 import com.brugia.eatwithme.data.Table
+import com.brugia.eatwithme.placeapi.NearbyPlacesResponse
+import com.brugia.eatwithme.placeapi.PlacesService
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class CreateTableViewModel: ViewModel() {
 
@@ -25,10 +34,14 @@ class CreateTableViewModel: ViewModel() {
             timestamp = Timestamp(calendar.time),
             participantsList = List(1) { FirebaseAuth.getInstance().currentUser!!.uid},
             maxParticipants = 2,
+            restaurantsList = listOf<Restaurant>()
     ))
     val table: LiveData<Table>
         get() = _tableLiveData
 
+
+    private var placesService: PlacesService= PlacesService.create()
+    private var restaurants: List<Restaurant>? = null
 
     fun setDate(year: Int, month: Int, day: Int) {
         calendar.set(year,month,day)
@@ -50,25 +63,64 @@ class CreateTableViewModel: ViewModel() {
                 if (location == null) GeoPoint(0.0,0.0)
                 else GeoPoint(location.latitude, location.longitude)
 
-        _tableLiveData.value = _tableLiveData.value?.copy(
-                name = name,
-                description = descr,
-                maxParticipants = maxParticipants,
-                location = hashMapOf(
-                        "label" to "null",
-                        "latlog" to geoPoint
-                )
-        )
 
-        _tableLiveData.value?.location?.set("geohash", _tableLiveData.value?.geoHash())
 
-        _tableLiveData.value?.let {
-            db.collection("Tables").add(it).addOnSuccessListener {
-                _creationState.value = true
-            }.addOnFailureListener { e ->
-                _creationState.value = false
-                println(e)
-            }
+        //Obtain lists of restaurants from Places API
+        //Get restaurants list within 2 kilometers
+        val radiusInMeters = 2000
+        val apiKey = BuildConfig.MAPS_KEY
+        if (location != null) {
+            placesService.nearbyPlaces(
+                    apiKey = apiKey,
+                    location = "${location.latitude},${location.longitude}",
+                    radiusInMeters = radiusInMeters,
+                    placeType = "restaurant"
+            ).enqueue(
+                    object : Callback<NearbyPlacesResponse> {
+                        override fun onFailure(call: Call<NearbyPlacesResponse>, t: Throwable) {
+                            Log.e(ContentValues.TAG, "Failed to get nearby places", t)
+                        }
+
+                        override fun onResponse(
+                                call: Call<NearbyPlacesResponse>,
+                                response: Response<NearbyPlacesResponse>
+                        ) {
+                            if (!response.isSuccessful) {
+                                Log.e(ContentValues.TAG, "Failed to get nearby places")
+                                return
+                            }
+
+                            restaurants = response.body()?.results ?: emptyList()
+
+                            //We have obtained the list of restaurants, we can insert the table inside db
+                            println("Retrieved restaurants:" + restaurants)
+
+                            _tableLiveData.value = _tableLiveData.value?.copy(
+                                    name = name,
+                                    description = descr,
+                                    maxParticipants = maxParticipants,
+                                    location = hashMapOf(
+                                            "label" to "null",
+                                            "latlog" to geoPoint
+                                    ),
+                                    restaurantsList = restaurants!!
+                            )
+
+                            _tableLiveData.value?.location?.set("geohash", _tableLiveData.value?.geoHash())
+
+                            _tableLiveData.value?.let {
+                                db.collection("Tables").add(it).addOnSuccessListener {
+                                    _creationState.value = true
+                                }.addOnFailureListener { e ->
+                                    _creationState.value = false
+                                    println(e)
+                                }
+                            }
+
+                        }
+                    }
+            )
         }
+
     }
 }

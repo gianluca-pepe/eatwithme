@@ -59,7 +59,11 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    // Maps & Location
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.maps.android:maps-utils-ktx:1.7.0'
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -114,4 +118,9 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'com.firebase:geofire-android-common:3.1.0'
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:2.7.1"
+    implementation "com.squareup.retrofit2:converter-gson:2.7.1"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.0.0"
 }
