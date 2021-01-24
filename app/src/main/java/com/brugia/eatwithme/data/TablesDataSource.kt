@@ -3,24 +3,23 @@ package com.brugia.eatwithme.data
 
 
 import android.content.res.Resources
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.brugia.eatwithme.R
-import com.google.android.gms.tasks.OnSuccessListener
+import com.firebase.geofire.GeoFireUtils
+import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.type.Date
-import org.w3c.dom.Document
-import java.text.SimpleDateFormat
 import java.util.*
 
 /* Handles operations on tablesLiveData and holds details about it. */
 class TablesDataSource(resources: Resources) {
-    private val BATCHSIZE: Long = 10
+    val BATCHSIZE: Long = 10
     private val currentTableNumber: Long
         get() {
             tablesLiveData.value?.let {
@@ -50,8 +49,11 @@ class TablesDataSource(resources: Resources) {
 
     private lateinit var lastDocument: DocumentSnapshot
     private val initialAllTablesQuery = db.collection("Tables")
+            // not working
+        //.whereGreaterThanOrEqualTo("timestamp", todayDate)
+        //.orderBy("timestamp")
         .whereEqualTo("full", false)
-        .whereGreaterThanOrEqualTo("timestamp", todayDate)
+        .orderBy("location.geohash")
         .limit(BATCHSIZE)
     private var allTablesQuery = initialAllTablesQuery
 
@@ -74,21 +76,82 @@ class TablesDataSource(resources: Resources) {
     val endReached: LiveData<Boolean> // constant so value can't be changed, real value is private
         get() = _endReached
 
+    private fun refreshAllTablesList() {
+        println("refreshed")
+        allTablesQuery = initialAllTablesQuery
+        tempList.clear()
+    }
+
+    fun loadTablesBatchWithLocation(location: Location, radius: Int, refresh: Boolean = false) {
+        _endReached.value = false
+
+        if (refresh) refreshAllTablesList()
+
+        val center = GeoLocation(location.latitude, location.longitude)
+        val radiusInMeters = (radius * 1000).toDouble()
+        val tasks: MutableList<Task<QuerySnapshot>> = ArrayList()
+        // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
+        // a separate query for each pair. There can be up to 9 pairs of bounds
+        // depending on overlap, but in most cases there are 4.
+        val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeters)
+        for (b in bounds) {
+            var q = allTablesQuery.startAt(b.startHash).endAt(b.endHash)
+
+            if (this::lastDocument.isInitialized && !refresh) {
+                q = q.startAfter(lastDocument)
+            }
+
+            tasks.add(q.get())
+        }
+
+        // Collect all the query results together into a single list
+        Tasks.whenAllComplete(tasks)
+            .addOnCompleteListener {
+                var count = 0
+                for (task in tasks) {
+                    for (doc in task.result) {
+                        val tableLocation = doc.getGeoPoint("location.latlog")!!
+
+                        // We have to filter out a few false positives due to GeoHash
+                        // accuracy, but most will match
+                        val docLocation = GeoLocation(tableLocation.latitude, tableLocation.longitude)
+                        val distanceInM =
+                            GeoFireUtils.getDistanceBetween(docLocation, center)
+                        if (distanceInM <= radiusInMeters) {
+                            val newTable = Table(doc)
+                            if (newTable.timestamp!! >= todayDate) {
+                                newTable.distance = distanceInM
+                                tempList.add(newTable)
+                            }
+                            lastDocument = doc
+                            count++
+                        }
+                    }
+                }
+                if (count == 0) {
+                    _endReached.value = true
+                    println("fine raggiunta")
+
+                    if (refresh) tablesLiveData.postValue(tempList)
+                    return@addOnCompleteListener
+                }
+                tablesLiveData.postValue(tempList)
+            }
+
+    }
     fun loadTablesBatch(refresh: Boolean = false) {
         _endReached.value = false
-        if (this::lastDocument.isInitialized) {
+        if (this::lastDocument.isInitialized && !refresh) {
             allTablesQuery = allTablesQuery.startAfter(lastDocument)
         }
 
-        if (refresh) {
-            allTablesQuery = initialAllTablesQuery
-            tempList.clear()
-        }
+        if (refresh) refreshAllTablesList()
 
         allTablesQuery.get().addOnSuccessListener { results ->
             if (results.isEmpty) {
                 _endReached.value = true
                 println("fine raggiunta")
+                if (refresh) tablesLiveData.postValue(tempList)
                 return@addOnSuccessListener
             }
 
@@ -97,12 +160,13 @@ class TablesDataSource(resources: Resources) {
             tablesLiveData.postValue(tempList)
             lastDocument = results.last()
         }
+
     }
 
     fun listenMyTables() {
         myNextTablesRegistration = myNextTablesQuery.addSnapshotListener { results, e ->
             if (e != null) {
-                println( "[My next tables list] Listen failed.")
+                println("[My next tables list] Listen failed.")
                 println(e)
                 return@addSnapshotListener
             }

@@ -9,7 +9,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 
-class LocationLiveData(context: Context) : LiveData<LocationModel>() {
+class LocationLiveData(context: Context) : LiveData<Location>() {
 
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     // Stop getting updates of location
@@ -48,10 +48,7 @@ class LocationLiveData(context: Context) : LiveData<LocationModel>() {
     }
 
     fun setLocationData(location: Location) {
-        value = LocationModel(
-                longitude = location.longitude,
-                latitude = location.latitude
-        )
+        value = location
     }
 
     @SuppressLint("MissingPermission")
@@ -94,8 +91,3 @@ class LocationLiveData(context: Context) : LiveData<LocationModel>() {
         }
     }
 }
-
-data class LocationModel(
-        val longitude: Double,
-        val latitude: Double,
-)

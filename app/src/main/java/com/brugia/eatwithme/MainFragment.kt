@@ -75,7 +75,6 @@ class MainFragment : Fragment() {
         //gpsHandler = GpsUtils(this.requireActivity())
         // Check GPS settings
         //gpsHandler.checkGPS()
-        tablesListViewModel.loadMoreTables()
         requestLocationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             // Callback called when the user interacts with system dialog requesting permission
             if (!isGranted) {
@@ -127,7 +126,7 @@ class MainFragment : Fragment() {
         /* SeekBar management*/
         seek = view.findViewById<SeekBar>(R.id.seekBar)
         txtkm = view.findViewById<TextView>(R.id.txtchilometri)
-
+        seek?.progress = locationViewModel.radius.value!! * 10
         seek?.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seek: SeekBar,
@@ -135,7 +134,7 @@ class MainFragment : Fragment() {
                 // write custom code for progress is changed
                 //Toast.makeText(getActivity(), "Progress is: " +  seek.progress+"/"+seek.max, Toast.LENGTH_SHORT).show()
                 //txtkm.text = seek.progress.toString() + " Km"
-                locationViewModel.setRadius(seek.progress)
+                locationViewModel.setRadius(seek.progress / 10)
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
@@ -144,9 +143,15 @@ class MainFragment : Fragment() {
 
             override fun onStopTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is stopped
-              //Toast.makeText(getActivity(),  "Progress is: " + seek.progress + "%", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(getActivity(),  "Progress is: " + seek.progress + "%", Toast.LENGTH_SHORT).show()
 
                 //checkLocationPermission()
+
+                println("dovrebbe aggiornare")
+                tablesListViewModel.refresh(
+                    locationViewModel.getLocationData().value,
+                    locationViewModel.radius.value
+                )
             }
         })
         /* End SeekBar management*/
@@ -176,19 +181,22 @@ class MainFragment : Fragment() {
                 /**
                  * Remove loading progress bar on end of query reached
                  */
-                if (currentList.last() == null) {
+                if (currentList.isNotEmpty() && currentList.last() == null) {
                     currentList.removeLast()
                     tablesAdapter.submitList(currentList)
-                    println("remove progressbar")
                 }
 
                 swipeRefreshLayout.isRefreshing = false
             }
         })
 
+        locationViewModel.getLocationData().observe(viewLifecycleOwner, {
+            tablesListViewModel.refresh(it, locationViewModel.radius.value)
+        })
+
         locationViewModel.radius.observe(viewLifecycleOwner, {
             it?.let {
-                txtkm.text = it.toString()
+                txtkm.text = it.toString() + " km"
             }
         })
 
@@ -214,8 +222,10 @@ class MainFragment : Fragment() {
         swipeRefreshLayout.setOnRefreshListener {
             if (!isLoading) {
                 isLoading = true
-                tablesListViewModel.refresh()
-                println("refreshing")
+                tablesListViewModel.refresh(
+                    locationViewModel.getLocationData().value,
+                    locationViewModel.radius.value
+                )
             }
         }
 
@@ -260,15 +270,28 @@ class MainFragment : Fragment() {
         recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!isLoading) {
-                    val currentList = tablesAdapter.currentList.toMutableList()
+
+                /**
+                 * if we're not loading anything, we can't scroll down any further and the scrolling
+                 * has stopped, then load more tables
+                 */
+                if ( !isLoading &&
+                    !recyclerView.canScrollVertically(1) &&
+                    newState==RecyclerView.SCROLL_STATE_IDLE ) {
+
                     val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                    if (layoutManager.findLastVisibleItemPosition() + 1 == layoutManager.itemCount) {
-                        currentList.add(null) // show progressBar
+                    if (layoutManager.findLastVisibleItemPosition() + 1 == layoutManager.itemCount &&
+                            layoutManager.itemCount >= tablesListViewModel.BATCHSIZE) {
+                        // show progressBar
+                        val currentList = tablesAdapter.currentList.toMutableList()
+                        currentList.add(null)
                         tablesAdapter.submitList(currentList)
 
                         isLoading = true
-                        tablesListViewModel.loadMoreTables()
+                        tablesListViewModel.loadMoreTables(
+                            locationViewModel.getLocationData().value,
+                            locationViewModel.radius.value!!
+                        )
                     }
                 }
             }

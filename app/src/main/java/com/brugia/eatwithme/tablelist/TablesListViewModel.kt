@@ -1,6 +1,7 @@
 
 package com.brugia.eatwithme.tablelist
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,7 +14,7 @@ import com.brugia.eatwithme.mytables.PastTables
 class TablesListViewModel(private val dataSource: TablesDataSource) : ViewModel() {
     val tablesLiveData = dataSource.getTableList()
     val endReached = dataSource.endReached
-
+    val BATCHSIZE = dataSource.BATCHSIZE
 /*
     /* If the name and description are present, create new Table and add it to the datasource */
     fun insertTable(
@@ -47,12 +48,19 @@ class TablesListViewModel(private val dataSource: TablesDataSource) : ViewModel(
     }
  */
 
-    fun loadMoreTables() {
-        dataSource.loadTablesBatch()
+    fun loadMoreTables(location: Location? = null, radius: Int? = null) {
+        if (location != null && radius != null)
+            dataSource.loadTablesBatchWithLocation(location, radius)
+        else
+            dataSource.loadTablesBatch()
     }
 
-    fun refresh() {
-        dataSource.loadTablesBatch(true)
+    fun refresh(location: Location?= null, radius: Int?= null) {
+        println("listViewModel - REFRESHING")
+        if (location != null && radius != null)
+            dataSource.loadTablesBatchWithLocation(location, radius, true)
+        else
+            dataSource.loadTablesBatch(true)
     }
 }
 

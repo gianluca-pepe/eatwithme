@@ -1,5 +1,6 @@
 package com.brugia.eatwithme
 
+import android.location.Location
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import com.brugia.eatwithme.createtable.CreateTableViewModel
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
 import com.brugia.eatwithme.datetimepickers.TimePickerFragment
-import com.brugia.eatwithme.location.LocationModel
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
@@ -54,7 +54,7 @@ class CreateTableFragment : Fragment() {
     private lateinit var timeTextView: TextView
     private lateinit var createTableButton: Button
 
-    private var location: LocationModel? = null
+    private lateinit var location: Location
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

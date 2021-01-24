@@ -4,11 +4,7 @@
 
 package com.brugia.eatwithme.data
 
-import com.brugia.eatwithme.location.LocationModel
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.GeoPoint
-import java.util.*
 import kotlin.collections.ArrayList
 
 

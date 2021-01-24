@@ -1,10 +1,10 @@
 package com.brugia.eatwithme.createtable
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.brugia.eatwithme.data.Table
-import com.brugia.eatwithme.location.LocationModel
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.GeoPoint
@@ -45,7 +45,7 @@ class CreateTableViewModel: ViewModel() {
         )
     }
 
-    fun createTable(name:String, descr:String, maxParticipants:Int, location: LocationModel? = null) {
+    fun createTable(name:String, descr:String, maxParticipants:Int, location: Location? = null) {
         val geoPoint =
                 if (location == null) GeoPoint(0.0,0.0)
                 else GeoPoint(location.latitude, location.longitude)
@@ -59,6 +59,8 @@ class CreateTableViewModel: ViewModel() {
                         "latlog" to geoPoint
                 )
         )
+
+        _tableLiveData.value?.location?.set("geohash", _tableLiveData.value?.geoHash())
 
         _tableLiveData.value?.let {
             db.collection("Tables").add(it).addOnSuccessListener {

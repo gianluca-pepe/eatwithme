@@ -11,9 +11,7 @@ import com.google.android.gms.tasks.Task
 
 class LocationViewModel(application: Application) : AndroidViewModel(application) {
     private val location = LocationLiveData(application)
-    val radius: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>()
-    }
+    val radius = MutableLiveData(3)
     private var _addressLiveData = MutableLiveData<String>()
     val address: LiveData<String>
         get() = _addressLiveData
