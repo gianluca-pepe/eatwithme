@@ -172,7 +172,7 @@ class CreateTableFragment : Fragment() {
     }
 
                 private fun isNameValid(): Boolean {
-        if (nameInputView.text.toString().length <= 3) {
+        if (nameInputView.text.toString().length < 3) {
             val nameInputLayout = nameInputView.parent.parent as TextInputLayout
             nameInputLayout.error = getString(R.string.table_name_length_error)
             return false
@@ -196,7 +196,7 @@ class CreateTableFragment : Fragment() {
     }
 
     private fun isDateValid(): Boolean {
-        if (newTableViewModel.table.value?.timestamp?.seconds!! < Timestamp.now().seconds + 1800) {
+        if (newTableViewModel.table.value?.timestamp?.seconds!! <= Timestamp.now().seconds + 1800) {
             timeTextView.error = ""
             Toast.makeText(this.requireContext(), R.string.past_date_error, Toast.LENGTH_SHORT).show()
             return false
