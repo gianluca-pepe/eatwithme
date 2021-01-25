@@ -56,7 +56,6 @@ class TablesListViewModel(private val dataSource: TablesDataSource) : ViewModel(
     }
 
     fun refresh(location: Location?= null, radius: Int?= null) {
-        println("listViewModel - REFRESHING")
         if (location != null && radius != null)
             dataSource.loadTablesBatchWithLocation(location, radius, true)
         else

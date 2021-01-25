@@ -15,17 +15,19 @@
         informazioni
     </string>
     <string name="incomplete_account_title">Account non completo</string>
-    <string name="incomplete_account_neg_button">Non Ora</string>
+    <string name="not_now">Non ora</string>
     <string name="incomplete_account_pos_button">Modifica Profilo</string>
     <!-- dialog errore generico -->
     <string name="generic_error_title">Errore</string>
     <string name="generic_error_message">Siamo spiacenti, l\'operazione non è andata a buon fine</string>
     <string name="generic_error_button">ok</string>
     <!-- dialog posizione non impostata -->
-    <string name="missing_location_title">Posizione non impostata</string>
-    <string name="missing_location_message">Seleziona una posizione per vedere i tavoli in zona.</string>
+    <string name="missing_location_title">Posizione assente</string>
+    <string name="missing_location_message">Non è possibile creare un tavolo senza una posizione.</string>
     <string name="missing_location_pos_button">Scegli posizione</string>
-
+    <string name="rationale_message_location_permission">Per creare un tavolo occorre una posizione,
+    puoi impostarne una manualmente o concederci il permesso di accedere alla geolocalizzazione
+    </string>
     <string name="past_date_error">Date nel passato non ammesse.</string>
     <string name="max_participants_too_low_error">Almeno 2 partecipanti</string>
     <string name="table_name_length_error">Inserisci un nome lungo almeno 3 caratteri</string>

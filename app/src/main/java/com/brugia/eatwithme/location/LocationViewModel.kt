@@ -19,7 +19,7 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     fun setRadius(newRadius: Int) {
         radius.value = newRadius
     }
-    fun setLocation(loc: Location) {
+    fun setLocation(loc: Location?) {
         this.location.setLocationData(loc)
     }
 
@@ -30,6 +30,8 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
             _addressLiveData.value = it
         }
     }
+
+    fun forceLocationRequest() { location.requestLocation() }
 }
 
 class LocationViewModelFactory(private val context: Application) : ViewModelProvider.Factory {

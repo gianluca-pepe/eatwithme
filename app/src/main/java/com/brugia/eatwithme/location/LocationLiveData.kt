@@ -9,8 +9,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 
-class LocationLiveData(context: Context) : LiveData<Location>() {
-
+class LocationLiveData(context: Context) : LiveData<Location?>() {
     private var fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     // Stop getting updates of location
     override fun onInactive() {
@@ -22,7 +21,7 @@ class LocationLiveData(context: Context) : LiveData<Location>() {
     // Called when the number of active observers change from 0 to 1.
     override fun onActive() {
         super.onActive()
-        getLastLocation()
+        requestLocation()
         //startLocationUpdates()
     }
 
@@ -47,12 +46,12 @@ class LocationLiveData(context: Context) : LiveData<Location>() {
         }
     }
 
-    fun setLocationData(location: Location) {
+    fun setLocationData(location: Location?) {
         value = location
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLastLocation() {
+    fun requestLocation() {
         println("Last location request")
         fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
@@ -60,6 +59,8 @@ class LocationLiveData(context: Context) : LiveData<Location>() {
                     if (location != null) {
                         setLocationData(location)
                     } else {
+                        // We never received any location, so the last one is null, perform single
+                        // update
                         singleLocationUpdate()
                     }
                 }

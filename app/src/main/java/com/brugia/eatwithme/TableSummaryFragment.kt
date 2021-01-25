@@ -84,7 +84,7 @@ class TableSummaryFragment : Fragment() {
             alert
                 .setTitle(R.string.incomplete_account_title)
                 .setMessage(R.string.incomplete_account_message)
-                .setNegativeButton(R.string.incomplete_account_neg_button) { dialog, which ->
+                .setNegativeButton(R.string.not_now) { dialog, which ->
                     /* user refuse to update profile, return to main fragment */
                     navigateToMain()
                 }
@@ -122,7 +122,7 @@ class TableSummaryFragment : Fragment() {
         AlertDialog.Builder(this.requireContext())
             .setTitle(R.string.incomplete_account_title)
             .setMessage(R.string.incomplete_account_message)
-            .setNegativeButton(R.string.incomplete_account_neg_button) { dialog, which ->
+            .setNegativeButton(R.string.not_now) { dialog, which ->
                 /* user refuse to update profile, return to main fragment */
                 this.navigateToMain()
             }

@@ -1,7 +1,9 @@
 package com.brugia.eatwithme
 
 import android.content.Intent
+import android.location.Location
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -10,6 +12,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.brugia.eatwithme.location.LocationViewModel
+import com.brugia.eatwithme.location.LocationViewModelFactory
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -24,11 +28,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var destinationListener: NavController.OnDestinationChangedListener
     private val personViewModel: MyProfileViewModel = MyProfileViewModel()
+    private val locationViewModel by viewModels<LocationViewModel> {
+        LocationViewModelFactory(this.application)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 
         if (FirebaseAuth.getInstance().currentUser == null) {
             startActivity(Intent(this, LoginRegisterActivity::class.java))
@@ -57,7 +63,27 @@ class MainActivity : AppCompatActivity() {
             return@setOnMenuItemClickListener true
         }
 
+        // retrieve custom location previously stored
+        val sharedPreferences = this.getSharedPreferences(
+            getString(R.string.custom_location_file_key),
+            MODE_PRIVATE
+        )
 
+        val lat = sharedPreferences.getFloat(getString(R.string.latitude),0F)
+        val long = sharedPreferences.getFloat(getString(R.string.longitude),0F)
+
+        // if location has been previously stored, set it as actual location
+        if (lat != 0F && long != 0F) {
+            val location = Location("")
+            location.latitude = lat.toDouble()
+            location.longitude = long.toDouble()
+            locationViewModel.setLocation(location) // now accessible in any fragment
+            println("previously set position found")
+        } else {
+            locationViewModel.setLocation(null)
+        }
+
+        println("activity onstart")
     }
 
     private fun logout(){

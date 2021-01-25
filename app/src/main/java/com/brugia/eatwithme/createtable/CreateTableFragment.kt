@@ -1,9 +1,10 @@
 package com.brugia.eatwithme
 
-import android.content.ContentValues.TAG
+import android.Manifest
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,17 +13,17 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.brugia.eatwithme.createtable.CreateTableViewModel
-import com.brugia.eatwithme.data.Restaurant
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
 import com.brugia.eatwithme.datetimepickers.TimePickerFragment
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
-import com.brugia.eatwithme.placeapi.NearbyPlacesResponse
-import com.brugia.eatwithme.placeapi.PlacesService
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.google.android.material.textfield.TextInputEditText
@@ -33,6 +34,9 @@ import java.util.*
 
 
 class CreateTableFragment : Fragment() {
+
+    private lateinit var requestLocationPermissionLauncher : ActivityResultLauncher<String>
+    private lateinit var sharedPreferences: SharedPreferences
 
     private val newTableViewModel: CreateTableViewModel = CreateTableViewModel()
     private val locationViewModel by activityViewModels<LocationViewModel> {
@@ -59,7 +63,30 @@ class CreateTableFragment : Fragment() {
     private lateinit var timeTextView: TextView
     private lateinit var createTableButton: Button
 
-    private lateinit var location: Location
+    private var location: Location? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        requestLocationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            // Callback called when the user interacts with system dialog requesting permission
+            if (isGranted) locationViewModel.forceLocationRequest()
+            else if (!isGranted && locationViewModel.getLocationData().value == null) {
+                AlertDialog.Builder(this.requireContext())
+                    .setTitle(R.string.missing_location_title)
+                    .setMessage(R.string.missing_location_message)
+                    .setPositiveButton(R.string.missing_location_pos_button) { _, _ ->
+                        findNavController().navigate(R.id.mapsFragment)
+                    }
+                    .setNegativeButton(R.string.not_now) { _, _ ->
+                        findNavController().navigate(R.id.mainFragment)
+                    }
+                    .create().show()
+            }
+        }
+
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -86,6 +113,7 @@ class CreateTableFragment : Fragment() {
         locationViewModel.getLocationData().observe(viewLifecycleOwner, {
             location = it
         })
+        checkLocationPermission()
         return view
     }
 
@@ -101,7 +129,6 @@ class CreateTableFragment : Fragment() {
     private fun onDateSet(year: Int, month: Int, day: Int) {
         // set date in the view model
         newTableViewModel.setDate(year,month,day)
-        println("creation table: $location")
     }
 
     private fun onTimeSet(hour: Int, minutes: Int) {
@@ -115,7 +142,7 @@ class CreateTableFragment : Fragment() {
                     nameInputView.text.toString(),
                     descriptionInputView.text.toString(),
                     parseInt(maxParticipantsInputView.text.toString()),
-                    location,
+                    location
             )
 
             newTableViewModel.creationState.observe(viewLifecycleOwner, {
@@ -144,7 +171,7 @@ class CreateTableFragment : Fragment() {
         return true
     }
 
-    private fun isNameValid(): Boolean {
+                private fun isNameValid(): Boolean {
         if (nameInputView.text.toString().length <= 3) {
             val nameInputLayout = nameInputView.parent.parent as TextInputLayout
             nameInputLayout.error = getString(R.string.table_name_length_error)
@@ -178,4 +205,22 @@ class CreateTableFragment : Fragment() {
         return true
     }
 
+    private fun checkLocationPermission() {
+        when {
+            isPermissionGranted() -> { }
+            else -> {
+
+                // You can directly ask for the permission.
+                // onRequestPermissionsResult(...) gets the result of this request.
+                if (locationViewModel.getLocationData().value == null)
+                    requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        }
+    }
+
+    private fun isPermissionGranted(): Boolean =
+        ContextCompat.checkSelfPermission(
+            this.requireActivity(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
 }
