@@ -61,9 +61,13 @@ class CreateTableFragment : Fragment() {
     private lateinit var maxParticipantsInputView: EditText
     private lateinit var dateTextView: TextView
     private lateinit var timeTextView: TextView
+    private lateinit var slctRestaurant: TextView
     private lateinit var createTableButton: Button
 
     private var location: Location? = null
+
+    private lateinit var placeID: String
+    private lateinit var placeName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,10 +104,12 @@ class CreateTableFragment : Fragment() {
         maxParticipantsInputView = view.findViewById(R.id.maxParticipantsinput)
         maxParticipantsInputView.setText("2")
         createTableButton = view.findViewById(R.id.createTableButton)
+        slctRestaurant = view.findViewById(R.id.slctRestaurant)
 
         dateTextView.setOnClickListener { this.showDatePickerDialog() }
         timeTextView.setOnClickListener { this.showTimePickerDialog() }
         createTableButton.setOnClickListener { this.onCreateTable() }
+        slctRestaurant.setOnClickListener { this.addRestaurantFragment() }
 
         newTableViewModel.table.observe(viewLifecycleOwner, {
             dateTextView.text = it.tableDateText()
@@ -117,7 +123,9 @@ class CreateTableFragment : Fragment() {
         return view
     }
 
-
+    private fun addRestaurantFragment(){
+        findNavController().navigate(R.id.selectRestaurantFragment)
+    }
     private fun showDatePickerDialog() {
         datePicker.show(this.requireActivity().supportFragmentManager, "datePicker")
     }
@@ -142,7 +150,8 @@ class CreateTableFragment : Fragment() {
                     nameInputView.text.toString(),
                     descriptionInputView.text.toString(),
                     parseInt(maxParticipantsInputView.text.toString()),
-                    location
+                    location,
+                    placeID
             )
 
             newTableViewModel.creationState.observe(viewLifecycleOwner, {

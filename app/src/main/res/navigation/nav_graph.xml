@@ -50,7 +50,11 @@
         android:id="@+id/createTableFragment"
         android:name="com.brugia.eatwithme.CreateTableFragment"
         android:label="Create Table"
-        tools:layout="@layout/fragment_create_table" />
+        tools:layout="@layout/fragment_create_table" >
+        <action
+            android:id="@+id/action_createTableFragment_to_selectRestaurantFragment"
+            app:destination="@id/selectRestaurantFragment" />
+    </fragment>
     <fragment
         android:id="@+id/myProfileSettingsFragment"
         android:name="com.brugia.eatwithme.MyProfileFragment"
@@ -61,4 +65,8 @@
         android:name="com.brugia.eatwithme.mytables.MyTablesFragment"
         android:label="My tables"
         tools:layout="@layout/fragment_my_tables" />
+    <fragment
+        android:id="@+id/selectRestaurantFragment"
+        android:name="com.brugia.eatwithme.restaurant.SelectRestaurantFragment"
+        android:label="Select Restaurant" />
 </navigation>

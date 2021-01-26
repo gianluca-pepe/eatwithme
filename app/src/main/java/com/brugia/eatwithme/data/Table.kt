@@ -27,7 +27,7 @@ data class Table(
         "latlog" to GeoPoint(0.0, 0.0),
         "label" to null
     ),
-    var restaurantsList: List<Restaurant> = emptyList()
+    var restaurant: Restaurant? = null
     //var partecipants: ArrayList<Person>
 ) {
 
@@ -45,10 +45,10 @@ data class Table(
         maxParticipants = doc.getLong("maxParticipants")?.toInt()
         participantsList = doc.get("participantsList") as List<String>
         image = R.drawable.logo_login
-        if(doc.get("restaurantsList") != null) {
-            restaurantsList = doc.get("restaurantsList") as List<Restaurant>
+        if(doc.get("restaurant") != null) {
+            restaurant = doc.get("restaurant") as Restaurant
         }else{
-            restaurantsList = listOf<Restaurant>()
+            restaurant = null
         }
 
     }

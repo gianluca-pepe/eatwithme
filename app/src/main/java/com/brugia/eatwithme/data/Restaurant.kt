@@ -23,7 +23,9 @@ data class Restaurant(
         val rating: Float,
         val user_ratings_total: Int,
         val price_level: Int,
-        val photos: List<Photo>
+        val photos: List<Photo>,
+        val formatted_phone_number: String,
+        val formatted_address: String
 ) {
     override fun equals(other: Any?): Boolean {
         if (other !is Restaurant) {
