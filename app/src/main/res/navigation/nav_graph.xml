@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainFragment">
+    app:startDestination="@id/createTablePagerFragment">
 
     <fragment
         android:id="@+id/tableSummaryFragment"
@@ -69,4 +69,8 @@
         android:id="@+id/selectRestaurantFragment"
         android:name="com.brugia.eatwithme.restaurant.SelectRestaurantFragment"
         android:label="Select Restaurant" />
+    <fragment
+        android:id="@+id/createTablePagerFragment"
+        android:name="com.brugia.eatwithme.createtable.CreateTablePagerFragment"
+        android:label="CreateTablePagerFragment" />
 </navigation>

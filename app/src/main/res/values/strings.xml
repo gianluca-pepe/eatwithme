@@ -32,4 +32,19 @@
     30 minuti</string>
     <string name="max_participants_too_low_error">Almeno 2 partecipanti</string>
     <string name="table_name_length_error">Inserisci un nome lungo almeno 3 caratteri</string>
+
+
+    <!-- Creazione tavolo -->
+    <string name="name_title">Come vuoi chiamare il tuo tavolo?</string>\
+    <string name="name_subtitle">Assegna un bel nome e descrivi brevemente cosa vuoi mangiare o
+    di cosa vorresti parlare.</string>
+    <string name="name_hint">Nome</string>
+    <string name="description_hint">Descrizione</string>
+    <string name="button_next">Continua</string>
+    <string name="button_previous">Indietro</string>
+    <string name="date_title">Quando intendi prenotare?</string>
+    <string name="date_subtitle">Dai il tempo agli altri di vedere il tuo tavolo, imposta un orario
+    tra almeno 30 minuti.</string>
+    <string name="date_hint">Data</string>
+    <string name="hour_hint">Ora</string>
 </resources>
