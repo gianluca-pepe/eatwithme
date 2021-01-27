@@ -11,6 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.brugia.eatwithme.R
 import com.brugia.eatwithme.createtable.pages.CreateTableDateFragment
+import com.brugia.eatwithme.createtable.pages.CreateTableMapFragment
 import com.brugia.eatwithme.createtable.pages.CreateTableNameFragment
 
 
@@ -49,6 +50,7 @@ class CreateTablePagerFragment : Fragment() {
         private val pages = listOf(
                 CreateTableNameFragment(),
                 CreateTableDateFragment(),
+                CreateTableMapFragment(),
         )
 
         override fun getItemCount(): Int = pages.size
