@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_mainFragment_to_myTablesFragment"
             app:destination="@id/myTablesFragment" />
+        <action
+            android:id="@+id/action_createTable"
+            app:destination="@id/createTablePagerFragment" />
     </fragment>
     <fragment
         android:id="@+id/tableLobbyFragment"

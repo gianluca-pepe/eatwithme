@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/mainFragment"
+            android:icon="@drawable/ic_baseline_restaurant_24"
+            android:title="@string/menu_explore" />
+
+        <item
+            android:id="@+id/myTablesFragment"
+            android:icon="@drawable/ic_baseline_history_24"
+            android:title="@string/menu_my_tables" />
+
+        <item
+            android:id="@+id/createTablePagerFragment"
+            android:icon="@drawable/ic_baseline_calendar_today_24"
+            android:title="@string/menu_new_table" />
+
+        <item
+            android:id="@+id/myProfileSettingsFragment"
+            android:icon="@drawable/ic_baseline_person_24"
+            android:title="@string/menu_my_profile" />
+
+    </group>
+</menu>

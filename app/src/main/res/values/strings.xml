@@ -49,4 +49,11 @@
     <string name="create_table_step1">Nome</string>
     <string name="create_table_step2">Data e Ora</string>
     <string name="create_table_step3">Ristorante</string>
+
+    <!-- Menu -->
+    <string name="menu_explore">Esplora</string>
+    <string name="menu_my_tables">Tavoli</string>
+    <string name="menu_new_table">Nuovo</string>
+    <string name="menu_my_profile">Profilo</string>
+
 </resources>

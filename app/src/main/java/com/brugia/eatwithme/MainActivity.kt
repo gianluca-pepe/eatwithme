@@ -15,6 +15,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -46,22 +47,22 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.
             findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        drawerLayout = findViewById(R.id.drawer_layout)
+        //drawerLayout = findViewById(R.id.drawer_layout)
 
-        findViewById<NavigationView>(R.id.nav_view).setupWithNavController(navController)
+        findViewById<BottomNavigationView>(R.id.bottom_nav).setupWithNavController(navController)
 
         // Fragments in which action bar will have hamburger icon instead of back arrow
-        val topLevelDestinations = setOf(
-                R.id.mainFragment,
-        )
-        appBarConfiguration = AppBarConfiguration(topLevelDestinations, drawerLayout)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        //val topLevelDestinations = setOf(
+         //       R.id.mainFragment,
+        //)
+        //appBarConfiguration = AppBarConfiguration(topLevelDestinations, drawerLayout)
+        //setupActionBarWithNavController(navController, appBarConfiguration)
 
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        navigationView.menu.findItem(R.id.logout).setOnMenuItemClickListener{ _ ->
-            this.logout()
-            return@setOnMenuItemClickListener true
-        }
+        //val navigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        //navigationView.menu.findItem(R.id.logout).setOnMenuItemClickListener{ _ ->
+           // this.logout()
+           // return@setOnMenuItemClickListener true
+        //}
 
         // retrieve custom location previously stored
         val sharedPreferences = this.getSharedPreferences(
