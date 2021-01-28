@@ -42,6 +42,35 @@ class CreateTableViewModel: ViewModel() {
     val table: LiveData<Table>
         get() = _tableLiveData
 
+    var name: String?
+        get() = table.value?.name
+        set(value) {
+            val s = "name"
+            _tableLiveData.value = _tableLiveData.value?.copy(
+                    name = value
+            )
+        }
+
+    var maxParticipants: Int?
+        get() = table.value?.maxParticipants
+        set(value) {
+            _tableLiveData.value = _tableLiveData.value?.copy(
+                    maxParticipants = value
+            )
+        }
+
+    var description: String?
+        get() = table.value?.description
+        set(value) {
+            _tableLiveData.value = _tableLiveData.value?.copy(
+                    description = value
+            )
+        }
+
+    val date: Timestamp?
+        get() = table.value?.timestamp
+
+
 
     private var placeDetailService: PlaceDetailService= PlaceDetailService.create()
     private var restaurant: Restaurant? = null

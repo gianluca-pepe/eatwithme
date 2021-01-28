@@ -93,7 +93,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <include
-                layout="@layout/create_table_buttons"
+                layout="@layout/create_table_common_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"

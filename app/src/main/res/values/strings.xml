@@ -28,8 +28,7 @@
     <string name="rationale_message_location_permission">Per creare un tavolo occorre una posizione,
     puoi impostarne una manualmente o concederci il permesso di accedere alla geolocalizzazione
     </string>
-    <string name="past_date_error">Date nel passato non ammesse. Imposta un orario che sia tra almeno
-    30 minuti</string>
+    <string name="past_date_error">Imposta l\'orario tra almeno 30 minuti.</string>
     <string name="max_participants_too_low_error">Almeno 2 partecipanti</string>
     <string name="table_name_length_error">Inserisci un nome lungo almeno 3 caratteri</string>
 

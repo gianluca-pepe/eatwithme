@@ -25,10 +25,18 @@ open class FormPage: Fragment() {
         titleTextView = view.findViewById(R.id.createTablePageTitle)
         subTitleTextView = view.findViewById(R.id.createTablePageSubtitle)
         nextButton = view.findViewById(R.id.button_next)
-        nextButton?.setOnClickListener { onNextClicked() }
+        nextButton?.setOnClickListener { onSubmit() }
         previousButton = view.findViewById(R.id.button_previous)
-        previousButton?.setOnClickListener { onPreviousClicked() }
+        previousButton?.setOnClickListener { onBack() }
     }
 
     open fun isValid(): Boolean = true
+
+    open fun onSubmit() {
+        onNextClicked()
+    }
+
+    open fun onBack() {
+        onPreviousClicked()
+    }
 }

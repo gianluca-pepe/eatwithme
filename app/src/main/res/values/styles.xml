@@ -34,4 +34,7 @@
     <style name="subtitle">
         <item name="android:textSize">18sp</item>
     </style>
+    <style name="roundedButton">
+        <item name="cornerRadius">20dp</item>
+    </style>
 </resources>

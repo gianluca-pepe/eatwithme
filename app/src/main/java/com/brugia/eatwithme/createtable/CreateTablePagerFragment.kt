@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.brugia.eatwithme.R
@@ -22,6 +23,7 @@ class CreateTablePagerFragment : Fragment() {
      */
     private lateinit var viewPager: ViewPager2
     private lateinit var callback:OnBackPressedCallback
+    private val newTableViewModel by activityViewModels<CreateTableViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,10 +68,15 @@ class CreateTablePagerFragment : Fragment() {
     }
 
     fun goNextPage() {
-        println(viewPager.currentItem)
-        val page = childFragmentManager.findFragmentByTag("f" + viewPager.currentItem)
-        if ((page as FormPage).isValid())
+        val page = childFragmentManager.findFragmentByTag("f" + viewPager.currentItem) as FormPage
+        if (page.isValid()) {
+            if (viewPager.currentItem + 1 == viewPager.adapter?.itemCount) {
+                /**
+                 * TODO(create table)
+                 */
+            }
             viewPager.currentItem = viewPager.currentItem + 1
+        }
     }
 
     fun goPreviousPage() {
