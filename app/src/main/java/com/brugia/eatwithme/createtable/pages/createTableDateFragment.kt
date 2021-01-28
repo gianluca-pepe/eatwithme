@@ -40,8 +40,8 @@ class CreateTableDateFragment: FormPage() {
         val c = Calendar.getInstance()
         newTableViewModel.setDate(c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE) + 30)
         scrollView = view.findViewById(R.id.scrollView)
-        titleTextView.text = getString(R.string.date_title)
-        subTitleTextView.text = getString(R.string.date_subtitle)
+        titleTextView?.text = getString(R.string.date_title)
+        subTitleTextView?.text = getString(R.string.date_subtitle)
         calendarView = view.findViewById(R.id.calendarView)
         calendarView.minDate = System.currentTimeMillis() - 1000
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->

@@ -46,4 +46,7 @@
     tra almeno 30 minuti.</string>
     <string name="date_hint">Data</string>
     <string name="hour_hint">Ora</string>
+    <string name="create_table_step1">Nome</string>
+    <string name="create_table_step2">Data e Ora</string>
+    <string name="create_table_step3">Ristorante</string>
 </resources>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
@@ -24,6 +25,9 @@ class CreateTablePagerFragment : Fragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var callback:OnBackPressedCallback
     private val newTableViewModel by activityViewModels<CreateTableViewModel>()
+    private lateinit var stepper: Stepper
+    private lateinit var nextButton: Button
+    private lateinit var previousButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +49,30 @@ class CreateTablePagerFragment : Fragment() {
         val pagerAdapter = ScreenSlidePagerAdapter(this)
         viewPager.adapter = pagerAdapter
         viewPager.isUserInputEnabled = false
+
+        stepper = Stepper(
+                view,
+                listOf(
+                        mapOf(
+                                "text" to R.string.create_table_step1,
+                                "button" to R.id.radioButton1,
+                        ),
+                        mapOf(
+                                "text" to R.string.create_table_step2,
+                                "button" to R.id.radioButton2,
+                        ),
+                        mapOf(
+                                "text" to R.string.create_table_step3,
+                                "button" to R.id.radioButton3,
+                        ),
+                ),
+                view.findViewById(R.id.stepBar)
+        )
+
+        nextButton = view.findViewById(R.id.button_next)
+        nextButton.setOnClickListener { goNextPage() }
+        previousButton = view.findViewById(R.id.button_previous)
+        previousButton.setOnClickListener { goPreviousPage() }
         return view
     }
 
@@ -58,12 +86,7 @@ class CreateTablePagerFragment : Fragment() {
         override fun getItemCount(): Int = pages.size
 
         override fun createFragment(position: Int): Fragment {
-            val page = pages[position] as FormPage
-
-            page.onNextClicked = ::goNextPage
-            page.onPreviousClicked = ::goPreviousPage
-
-            return page
+            return pages[position]
         }
     }
 
@@ -76,6 +99,7 @@ class CreateTablePagerFragment : Fragment() {
                  */
             }
             viewPager.currentItem = viewPager.currentItem + 1
+            stepper.completeStep()
         }
     }
 
@@ -88,6 +112,7 @@ class CreateTablePagerFragment : Fragment() {
         } else {
             // Otherwise, select the previous step.
             viewPager.currentItem = viewPager.currentItem - 1
+            stepper.stepBack()
         }
     }
 }

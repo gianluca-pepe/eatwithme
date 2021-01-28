@@ -14,8 +14,8 @@ open class FormPage: Fragment() {
 
     lateinit var onNextClicked: () -> Unit
     lateinit var  onPreviousClicked: () -> Unit
-    lateinit var titleTextView: TextView
-    lateinit var subTitleTextView: TextView
+    var titleTextView: TextView? = null
+    var subTitleTextView: TextView? = null
     var nextButton: Button? = null
     var previousButton: Button? = null
 
