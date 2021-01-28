@@ -39,9 +39,6 @@ class CreateTableDateFragment: FormPage() {
         super.onViewCreated(view, savedInstanceState)
         val c = Calendar.getInstance()
         newTableViewModel.setDate(c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE) + 30)
-
-        minValidDate = Timestamp.now().seconds + 1800
-        timePicker.timestamp = minValidDate
         scrollView = view.findViewById(R.id.scrollView)
         titleTextView.text = getString(R.string.date_title)
         subTitleTextView.text = getString(R.string.date_subtitle)
@@ -78,6 +75,12 @@ class CreateTableDateFragment: FormPage() {
                 timePicker.timestamp = it.seconds
             }
         })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        minValidDate = Timestamp.now().seconds + 1800
+        timePicker.timestamp = minValidDate
     }
 
     private fun toggleCalendarView() {
