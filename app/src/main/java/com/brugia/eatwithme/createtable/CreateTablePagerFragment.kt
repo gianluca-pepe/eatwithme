@@ -9,12 +9,17 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.brugia.eatwithme.R
 import com.brugia.eatwithme.createtable.pages.CreateTableDateFragment
 import com.brugia.eatwithme.createtable.pages.CreateTableMapFragment
 import com.brugia.eatwithme.createtable.pages.CreateTableNameFragment
+import com.brugia.eatwithme.createtable.pages.CreateTableConfirmationFragment
+import com.brugia.eatwithme.tablelist.SelectedTableViewModel
+import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
+import kotlinx.coroutines.selects.select
 
 
 class CreateTablePagerFragment : Fragment() {
@@ -25,7 +30,12 @@ class CreateTablePagerFragment : Fragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var callback:OnBackPressedCallback
     private val newTableViewModel by activityViewModels<CreateTableViewModel>()
+    private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
+        SelectedTableViewModelFactory(this.requireContext())
+    }
     private lateinit var stepper: Stepper
+    private lateinit var stepperView: View
+    private lateinit var nextBackButtonsView: View
     private lateinit var nextButton: Button
     private lateinit var previousButton: Button
 
@@ -73,6 +83,9 @@ class CreateTablePagerFragment : Fragment() {
         nextButton.setOnClickListener { goNextPage() }
         previousButton = view.findViewById(R.id.button_previous)
         previousButton.setOnClickListener { goPreviousPage() }
+
+        nextBackButtonsView = view.findViewById(R.id.nextBackButtonsContainer)
+        stepperView = view.findViewById(R.id.stepper)
         return view
     }
 
@@ -81,25 +94,37 @@ class CreateTablePagerFragment : Fragment() {
                 CreateTableNameFragment(),
                 CreateTableDateFragment(),
                 CreateTableMapFragment(),
+                CreateTableConfirmationFragment(),
         )
 
         override fun getItemCount(): Int = pages.size
 
         override fun createFragment(position: Int): Fragment {
-            return pages[position]
+            val page = pages[position]
+
+            page.onNextClicked = ::goNextPage
+            page.onPreviousClicked = ::goPreviousPage
+
+            return page
         }
     }
 
     fun goNextPage() {
-        val page = childFragmentManager.findFragmentByTag("f" + viewPager.currentItem) as FormPage
-        if (page.isValid()) {
-            if (viewPager.currentItem + 1 == viewPager.adapter?.itemCount) {
-                /**
-                 * TODO(create table)
-                 */
+        val formPage = childFragmentManager.findFragmentByTag("f" + viewPager.currentItem) as FormPage
+        if (formPage.isValid()) {
+            if (viewPager.currentItem +2 == viewPager.adapter?.itemCount) {
+                newTableViewModel.createTable()
+                selectedTableViewModel.setSelectedTable(newTableViewModel.table.value)
             }
+
+            if (viewPager.currentItem + 1 == viewPager.adapter?.itemCount) {
+                findNavController().navigate(R.id.tableLobbyFragment)
+                return
+            }
+
             viewPager.currentItem = viewPager.currentItem + 1
             stepper.completeStep()
+            buildSurroundingUI()
         }
     }
 
@@ -113,6 +138,27 @@ class CreateTablePagerFragment : Fragment() {
             // Otherwise, select the previous step.
             viewPager.currentItem = viewPager.currentItem - 1
             stepper.stepBack()
+            buildSurroundingUI()
+        }
+    }
+
+    private fun buildSurroundingUI() {
+        /*
+            If the page we moved on is the page for restaurants, hide next/back buttons
+         */
+        val actualPage = childFragmentManager.findFragmentByTag("f" + viewPager.currentItem)
+        when (actualPage) {
+            is CreateTableMapFragment -> {
+                nextBackButtonsView.visibility = View.GONE
+            }
+            is CreateTableConfirmationFragment -> {
+                stepperView.visibility = View.GONE
+                nextBackButtonsView.visibility = View.GONE
+            }
+            else -> {
+                stepperView.visibility = View.VISIBLE
+                nextBackButtonsView.visibility = View.VISIBLE
+            }
         }
     }
 }

@@ -110,7 +110,7 @@ class CreateTableFragment : Fragment() {
 
         dateTextView.setOnClickListener { this.showDatePickerDialog() }
         timeTextView.setOnClickListener { this.showTimePickerDialog() }
-        createTableButton.setOnClickListener { this.onCreateTable() }
+        //createTableButton.setOnClickListener { this.onCreateTable() }
         slctRestaurant.setOnClickListener { this.addRestaurantFragment() }
 
         newTableViewModel.table.observe(viewLifecycleOwner, {
@@ -126,7 +126,7 @@ class CreateTableFragment : Fragment() {
     }
 
     private fun addRestaurantFragment(){
-        findNavController().navigate(R.id.selectRestaurantFragment)
+        //findNavController().navigate(R.id.selectRestaurantFragment)
     }
     private fun showDatePickerDialog() {
         datePicker.show(this.requireActivity().supportFragmentManager, "datePicker")
@@ -145,7 +145,7 @@ class CreateTableFragment : Fragment() {
         // set date in the view model
         newTableViewModel.setDate(hour,minutes)
     }
-
+/*
     private fun onCreateTable() {
         if ( isMaxParticipantsValid() && isNameValid() && isDateValid() && isLocationSet()) {
             newTableViewModel.createTable(
@@ -172,7 +172,7 @@ class CreateTableFragment : Fragment() {
             })
         }
     }
-
+*/
     private fun isMaxParticipantsValid(): Boolean {
         if (maxParticipantsInputView.text.isNullOrEmpty() || parseInt(maxParticipantsInputView.text.toString()) < 2) {
             maxParticipantsInputView.error = getString(R.string.max_participants_too_low_error)

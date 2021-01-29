@@ -13,6 +13,8 @@ import com.brugia.eatwithme.placeapi.NearbyPlacesResponse
 import com.brugia.eatwithme.placeapi.PlaceDetailResponse
 import com.brugia.eatwithme.placeapi.PlaceDetailService
 import com.brugia.eatwithme.placeapi.PlacesService
+import com.firebase.geofire.GeoFireUtils
+import com.firebase.geofire.GeoLocation
 import com.google.android.libraries.places.api.model.Place
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -71,8 +73,14 @@ class CreateTableViewModel: ViewModel() {
         get() = table.value?.restaurant
         set(value) {
             _tableLiveData.value = _tableLiveData.value?.copy(
-                    restaurant = value
+                    restaurant = value,
+                    geoHash = GeoFireUtils.getGeoHashForLocation(GeoLocation(
+                            value?.geometry?.location?.lat!!,
+                            value?.geometry?.location?.lng!!, // previous line assures us that value != null
+                        )
+                    )
             )
+
         }
 
     val date: Timestamp?
@@ -95,26 +103,7 @@ class CreateTableViewModel: ViewModel() {
         )
     }
 
-    fun createTable(name: String, descr: String, maxParticipants:Int, location: Location? = null, restaurant: Restaurant? = null) {
-        val geoPoint =
-                if (location == null) GeoPoint(0.0,0.0)
-                else GeoPoint(location.latitude, location.longitude)
-
-
-        /*Obtain restaurant info given the id*/
-        _tableLiveData.value = _tableLiveData.value?.copy(
-                name = name,
-                description = descr,
-                maxParticipants = maxParticipants,
-                location = hashMapOf(
-                        "label" to "null",
-                        "latlog" to geoPoint
-                ),
-                restaurant = restaurant!!
-        )
-
-        _tableLiveData.value?.location?.set("geohash", _tableLiveData.value?.geoHash())
-
+    fun createTable() {
         _tableLiveData.value?.let {
             db.collection("Tables").add(it).addOnSuccessListener {
                 _creationState.value = true

@@ -23,9 +23,6 @@
             android:id="@+id/action_select_table"
             app:destination="@id/tableSummaryFragment" />
         <action
-            android:id="@+id/action_mainFragment_to_createTableFragment2"
-            app:destination="@id/createTableFragment" />
-        <action
             android:id="@+id/action_mainFragment_to_myProfileSettingsFragment"
             app:destination="@id/myProfileSettingsFragment" />
         <action
@@ -50,15 +47,6 @@
         android:label="Change location"
         tools:layout="@layout/fragment_maps" />
     <fragment
-        android:id="@+id/createTableFragment"
-        android:name="com.brugia.eatwithme.CreateTableFragment"
-        android:label="Create Table"
-        tools:layout="@layout/fragment_create_table" >
-        <action
-            android:id="@+id/action_createTableFragment_to_selectRestaurantFragment"
-            app:destination="@id/selectRestaurantFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/myProfileSettingsFragment"
         android:name="com.brugia.eatwithme.MyProfileFragment"
         android:label="My profile"
@@ -69,11 +57,10 @@
         android:label="My tables"
         tools:layout="@layout/fragment_my_tables" />
     <fragment
-        android:id="@+id/selectRestaurantFragment"
-        android:name="com.brugia.eatwithme.restaurant.SelectRestaurantFragment"
-        android:label="Select Restaurant" />
-    <fragment
         android:id="@+id/createTablePagerFragment"
         android:name="com.brugia.eatwithme.createtable.CreateTablePagerFragment"
         android:label="CreateTablePagerFragment" />
+    <action
+        android:id="@+id/action_EditTable"
+        app:destination="@id/createTablePagerFragment" />
 </navigation>

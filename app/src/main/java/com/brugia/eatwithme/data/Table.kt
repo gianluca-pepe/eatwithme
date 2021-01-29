@@ -5,12 +5,14 @@ import androidx.annotation.DrawableRes
 import com.brugia.eatwithme.R
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
+import com.firebase.geofire.core.GeoHash
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.GeoPoint
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 
 data class Table(
@@ -23,12 +25,8 @@ data class Table(
     var timestamp: Timestamp? = null,
     var maxParticipants: Int? = 0,
     var participantsList: List<String> = emptyList(),
-    var location: HashMap<String, Any?> = hashMapOf(
-        "latlog" to GeoPoint(0.0, 0.0),
-        "label" to null
-    ),
-    var restaurant: Restaurant? = null
-    //var partecipants: ArrayList<Person>
+    var restaurant: Restaurant? = null,
+    var geoHash: String? = null,
 ) {
 
     // Create a Table from a QueryDocumentSnapshot
@@ -38,19 +36,11 @@ data class Table(
         name = doc.getString("name")
         description = doc.getString("description")
         timestamp = doc.getTimestamp("timestamp")
-        location = hashMapOf(
-                "latlog" to doc.getGeoPoint("location.latlog"),
-                "label" to doc.getString("location.label")
-        )
         maxParticipants = doc.getLong("maxParticipants")?.toInt()
         participantsList = doc.get("participantsList") as List<String>
         image = R.drawable.logo_login
-        if(doc.get("restaurant") != null) {
-            restaurant = doc.get("restaurant") as Restaurant
-        }else{
-            restaurant = null
-        }
-
+        restaurant = Restaurant(doc.get("restaurant") as HashMap<*, *>)
+        geoHash = doc.getString("geoHash")
     }
 
     //@Exclude // Exclude from data serialization to firestore
@@ -77,11 +67,11 @@ data class Table(
     private val tableDate: Date?
         get() = timestamp?.let { Date(it.seconds*1000) }
 
-    private val latitude: Double
-        get() = (location["latlog"] as GeoPoint).latitude
+    private val latitude: Double?
+        get() = restaurant?.geometry?.location?.lat
 
-    private val longitude: Double
-        get() = (location["latlog"] as GeoPoint).longitude
+    private val longitude: Double?
+        get() = restaurant?.geometry?.location?.lat
 
     val numParticipants: Int
         get() = participantsList.size
@@ -105,6 +95,9 @@ data class Table(
     }
 
     fun geoHash(): String {
-        return GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude, longitude))
+        if (latitude != null && longitude != null)
+            return GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude!!, longitude!!))
+
+        return ""
     }
 }

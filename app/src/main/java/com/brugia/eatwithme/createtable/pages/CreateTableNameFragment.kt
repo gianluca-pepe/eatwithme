@@ -25,7 +25,6 @@ class CreateTableNameFragment: FormPage() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        previousButton?.visibility = View.INVISIBLE
         titleTextView?.text = getString(R.string.name_title)
         subTitleTextView?.text = getString(R.string.name_subtitle)
 

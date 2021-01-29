@@ -1,73 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".createtable.pages.##">
+    tools:context=".createtable.pages.CreateTableMapFragment">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteY="80dp">
-
-        <include
-            android:id="@+id/headerSection"
-            layout="@layout/create_table_common_title"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp" />
-    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout6"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:id="@+id/constraintLayout5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="369dp"
-            android:layout_height="79dp"
-            android:layout_margin="20dp"
+        <ImageView
+            android:id="@+id/imageView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_search_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtct_searchPlace"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:hint="Search your place"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/imageView15"
-                android:layout_width="50dp"
-                android:layout_height="45dp"
-                android:src="@drawable/ic_baseline_search_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/txtct_searchPlace"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="Search your place"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView15"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+            app:layout_constraintStart_toEndOf="@+id/imageView15"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout7"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
 
         <fragment
             android:id="@+id/createTableMap"
@@ -80,63 +59,39 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            tools:context=".MapsFragment" >
+            tools:context=".MapsFragment">
 
         </fragment>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="369dp"
-            android:layout_height="0dp"
-            android:layout_margin="20dp"
-            app:layout_constraintBottom_toBottomOf="@+id/createTableMap"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <include
-                layout="@layout/create_table_common_buttons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout7"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/restaurantDataContainer"
         android:layout_width="match_parent"
-        android:layout_height="115dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="32dp"
+        app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/constraintLayout3"
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="369dp"
-            android:layout_height="79dp"
-            android:layout_margin="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="20dp"
+            android:paddingTop="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="8dp">
 
-
-            <ImageView
-                android:id="@+id/stella5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
-                android:src="@drawable/ic_baseline_star_border_24"
-                app:layout_constraintStart_toEndOf="@+id/stella4"
-                app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantAddress" />
 
             <TextView
                 android:id="@+id/txtct_RestaurantName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Place name will appear here"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="Nome ristorante"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -147,80 +102,74 @@
                 android:id="@+id/txtct_RestaurantAddress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Place address will appear here"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="Via di prova, snc, 04011 Aprilia (LT)"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantName" />
 
-            <ImageView
-                android:id="@+id/stella1"
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
-                android:src="@drawable/ic_baseline_star_24"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/chooseButton"
+                app:layout_constraintEnd_toStartOf="@+id/chooseButton"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantAddress" />
+                app:layout_constraintTop_toTopOf="@+id/chooseButton">
 
-            <ImageView
-                android:id="@+id/stella2"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <RatingBar
+                        android:id="@+id/ratingBar"
+                        style="@style/Widget.AppCompat.RatingBar.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="false"
+                        android:rating="3"
+                        app:layout_constraintBottom_toBottomOf="@+id/txtct_RestaurantReviewsCount"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/txtct_RestaurantReviewsCount" />
+
+                    <TextView
+                        android:id="@+id/txtct_RestaurantReviewsCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="124"
+                        app:layout_constraintBottom_toBottomOf="@+id/txtct_RestaurantPriceLevel"
+                        app:layout_constraintStart_toEndOf="@+id/ratingBar"
+                        app:layout_constraintTop_toTopOf="@+id/txtct_RestaurantPriceLevel" />
+
+                    <TextView
+                        android:id="@+id/txtct_RestaurantPriceLevel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:text="$$"
+                        android:textScaleX="1.3"
+                        app:layout_constraintStart_toEndOf="@+id/txtct_RestaurantReviewsCount"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/chooseButton"
+                style="@style/roundedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
-                android:src="@drawable/ic_baseline_star_24"
-                app:layout_constraintStart_toEndOf="@+id/stella1"
+                android:layout_marginTop="8dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:text="@string/choose"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantAddress" />
 
-            <ImageView
-                android:id="@+id/stella3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
-                android:src="@drawable/ic_baseline_star_24"
-                app:layout_constraintStart_toEndOf="@+id/stella2"
-                app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantAddress" />
-
-            <ImageView
-                android:id="@+id/stella4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
-                android:src="@drawable/ic_baseline_star_half_24"
-                app:layout_constraintStart_toEndOf="@+id/stella3"
-                app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantAddress" />
-
-            <TextView
-                android:id="@+id/txtct_RestaurantReviewsCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="11dp"
-                android:text="124"
-                app:layout_constraintStart_toEndOf="@+id/stella5"
-                app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantAddress" />
-
-            <TextView
-                android:id="@+id/txt_pricelabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="88dp"
-                android:layout_marginTop="11dp"
-                android:text="Price:"
-                android:textStyle="italic"
-                app:layout_constraintStart_toEndOf="@+id/txtct_RestaurantReviewsCount"
-                app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantAddress" />
-
-            <TextView
-                android:id="@+id/txtct_RestaurantPriceLevel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="9dp"
-                android:text="$$"
-                android:textSize="18sp"
-                app:layout_constraintStart_toEndOf="@+id/txt_pricelabel"
-                app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantAddress" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -53,7 +53,7 @@ class TablesDataSource(resources: Resources) {
         //.whereGreaterThanOrEqualTo("timestamp", todayDate)
         //.orderBy("timestamp")
         .whereEqualTo("full", false)
-        .orderBy("location.geohash")
+        .orderBy("geoHash")
         .limit(BATCHSIZE)
     private var allTablesQuery = initialAllTablesQuery
 
@@ -110,15 +110,18 @@ class TablesDataSource(resources: Resources) {
                 var count = 0
                 for (task in tasks) {
                     for (doc in task.result) {
-                        val tableLocation = doc.getGeoPoint("location.latlog")!!
+
+                        val tableLat = doc.getDouble("restaurant.geometry.location.lat")!!
+                        val tableLong = doc.getDouble("restaurant.geometry.location.lng")!!
 
                         // We have to filter out a few false positives due to GeoHash
                         // accuracy, but most will match
-                        val docLocation = GeoLocation(tableLocation.latitude, tableLocation.longitude)
+                        val docLocation = GeoLocation(tableLat, tableLong)
                         val distanceInM =
                             GeoFireUtils.getDistanceBetween(docLocation, center)
                         if (distanceInM <= radiusInMeters) {
                             val newTable = Table(doc)
+                            println(newTable.restaurant)
                             if (newTable.timestamp!! >= todayDate) {
                                 newTable.distance = distanceInM
                                 tempList.add(newTable)

@@ -52,7 +52,7 @@ class TableSummaryFragment : Fragment() {
             it?.let {
                 tableHourTextView.text = it.tableHourText()
                 tableDateTextView.text = it.tableDateText()
-                tableCityTextView.text = it.location["label"].toString()
+                //tableCityTextView.text = it.location["label"].toString()
                 tableParticipantsTextView.text = "${it.numParticipants} / ${it.maxParticipants}"
             }
         })

@@ -49,6 +49,11 @@
     <string name="create_table_step1">Nome</string>
     <string name="create_table_step2">Data e Ora</string>
     <string name="create_table_step3">Ristorante</string>
+    <string name="choose">Scegli</string>
+    <string name="currency_symbol">€</string>
+    <string name="success_title">Tavolo creato correttamente!</string>
+    <string name="success_subtitle">Adesso gli utenti nei paraggi del luogo scelto vedranno il tuo tavolo.</string>
+    <string name="success_button">Entra</string>
 
     <!-- Menu -->
     <string name="menu_explore">Esplora</string>
