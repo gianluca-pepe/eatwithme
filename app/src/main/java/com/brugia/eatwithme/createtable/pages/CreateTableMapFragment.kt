@@ -89,7 +89,7 @@ class CreateTableMapFragment : FormPage() {
          */
 
         location?.let {
-            //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it,16.0f))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it,16.0f))
         }
 
         setPoiClick(googleMap)
