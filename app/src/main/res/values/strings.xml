@@ -61,4 +61,12 @@
     <string name="menu_new_table">Nuovo</string>
     <string name="menu_my_profile">Profilo</string>
 
+    <!-- Profilo -->
+    <string name="surname_hint">Cognome</string>
+    <string name="birthday">Compleanno</string>
+    <string name="birthday_date">Data nascita</string>
+    <string name="telephone">Telefono</string>
+    <string name="short_description">Breve descrizione di me</string>
+    <string name="modify_profile">Modifica profilo</string>
+
 </resources>

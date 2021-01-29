@@ -21,6 +21,7 @@ class MyProfileViewModel: ViewModel() {
             name = null,
             surname = null,
             telephone = null,
+            description = null,
             email = FirebaseAuth.getInstance().currentUser?.email,
             birthday = null,
             profile_pic = null,
@@ -28,13 +29,14 @@ class MyProfileViewModel: ViewModel() {
         )
     )
 
-    fun createPerson(name:String?, surname:String?, telephone:String?, birthday:String?, profile_pic:String?, preferences: ArrayList<String> = arrayListOf<String>()) {
+    fun createPerson(name:String?, surname:String?, telephone:String?, birthday:String?, profile_pic:String?, preferences: ArrayList<String> = arrayListOf<String>(), description: String? = null) {
 
         myprofileLiveData.value = myprofileLiveData.value?.copy(
                 id = personID,
                 name = name,
                 surname = surname,
                 telephone = telephone,
+                description = description,
                 email = FirebaseAuth.getInstance().currentUser?.email,
                 birthday = birthday,
                 profile_pic = profile_pic,
@@ -64,6 +66,7 @@ class MyProfileViewModel: ViewModel() {
                                 name = document.getString("name"),
                                 surname = document.getString("surname"),
                                 telephone = document.getString("telephone"),
+                                description = document.getString("description"),
                                 email = document.getString("email"),
                                 birthday = document.getString("birthday"),
                                 profile_pic = document.getString("profile_pic"),
@@ -85,7 +88,7 @@ class MyProfileViewModel: ViewModel() {
     }
 
     //Update person data on db
-    fun updateCurrentPerson(name:String?, surname:String?, telephone:String?, birthday:String?, preferences: ArrayList<String> = arrayListOf<String>()){
+    fun updateCurrentPerson(name:String?, surname:String?, telephone:String?, description:String?, birthday:String?, preferences: ArrayList<String> = arrayListOf<String>()){
         //Obtain the document whoose id field is = personID
         val docRef = db.collection("Users").document(personID)
 
@@ -100,6 +103,7 @@ class MyProfileViewModel: ViewModel() {
                                 name = name,
                                 surname = surname,
                                 telephone = telephone,
+                                description = description,
                                 email = FirebaseAuth.getInstance().currentUser?.email,
                                 birthday = birthday,
                                 preferences = arrayListOf<String>()
@@ -111,6 +115,7 @@ class MyProfileViewModel: ViewModel() {
                                     "name" to  it.name,
                                     "surname" to it.surname,
                                     "telephone" to it.telephone,
+                                    "description" to it.description,
                                     "email" to it.email,
                                     "birthday" to it.birthday
                             ))
@@ -128,6 +133,7 @@ class MyProfileViewModel: ViewModel() {
     }
 
     fun updatePersonPic(profile_pic: String?){
+        println("Aggiornamento immagine profilo della persona")
         //Obtain the document whoose id field is = personID
         val docRef = db.collection("Users").document(personID)
 
@@ -176,7 +182,7 @@ class MyProfileViewModel: ViewModel() {
     * We can call this functions without arguments or with arguments (ex: we have the data from Facebook or Google login)
     *
     * */
-    fun checkPersonData(name:String? = null, surname:String? = null, telephone:String? = null, birthday:String? = null, profile_pic:String? = null, preferences: ArrayList<String> = arrayListOf<String>()){
+    fun checkPersonData(name:String? = null, surname:String? = null, telephone:String? = null, birthday:String? = null, profile_pic:String? = null, preferences: ArrayList<String> = arrayListOf<String>(), description: String? = null){
 
         println("ID persona: $personID")
         val docRef = db.collection("Users").document(personID)
@@ -190,7 +196,7 @@ class MyProfileViewModel: ViewModel() {
                         getCurrentPerson()
                     }else{
                         println("Creazione persona in corso..")
-                        createPerson(name, surname, telephone, birthday, profile_pic, preferences)
+                        createPerson(name, surname, telephone, birthday, profile_pic, preferences, description)
                     }
                 }
     }

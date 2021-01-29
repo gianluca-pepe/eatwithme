@@ -13,42 +13,54 @@
     >
 
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/input_user_name"
-        android:layout_width="351dp"
-        android:layout_height="54dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_user_name_cont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:hint="Name"
+        android:textColorHint="@android:color/secondary_text_light"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="filled"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_upload_image" />
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout5">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/input_user_surname"
-        android:layout_width="351dp"
-        android:layout_height="54dp"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:hint="@string/name_hint"
+            android:inputType="textPersonName" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_user_surname_cont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:hint="Surname"
+        android:textColorHint="@android:color/secondary_text_light"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="filled"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_name" />
+        app:layout_constraintTop_toBottomOf="@+id/input_user_name_cont">
 
-    <TextView
-        android:id="@+id/input_user_birthday"
-        android:layout_width="224dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:hint="Birthday date"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.087"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_surname" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_user_surname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:hint="@string/surname_hint"
+            android:inputType="textPersonName"
+            android:textColor="#000000" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <!--<com.google.android.material.textfield.TextInputEditText
         android:id="@+id/input_user_mail"
@@ -62,88 +74,156 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_user_telephone" />-->
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/input_user_telephone"
-        android:layout_width="351dp"
-        android:layout_height="54dp"
+
+    <TextView
+        android:id="@+id/input_user_birthday"
+        android:layout_width="133dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="18dp"
+        android:hint="@string/birthday_date"
+        android:textColor="#000000"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintStart_toEndOf="@+id/img_user_calendar"
+        app:layout_constraintTop_toBottomOf="@+id/input_user_surname_cont" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_user_telephone_cont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:hint="Telephone"
+        android:textColorHint="@android:color/secondary_text_light"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="filled"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.535"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/input_user_birthday" >
 
-    <ImageView
-        android:id="@+id/img_userpic"
-        android:layout_width="206dp"
-        android:layout_height="213dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_baseline_person_outline_240"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_user_telephone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:hint="@string/telephone"
+            android:inputType="textPersonName"
+            android:textColor="#000000" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+ù
+
+    <FrameLayout
+        android:id="@+id/frameLayout5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/btn_upload_image"
-        android:layout_width="140dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="26dp"
-        android:text="Save pic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.572"
-        app:layout_constraintStart_toEndOf="@+id/btn_choose_image"
-        app:layout_constraintTop_toBottomOf="@+id/img_userpic" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            app:cardBackgroundColor="@color/colorPrimaryDark"
+            app:cardCornerRadius="80dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/img_userpic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_baseline_person_outline_240" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="end|bottom"
+            app:cardBackgroundColor="@color/colorPrimary"
+            app:cardCornerRadius="25dp">
+
+            <Button
+                android:id="@+id/btn_upload_image"
+                android:layout_width="60dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/colorPrimary"
+                android:elevation="0dp"
+                android:textSize="40dp"
+                app:icon="@drawable/ic_baseline_photo_camera_24"
+                app:iconSize="28dp"
+                app:iconTint="@color/white" />
+
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
+
 
     <Button
         android:id="@+id/btn_modify_profile"
         android:layout_width="0dp"
-        android:layout_height="46dp"
+        android:layout_height="52dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="20dp"
-        android:text="Modify profile"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/modify_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.519"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_telephone" />
+        app:layout_constraintTop_toBottomOf="@+id/input_user_desc_cont" />
 
     <ImageView
         android:id="@+id/img_user_calendar"
-        android:layout_width="40dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="38dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:src="@drawable/ic_baseline_calendar_today_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.113"
-        app:layout_constraintStart_toEndOf="@+id/input_user_birthday"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_surname" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_user_surname_cont" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="2dp"
-        android:text="Birthday"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_birthday" />
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/birthday"
+        app:layout_constraintStart_toEndOf="@+id/input_user_birthday"
+        app:layout_constraintTop_toBottomOf="@+id/input_user_surname_cont" />
 
-    <Button
-        android:id="@+id/btn_choose_image"
-        android:layout_width="140dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="4dp"
-        android:text="Upload pic"
-        app:layout_constraintEnd_toStartOf="@+id/btn_upload_image"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_user_desc_cont"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:textColorHint="@android:color/secondary_text_light"
+        app:boxBackgroundColor="@color/white"
+        app:boxBackgroundMode="filled"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_userpic" />
+        app:layout_constraintTop_toBottomOf="@+id/input_user_telephone_cont" >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_user_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:hint="@string/short_description"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:textColor="#000000" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

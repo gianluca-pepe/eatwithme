@@ -25,6 +25,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
+import com.bumptech.glide.signature.ObjectKey
 
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
@@ -61,6 +62,7 @@ class MyProfileFragment : Fragment() {
     private lateinit var pers_birthday: TextView
     private lateinit var pers_birthday_calendar: ImageView
     private lateinit var pers_telephone: TextInputEditText
+    private lateinit var pers_description: TextInputEditText
     private lateinit var pers_email: TextInputEditText
     private lateinit var modifyProfile: Button
     private lateinit var btn_choose_image: Button
@@ -80,8 +82,10 @@ class MyProfileFragment : Fragment() {
         pers_birthday_calendar = view.findViewById(R.id.img_user_calendar)
         //pers_email = view.findViewById(R.id.input_user_mail)
         pers_telephone = view.findViewById(R.id.input_user_telephone)
+        pers_description = view.findViewById(R.id.input_user_description)
+
         modifyProfile = view.findViewById(R.id.btn_modify_profile)
-        btn_choose_image = view.findViewById(R.id.btn_choose_image)
+        //btn_choose_image = view.findViewById(R.id.btn_choose_image)
         btn_upload_image = view.findViewById(R.id.btn_upload_image)
         img_userpic = view.findViewById(R.id.img_userpic)
 
@@ -96,6 +100,7 @@ class MyProfileFragment : Fragment() {
             pers_surname.setText(it.surname)
             pers_birthday.text = it.birthday?.toString() ?: ""
             pers_telephone.setText(it.telephone)
+            pers_description.setText(it.description)
             if(it.profile_pic != null){
 
                 //val storage = FirebaseStorage.getInstance()
@@ -103,6 +108,7 @@ class MyProfileFragment : Fragment() {
                 //val gsReference = storage.getReferenceFromUrl("gs://bucket/images/stars.jpg")
                 GlideApp.with(this)
                         .load(imageref)
+                        .signature(ObjectKey(System.currentTimeMillis()))
                         .into(img_userpic)
 
             }
@@ -114,8 +120,8 @@ class MyProfileFragment : Fragment() {
         firebaseStore = FirebaseStorage.getInstance()
         storageReference = FirebaseStorage.getInstance().reference
 
-        btn_choose_image.setOnClickListener { launchGallery() }
-        btn_upload_image.setOnClickListener { uploadImage() }
+        //btn_choose_image.setOnClickListener { launchGallery() }
+        btn_upload_image.setOnClickListener { launchGallery() }
 
 
         return view
@@ -149,7 +155,8 @@ class MyProfileFragment : Fragment() {
                     name = pers_name.text.toString(),
                     surname = pers_surname.text.toString(),
                     telephone = pers_telephone.text.toString(),
-                    birthday = pers_birthday.text.toString()
+                    birthday = pers_birthday.text.toString(),
+                    description = pers_description.text?.toString()
             )
 
             Toast.makeText(context, "Profile info succesfully modified", Toast.LENGTH_SHORT).show()
@@ -226,10 +233,14 @@ class MyProfileFragment : Fragment() {
 
             filePath = data.data
             try {
+                /*
                 //println(filePath)
                 val bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, filePath)
                 //println(bitmap)
                 img_userpic.setImageBitmap(bitmap)
+                */
+                uploadImage()
+
 
             } catch (e: IOException) {
                 e.printStackTrace()

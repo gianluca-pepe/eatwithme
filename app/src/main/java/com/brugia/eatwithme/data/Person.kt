@@ -13,6 +13,7 @@ data class Person(
         var name: String? = null,
         var surname: String? = null,
         var telephone: String? = null,
+        var description: String? = null,
         var email: String? = null,
         var birthday: String? = null,
         var profile_pic: String? = null,
@@ -30,6 +31,7 @@ data class Person(
         name = snapshot.getString("name")
         surname = snapshot.getString("surname")
         telephone = snapshot.getString("telephone")
+        description = snapshot.getString("description")
         email = snapshot.getString("email")
         birthday = snapshot.getString("birthday")
         profile_pic = snapshot.getString("profile_pic")
