@@ -136,7 +136,7 @@
                 android:id="@+id/txtct_RestaurantName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Nome ristorante"
+                android:text="Place name will appear here"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -147,7 +147,7 @@
                 android:id="@+id/txtct_RestaurantAddress"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Via di prova, snc, 04011 Aprilia (LT)"
+                android:text="Place address will appear here"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantName" />
@@ -199,7 +199,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantAddress" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/txt_pricelabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="88dp"
@@ -217,7 +217,7 @@
                 android:layout_marginTop="9dp"
                 android:text="$$"
                 android:textSize="18sp"
-                app:layout_constraintStart_toEndOf="@+id/textView6"
+                app:layout_constraintStart_toEndOf="@+id/txt_pricelabel"
                 app:layout_constraintTop_toBottomOf="@+id/txtct_RestaurantAddress" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

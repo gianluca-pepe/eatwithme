@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.brugia.eatwithme.createtable.CreateTableViewModel
+import com.brugia.eatwithme.data.Restaurant
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
 import com.brugia.eatwithme.datetimepickers.TimePickerFragment
 import com.brugia.eatwithme.location.LocationViewModel
@@ -68,6 +69,7 @@ class CreateTableFragment : Fragment() {
 
     private lateinit var placeID: String
     private lateinit var placeName: String
+    private lateinit var restaurant: Restaurant
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,7 +153,7 @@ class CreateTableFragment : Fragment() {
                     descriptionInputView.text.toString(),
                     parseInt(maxParticipantsInputView.text.toString()),
                     location,
-                    placeID
+                    restaurant
             )
 
             newTableViewModel.creationState.observe(viewLifecycleOwner, {

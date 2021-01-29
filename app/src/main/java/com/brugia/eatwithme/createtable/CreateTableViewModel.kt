@@ -67,13 +67,18 @@ class CreateTableViewModel: ViewModel() {
             )
         }
 
+    var restaurant: Restaurant?
+        get() = table.value?.restaurant
+        set(value) {
+            _tableLiveData.value = _tableLiveData.value?.copy(
+                    restaurant = value
+            )
+        }
+
     val date: Timestamp?
         get() = table.value?.timestamp
 
 
-
-    private var placeDetailService: PlaceDetailService= PlaceDetailService.create()
-    private var restaurant: Restaurant? = null
 
     fun setDate(year: Int, month: Int, day: Int) {
         calendar.set(year,month,day)
@@ -90,123 +95,33 @@ class CreateTableViewModel: ViewModel() {
         )
     }
 
-    fun createTable(name:String, descr:String, maxParticipants:Int, location: Location? = null, placeID: String? = null) {
+    fun createTable(name: String, descr: String, maxParticipants:Int, location: Location? = null, restaurant: Restaurant? = null) {
         val geoPoint =
                 if (location == null) GeoPoint(0.0,0.0)
                 else GeoPoint(location.latitude, location.longitude)
 
 
-
-        //Obtain lists of restaurants from Places API
-        //Get restaurants list within 2 kilometers
-
-        val apiKey = BuildConfig.MAPS_KEY
-        /*
-        val radiusInMeters = 2000
-        if (location != null) {
-            placesService.nearbyPlaces(
-                    apiKey = apiKey,
-                    location = "${location.latitude},${location.longitude}",
-                    radiusInMeters = radiusInMeters,
-                    placeType = "restaurant"
-            ).enqueue(
-                    object : Callback<NearbyPlacesResponse> {
-                        override fun onFailure(call: Call<NearbyPlacesResponse>, t: Throwable) {
-                            Log.e(ContentValues.TAG, "Failed to get nearby places", t)
-                        }
-
-                        override fun onResponse(
-                                call: Call<NearbyPlacesResponse>,
-                                response: Response<NearbyPlacesResponse>
-                        ) {
-                            if (!response.isSuccessful) {
-                                Log.e(ContentValues.TAG, "Failed to get nearby places")
-                                return
-                            }
-
-                            restaurants = response.body()?.results ?: emptyList()
-
-                            //We have obtained the list of restaurants, we can insert the table inside db
-                            println("Retrieved restaurants:" + restaurants)
-
-                            _tableLiveData.value = _tableLiveData.value?.copy(
-                                    name = name,
-                                    description = descr,
-                                    maxParticipants = maxParticipants,
-                                    location = hashMapOf(
-                                            "label" to "null",
-                                            "latlog" to geoPoint
-                                    ),
-                                    restaurantsList = restaurants!!
-                            )
-
-                            _tableLiveData.value?.location?.set("geohash", _tableLiveData.value?.geoHash())
-
-                            _tableLiveData.value?.let {
-                                db.collection("Tables").add(it).addOnSuccessListener {
-                                    _creationState.value = true
-                                }.addOnFailureListener { e ->
-                                    _creationState.value = false
-                                    println(e)
-                                }
-                            }
-
-                        }
-                    }
-            )
-        }
-        */
-
         /*Obtain restaurant info given the id*/
-        if (placeID != null) {
-            placeDetailService.PlaceDetail(
-                    apiKey = apiKey,
-                    placeID = placeID
-            ).enqueue(
-                    object : Callback<PlaceDetailResponse> {
-                        override fun onFailure(call: Call<PlaceDetailResponse>, t: Throwable) {
-                            Log.e(ContentValues.TAG, "Failed to get place informations", t)
-                        }
+        _tableLiveData.value = _tableLiveData.value?.copy(
+                name = name,
+                description = descr,
+                maxParticipants = maxParticipants,
+                location = hashMapOf(
+                        "label" to "null",
+                        "latlog" to geoPoint
+                ),
+                restaurant = restaurant!!
+        )
 
-                        override fun onResponse(
-                                call: Call<PlaceDetailResponse>,
-                                response: Response<PlaceDetailResponse>
-                        ) {
-                            if (!response.isSuccessful) {
-                                Log.e(ContentValues.TAG, "Failed to get nearby places")
-                                return
-                            }
+        _tableLiveData.value?.location?.set("geohash", _tableLiveData.value?.geoHash())
 
-                            restaurant = response.body()?.result ?: null
-
-                            //We have obtained the list of restaurants, we can insert the table inside db
-                            println("Retrieved restaurant:" + restaurant)
-
-                            _tableLiveData.value = _tableLiveData.value?.copy(
-                                    name = name,
-                                    description = descr,
-                                    maxParticipants = maxParticipants,
-                                    location = hashMapOf(
-                                            "label" to "null",
-                                            "latlog" to geoPoint
-                                    ),
-                                    restaurant = restaurant!!
-                            )
-
-                            _tableLiveData.value?.location?.set("geohash", _tableLiveData.value?.geoHash())
-
-                            _tableLiveData.value?.let {
-                                db.collection("Tables").add(it).addOnSuccessListener {
-                                    _creationState.value = true
-                                }.addOnFailureListener { e ->
-                                    _creationState.value = false
-                                    println(e)
-                                }
-                            }
-
-                        }
-                    }
-            )
+        _tableLiveData.value?.let {
+            db.collection("Tables").add(it).addOnSuccessListener {
+                _creationState.value = true
+            }.addOnFailureListener { e ->
+                _creationState.value = false
+                println(e)
+            }
         }
     }
 }

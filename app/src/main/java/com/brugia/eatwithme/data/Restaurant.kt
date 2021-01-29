@@ -25,7 +25,8 @@ data class Restaurant(
         val price_level: Int,
         val photos: List<Photo>,
         val formatted_phone_number: String,
-        val formatted_address: String
+        val formatted_address: String,
+        val icon: String
 ) {
     override fun equals(other: Any?): Boolean {
         if (other !is Restaurant) {
