@@ -31,6 +31,7 @@ import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -68,6 +69,7 @@ class MyProfileFragment : Fragment() {
     private lateinit var btn_choose_image: Button
     private lateinit var btn_upload_image: Button
     private lateinit var img_userpic: ImageView
+    private lateinit var btn_logout: Button
 
     private val datePicker = DatePickerFragment(::onDateSet)
 
@@ -88,6 +90,8 @@ class MyProfileFragment : Fragment() {
         //btn_choose_image = view.findViewById(R.id.btn_choose_image)
         btn_upload_image = view.findViewById(R.id.btn_upload_image)
         img_userpic = view.findViewById(R.id.img_userpic)
+
+        btn_logout = view.findViewById(R.id.btn_user_logout)
 
         personViewModel.checkPersonData()//check if person data are loaded and load them
 
@@ -116,6 +120,7 @@ class MyProfileFragment : Fragment() {
 
         pers_birthday_calendar.setOnClickListener { this.showDatePickerDialog() }
         modifyProfile.setOnClickListener { this.modifyProfile() }
+        btn_logout.setOnClickListener { this.logout() }
 
         firebaseStore = FirebaseStorage.getInstance()
         storageReference = FirebaseStorage.getInstance().reference
@@ -246,6 +251,12 @@ class MyProfileFragment : Fragment() {
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun logout(){
+        Firebase.auth.signOut()
+        startActivity(Intent(context, LoginRegisterActivity::class.java))
+        activity?.finish()
     }
 
 
