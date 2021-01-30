@@ -1,4 +1,4 @@
-package com.brugia.eatwithme
+package com.brugia.eatwithme.tablelist
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,31 +9,24 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.brugia.eatwithme.R
 import com.brugia.eatwithme.data.Table
-import com.brugia.eatwithme.location.LocationViewModel
-import com.brugia.eatwithme.location.LocationViewModelFactory
-import com.brugia.eatwithme.tablelist.*
 
 
-class MainFragment : Fragment() {
+class TableListFragment : Fragment() {
 
     lateinit var seek: SeekBar
     lateinit var txtkm: TextView
     lateinit var address: TextView
-
+    private val DEFAULT_RADIUS = 10
 
     private val newTableActivityRequestCode = 1
-    private val tablesListViewModel by viewModels<TablesListViewModel> {
-        TablesListViewModelFactory(this)
-    }
-
-    private val locationViewModel by activityViewModels<LocationViewModel> {
-        LocationViewModelFactory(this.requireActivity().application)
+    private val tablesListViewModel by activityViewModels<TablesListViewModel> {
+        TablesListViewModelFactory(this.requireContext())
     }
 
     private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
@@ -58,16 +51,23 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        return inflater.inflate(R.layout.fragment_table_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //tablesListViewModel.populate()
         /* SeekBar management*/
-        seek = view.findViewById<SeekBar>(R.id.seekBar)
-        txtkm = view.findViewById<TextView>(R.id.txtchilometri)
-        seek?.progress = locationViewModel.radius.value!! * 10
+        seek = view.findViewById(R.id.seekBar)
+        txtkm = view.findViewById(R.id.txtchilometri)
+        seek.progress = DEFAULT_RADIUS * 10
+        txtkm.text = DEFAULT_RADIUS.toString()
+
+        if (tablesListViewModel.location.value == null) {
+            seek.visibility = View.GONE
+            txtkm.visibility = View.GONE
+        }
+
         seek?.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seek: SeekBar,
@@ -75,7 +75,7 @@ class MainFragment : Fragment() {
                 // write custom code for progress is changed
                 //Toast.makeText(getActivity(), "Progress is: " +  seek.progress+"/"+seek.max, Toast.LENGTH_SHORT).show()
                 //txtkm.text = seek.progress.toString() + " Km"
-                locationViewModel.setRadius(seek.progress / 10)
+                tablesListViewModel.radius.value = seek.progress / 10
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
@@ -89,10 +89,7 @@ class MainFragment : Fragment() {
                 //checkLocationPermission()
 
                 println("dovrebbe aggiornare")
-                tablesListViewModel.refresh(
-                    locationViewModel.getLocationData().value,
-                    locationViewModel.radius.value
-                )
+                tablesListViewModel.refresh()
             }
         })
         /* End SeekBar management*/
@@ -130,17 +127,15 @@ class MainFragment : Fragment() {
                 swipeRefreshLayout.isRefreshing = false
             }
         })
-
-        locationViewModel.getLocationData().observe(viewLifecycleOwner, {
-            println("location set")
-            println(it)
+/*
+        tablesListViewModel.location.observe(viewLifecycleOwner, {
             if (!isLoading) {
                 isLoading = true
-                tablesListViewModel.refresh(it, locationViewModel.radius.value)
+                tablesListViewModel.refresh()
             }
         })
-
-        locationViewModel.radius.observe(viewLifecycleOwner, {
+*/
+        tablesListViewModel.radius.observe(viewLifecycleOwner, {
             it?.let {
                 txtkm.text = it.toString() + " km"
             }
@@ -160,18 +155,15 @@ class MainFragment : Fragment() {
         }
 
         address = view.findViewById(R.id.addressTextView)
-        locationViewModel.address.observe(viewLifecycleOwner, {
-            address.text = it
-        })
+//        locationViewModel.address.observe(viewLifecycleOwner, {
+  //          address.text = it
+    //    })
 
         swipeRefreshLayout = view.findViewById(R.id.swipeAllTablesContainer)
         swipeRefreshLayout.setOnRefreshListener {
             if (!isLoading) {
                 isLoading = true
-                tablesListViewModel.refresh(
-                    locationViewModel.getLocationData().value,
-                    locationViewModel.radius.value
-                )
+                tablesListViewModel.refresh()
             }
         }
     }
@@ -210,10 +202,7 @@ class MainFragment : Fragment() {
                         tablesAdapter.submitList(currentList)
 
                         isLoading = true
-                        tablesListViewModel.loadMoreTables(
-                            locationViewModel.getLocationData().value,
-                            locationViewModel.radius.value!!
-                        )
+                        tablesListViewModel.loadMoreTables()
                     }
                 }
             }

@@ -6,7 +6,7 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/mainFragment"
+            android:id="@+id/homepageFragment"
             android:icon="@drawable/ic_baseline_restaurant_24"
             android:title="@string/menu_explore" />
 

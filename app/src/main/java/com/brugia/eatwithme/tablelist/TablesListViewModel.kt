@@ -1,20 +1,22 @@
 
 package com.brugia.eatwithme.tablelist
 
+import android.content.Context
 import android.location.Location
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.brugia.eatwithme.MainFragment
-import com.brugia.eatwithme.data.Table
 import com.brugia.eatwithme.data.TablesDataSource
-import com.brugia.eatwithme.mytables.NextTables
-import com.brugia.eatwithme.mytables.PastTables
+import com.brugia.eatwithme.data.mealcategory.MealCategory
 
 class TablesListViewModel(private val dataSource: TablesDataSource) : ViewModel() {
     val tablesLiveData = dataSource.getTableList()
+    val nearbyTables = dataSource.getNearbyTableList()
     val endReached = dataSource.endReached
     val BATCHSIZE = dataSource.BATCHSIZE
+    val location = MutableLiveData<Location?>(null)
+    val radius = MutableLiveData<Int?>(null)
 /*
     /* If the name and description are present, create new Table and add it to the datasource */
     fun insertTable(
@@ -48,22 +50,28 @@ class TablesListViewModel(private val dataSource: TablesDataSource) : ViewModel(
     }
  */
 
-    fun loadMoreTables(location: Location? = null, radius: Int? = null) {
-        if (location != null && radius != null)
-            dataSource.loadTablesBatchWithLocation(location, radius)
+    fun loadMoreTables(location: Location? = this.location.value, radius: Int? = this.radius.value,
+            mealCategory: Int = MealCategory.ALL) {
+        if (location != null)
+            dataSource.loadTablesBatchWithLocation(location, radius?: 0, categoryID = mealCategory)
         else
-            dataSource.loadTablesBatch()
+            dataSource.loadTablesBatch(categoryID = mealCategory)
     }
 
-    fun refresh(location: Location?= null, radius: Int?= null) {
-        if (location != null && radius != null)
-            dataSource.loadTablesBatchWithLocation(location, radius, true)
+    fun refresh(location: Location?= this.location.value, radius: Int?= this.radius.value,
+        mealCategory: Int = MealCategory.ALL) {
+        if (location != null)
+            dataSource.loadTablesBatchWithLocation(location, radius?: 0, true, mealCategory)
         else
-            dataSource.loadTablesBatch(true)
+            dataSource.loadTablesBatch(true, categoryID = mealCategory)
+    }
+
+    fun loadNearby(location: Location) {
+        dataSource.loadNearbyTables(location)
     }
 }
 
-class TablesListViewModelFactory(private val context: MainFragment) : ViewModelProvider.Factory {
+class TablesListViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TablesListViewModel::class.java)) {

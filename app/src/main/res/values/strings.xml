@@ -71,4 +71,26 @@
     <string name="logout"><u>Logout</u></string>
     <string name="join">Partecipa</string>
 
+
+    <!-- Homepage -->
+    <string name="homepage.title">Esplora</string>
+    <string name="upcoming_tables">Prossimi Tavoli</string>
+    <string name="nearby_tables">Nei Paraggi</string>
+    <string name="categories_title">Categorie</string>
+    <string name="homepage.see_all">Vedi Tutti</string>
+    <string name="other_cities_title">Altre Città</string>
+    <string name="principal_cities_title">Città Principali</string>
+    <string name="owner">Propietario</string>
+
+    <!-- cities names -->
+    <string name="rome">Roma</string>
+    <string name="milan">Milano</string>
+    <string name="florence">Firenze</string>
+    <string name="naples">Napoli</string>
+
+    <!-- meal categories names -->
+    <string name="meal_lunch">Pranzo</string>
+    <string name="meal_breakfast">Colazione</string>
+    <string name="meal_dinner">Cena</string>
+    <string name="meal_cocktail">Aperitivo</string>
 </resources>

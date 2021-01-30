@@ -6,6 +6,7 @@ import android.content.res.Resources
 import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.brugia.eatwithme.data.mealcategory.MealCategory
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Task
@@ -32,6 +33,11 @@ class TablesDataSource(resources: Resources) {
     private val tablesLiveData: MutableLiveData<List<Table?>> by lazy {
         MutableLiveData<List<Table?>>()
     }
+
+    private val nearbyTablesLiveData: MutableLiveData<List<Table?>> by lazy {
+        MutableLiveData<List<Table?>>()
+    }
+
     private val myNextTablesLiveData: MutableLiveData<List<Table>> by lazy {
         MutableLiveData<List<Table>>()
     }
@@ -48,14 +54,21 @@ class TablesDataSource(resources: Resources) {
     private val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
 
     private lateinit var lastDocument: DocumentSnapshot
-    private val initialAllTablesQuery = db.collection("Tables")
+    private val initialTablesQueryLocation = db.collection("Tables")
             // not working
         //.whereGreaterThanOrEqualTo("timestamp", todayDate)
         //.orderBy("timestamp")
         .whereEqualTo("full", false)
         .orderBy("geoHash")
         .limit(BATCHSIZE)
-    private var allTablesQuery = initialAllTablesQuery
+
+    private val initialTablesQuery = db.collection("Tables")
+        .whereEqualTo("full", false)
+        .whereGreaterThanOrEqualTo("timestamp", todayDate)
+        .orderBy("timestamp")
+
+    private var allTablesQueryLocation = initialTablesQueryLocation
+    private var allTablesQuery = initialTablesQuery
 
     private val myNextTablesQuery = db.collection("Tables")
         .whereGreaterThanOrEqualTo("timestamp", todayDate)
@@ -77,12 +90,13 @@ class TablesDataSource(resources: Resources) {
         get() = _endReached
 
     private fun refreshAllTablesList() {
-        println("refreshed")
-        allTablesQuery = initialAllTablesQuery
+        allTablesQueryLocation = initialTablesQueryLocation
+        allTablesQuery = initialTablesQuery
         tempList.clear()
     }
 
-    fun loadTablesBatchWithLocation(location: Location, radius: Int, refresh: Boolean = false) {
+    fun loadTablesBatchWithLocation(location: Location, radius: Int, refresh: Boolean = false,
+                                    categoryID: Int = MealCategory.ALL) {
         _endReached.value = false
 
         if (refresh) refreshAllTablesList()
@@ -95,7 +109,7 @@ class TablesDataSource(resources: Resources) {
         // depending on overlap, but in most cases there are 4.
         val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeters)
         for (b in bounds) {
-            var q = allTablesQuery.startAt(b.startHash).endAt(b.endHash)
+            var q = allTablesQueryLocation.startAt(b.startHash).endAt(b.endHash)
 
             if (this::lastDocument.isInitialized && !refresh) {
                 q = q.startAfter(lastDocument)
@@ -121,8 +135,9 @@ class TablesDataSource(resources: Resources) {
                             GeoFireUtils.getDistanceBetween(docLocation, center)
                         if (distanceInM <= radiusInMeters) {
                             val newTable = Table(doc)
-                            println(newTable.restaurant)
-                            if (newTable.timestamp!! >= todayDate) {
+                            if (    newTable.timestamp!! >= todayDate &&
+                                    (categoryID == MealCategory.ALL || newTable.getCategory() == categoryID)
+                            ) {
                                 newTable.distance = distanceInM
                                 tempList.add(newTable)
                             }
@@ -142,7 +157,8 @@ class TablesDataSource(resources: Resources) {
             }
 
     }
-    fun loadTablesBatch(refresh: Boolean = false) {
+
+    fun loadTablesBatch(refresh: Boolean = false, categoryID: Int = MealCategory.ALL ) {
         _endReached.value = false
         if (this::lastDocument.isInitialized && !refresh) {
             allTablesQuery = allTablesQuery.startAfter(lastDocument)
@@ -159,11 +175,58 @@ class TablesDataSource(resources: Resources) {
             }
 
             println("query fatta con letture")
-            updateTableList(tempList, results!!)
+            updateTableList(tempList, results!!, categoryID)
             tablesLiveData.postValue(tempList)
             lastDocument = results.last()
+        }. addOnFailureListener {
+            println(it)
+        }
+    }
+
+    private val nearbyQuery = db.collection("Tables")
+            .whereEqualTo("full", false)
+            .orderBy("geoHash")
+            .limit(5)
+
+    fun loadNearbyTables(location: Location) {
+        val nearbyTableTempList = mutableListOf<Table>()
+        val center = GeoLocation(location.latitude, location.longitude)
+        val radiusInMeters = (50 * 1000).toDouble()
+        val tasks: MutableList<Task<QuerySnapshot>> = ArrayList()
+        // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
+        // a separate query for each pair. There can be up to 9 pairs of bounds
+        // depending on overlap, but in most cases there are 4.
+        val bounds = GeoFireUtils.getGeoHashQueryBounds(center, radiusInMeters)
+        for (b in bounds) {
+            var q = nearbyQuery.startAt(b.startHash).endAt(b.endHash)
+            tasks.add(q.get())
         }
 
+        // Collect all the query results together into a single list
+        Tasks.whenAllComplete(tasks)
+                .addOnCompleteListener {
+                    for (task in tasks) {
+                        for (doc in task.result) {
+
+                            val tableLat = doc.getDouble("restaurant.geometry.location.lat")!!
+                            val tableLong = doc.getDouble("restaurant.geometry.location.lng")!!
+
+                            // We have to filter out a few false positives due to GeoHash
+                            // accuracy, but most will match
+                            val docLocation = GeoLocation(tableLat, tableLong)
+                            val distanceInM =
+                                    GeoFireUtils.getDistanceBetween(docLocation, center)
+                            if (distanceInM <= radiusInMeters) {
+                                val newTable = Table(doc)
+                                if ( newTable.timestamp!! >= todayDate ) {
+                                    newTable.distance = distanceInM
+                                    nearbyTableTempList.add(newTable)
+                                }
+                            }
+                        }
+                    }
+                    nearbyTablesLiveData.postValue(nearbyTableTempList)
+                }
     }
 
     fun listenMyTables() {
@@ -229,6 +292,10 @@ class TablesDataSource(resources: Resources) {
         return tablesLiveData
     }
 
+    fun getNearbyTableList(): LiveData<List<Table?>> {
+        return nearbyTablesLiveData
+    }
+
     /*
     * This function returns next table (w.r.t. today included) in which the person appears
     * */
@@ -280,11 +347,13 @@ class TablesDataSource(resources: Resources) {
         return result
     }
 
-    private fun updateTableList(list: MutableList<Table>, docs: QuerySnapshot) {
+    private fun updateTableList(list: MutableList<Table>, docs: QuerySnapshot,
+                                categoryID: Int = MealCategory.ALL) {
         for(doc in docs) {
             try {
                 val newTable = Table(doc)
-                list.add(newTable)
+                if (categoryID == MealCategory.ALL || newTable.getCategory() == categoryID)
+                    list.add(newTable)
                 //if (!newTable.isFull()) list.add(newTable)
             } catch (e: Exception) {
                 println(e)

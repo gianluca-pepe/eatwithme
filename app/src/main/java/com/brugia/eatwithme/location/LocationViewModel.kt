@@ -1,13 +1,12 @@
 package com.brugia.eatwithme.location
 
 import android.app.Application
+import android.content.Context
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import androidx.lifecycle.*
-import com.brugia.eatwithme.MainFragment
-import com.brugia.eatwithme.data.TablesDataSource
-import com.brugia.eatwithme.tablelist.TablesListViewModel
-import com.google.android.gms.location.*
-import com.google.android.gms.tasks.Task
+import java.util.*
 
 class LocationViewModel(application: Application) : AndroidViewModel(application) {
     private val location = LocationLiveData(application)
@@ -32,6 +31,16 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun forceLocationRequest() { location.requestLocation() }
+
+    companion object {
+        fun getCityName(latitude: Double, longitude: Double, context: Context): String {
+            val addresses: List<Address>
+            val geocoder = Geocoder(context, Locale.getDefault())
+
+            addresses = geocoder.getFromLocation(latitude, longitude,1)
+            return addresses[0].locality?: ""
+        }
+    }
 }
 
 class LocationViewModelFactory(private val context: Application) : ViewModelProvider.Factory {

@@ -121,7 +121,6 @@ class TableInfoFragment : Fragment() {
     fun joinTable(view: View) {
         val person = personViewModel.myprofileLiveData.value
         if (person == null) return
-        val navigateToMain = { findNavController().navigate(R.id.mainFragment) }
 
         if ( person.isProfileIncomplete() ) {
             val alert = AlertDialog.Builder(this.requireContext())
@@ -144,11 +143,11 @@ class TableInfoFragment : Fragment() {
     }
 
     private fun navigateToThis() {
-        findNavController().navigate(R.id.action_select_table_info)
+        findNavController().navigate(R.id.action_select_table)
     }
 
     private fun navigateToMain() {
-        findNavController().navigate(R.id.mainFragment)
+        findNavController().navigate(R.id.homepageFragment)
     }
 
     private fun observeJoinState() {

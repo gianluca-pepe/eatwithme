@@ -85,7 +85,7 @@ class CreateTableFragment : Fragment() {
                         findNavController().navigate(R.id.mapsFragment)
                     }
                     .setNegativeButton(R.string.not_now) { _, _ ->
-                        findNavController().navigate(R.id.mainFragment)
+                        findNavController().navigate(R.id.homepageFragment)
                     }
                     .create().show()
             }

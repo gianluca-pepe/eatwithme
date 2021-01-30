@@ -3,6 +3,7 @@ package com.brugia.eatwithme.data
 
 import androidx.annotation.DrawableRes
 import com.brugia.eatwithme.R
+import com.brugia.eatwithme.data.mealcategory.MealCategory
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.core.GeoHash
@@ -99,5 +100,16 @@ data class Table(
             return GeoFireUtils.getGeoHashForLocation(GeoLocation(latitude!!, longitude!!))
 
         return ""
+    }
+
+    fun getCategory(): Int {
+        val hour = SimpleDateFormat("HH").format(tableDate).toInt()
+
+        return when(hour) {
+            in 12..15 -> MealCategory.LUNCH
+            in 19..24 -> MealCategory.DINNER
+            in 1..10 -> MealCategory.BREAKFAST
+            else -> MealCategory.APERITIF
+        }
     }
 }
