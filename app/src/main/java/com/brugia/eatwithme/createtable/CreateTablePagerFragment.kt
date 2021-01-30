@@ -118,7 +118,8 @@ class CreateTablePagerFragment : Fragment() {
             }
 
             if (viewPager.currentItem + 1 == viewPager.adapter?.itemCount) {
-                findNavController().navigate(R.id.tableLobbyFragment)
+                //findNavController().navigate(R.id.tableLobbyFragment)
+                findNavController().navigate(R.id.tableInfoFragment)
                 return
             }
 

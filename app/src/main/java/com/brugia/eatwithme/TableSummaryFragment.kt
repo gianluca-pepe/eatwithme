@@ -100,7 +100,7 @@ class TableSummaryFragment : Fragment() {
     }
 
     private fun navigateToLobby() {
-        findNavController().navigate(R.id.action_join_table)
+        findNavController().navigate(R.id.tableInfoFragment)
     }
 
     private fun navigateToMain() {

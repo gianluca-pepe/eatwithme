@@ -184,11 +184,7 @@ class MainFragment : Fragment() {
         startActivity(intent)
         */
         selectedTableViewModel.setSelectedTable(table)
-        if (selectedTableViewModel.doesUserParticipate()) {
-            this.findNavController().navigate(R.id.tableLobbyFragment)
-        } else {
-            this.findNavController().navigate(R.id.action_select_table)
-        }
+        this.findNavController().navigate(R.id.tableInfoFragment)
     }
 
 

@@ -66,11 +66,14 @@ class PastTables : Fragment() {
         startActivity(intent)
         */
         selectedTableViewModel.setSelectedTable(table)
+        this.findNavController().navigate(R.id.tableInfoFragment)
+        /*
         if (selectedTableViewModel.doesUserParticipate()) {
             this.findNavController().navigate(R.id.tableLobbyFragment)
         } else {
             this.findNavController().navigate(R.id.action_select_table)
         }
+        */
     }
 
 }

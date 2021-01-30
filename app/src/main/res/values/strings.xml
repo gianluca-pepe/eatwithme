@@ -69,5 +69,6 @@
     <string name="short_description">Breve descrizione di me</string>
     <string name="modify_profile">Modifica profilo</string>
     <string name="logout"><u>Logout</u></string>
+    <string name="join">Partecipa</string>
 
 </resources>

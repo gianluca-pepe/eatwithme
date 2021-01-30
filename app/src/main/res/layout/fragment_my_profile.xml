@@ -226,16 +226,16 @@
 
     <Button
         android:id="@+id/btn_user_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="80sp"
+        android:layout_height="36dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/fui_transparent"
         android:forceDarkAllowed="false"
         android:text="@string/logout"
-        android:textSize="12sp"
-        style="?android:attr/borderlessButtonStyle"
-        android:backgroundTint="@color/fui_transparent"
         android:textColor="@color/purple_700"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
