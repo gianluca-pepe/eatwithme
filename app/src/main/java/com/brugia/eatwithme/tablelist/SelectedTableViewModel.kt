@@ -57,6 +57,14 @@ class SelectedTableViewModel(val dataSource: TablesDataSource): ViewModel() {
 
         return false
     }
+
+    fun doesTableIsFull(): Boolean{
+        _selectedTable.value?.let {
+            return it.numParticipants == it.maxParticipants
+        }
+
+        return false
+    }
 }
 
 class SelectedTableViewModelFactory(private val context: Context) : ViewModelProvider.Factory {

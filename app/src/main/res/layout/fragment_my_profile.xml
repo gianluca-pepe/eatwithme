@@ -113,8 +113,6 @@
             android:textColor="#000000" />
     </com.google.android.material.textfield.TextInputLayout>
 
-ù
-
     <FrameLayout
         android:id="@+id/frameLayout5"
         android:layout_width="wrap_content"
