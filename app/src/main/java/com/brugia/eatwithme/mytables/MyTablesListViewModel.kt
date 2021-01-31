@@ -9,18 +9,21 @@ import com.brugia.eatwithme.tablelist.TablesListViewModel
 class MyTablesListViewModel (private val dataSource: TablesDataSource): ViewModel() {
     val myNextTablesLiveData = dataSource.getMyNextTablesList()
     val myPastTablesLiveData = dataSource.getMyPastTablesList()
+    init {
+        dataSource.listenMyTables()
+    }
 
     /**
      * Tells the datasource to stop listening for updates
      * Useful because we get charged for listening updates (should be free for low usage)
      */
     fun removeListeners() {
-        dataSource.myPastTablesRegistration.remove()
-        dataSource.myNextTablesRegistration.remove()
+        //dataSource.myPastTablesRegistration.remove()
+        //dataSource.myNextTablesRegistration.remove()
     }
 
     fun listenMyTables() {
-        dataSource.listenMyTables()
+       //dataSource.listenMyTables()
     }
 }
 

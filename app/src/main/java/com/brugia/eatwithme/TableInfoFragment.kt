@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.brugia.eatwithme.createtable.CreateTableViewModel
 import com.brugia.eatwithme.data.Person
 import com.brugia.eatwithme.data.mealcategory.MealCategory
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
@@ -30,6 +31,8 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.NonCancellable.cancel
 
 class TableInfoFragment : Fragment() {
+    // used for editing
+    private val newTableViewModel by activityViewModels<CreateTableViewModel>()
     private val tableViewModel by activityViewModels<SelectedTableViewModel> {
         SelectedTableViewModelFactory(this.requireContext())
     }
@@ -312,7 +315,11 @@ class TableInfoFragment : Fragment() {
     }
 
     private fun modifyTableClicked(){
-        /*User click on modify table*/
+        tableViewModel.getSelectedTable().value?.let {
+            newTableViewModel.setTable(it)
+            newTableViewModel.editing = true
+            findNavController().navigate(R.id.action_EditTable)
+        }
     }
 
     private fun exitTableClicked(){

@@ -43,7 +43,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:textColorHint="@android:color/secondary_text_light"
-            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundColor="@color/design_default_color_surface"
             app:boxBackgroundMode="filled"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -68,8 +68,6 @@
             android:textColorHint="@android:color/secondary_text_light"
             app:boxBackgroundColor="@color/design_default_color_surface"
             app:boxBackgroundMode="filled"
-            app:helperText="Opzionale"
-            app:helperTextEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/newTableName">
@@ -80,10 +78,45 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:hint="@string/description_hint"
-                android:inputType="textMultiLine"
-                android:maxLines="3" />
+                android:inputType="textPersonName" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <SeekBar
+            android:id="@+id/maxParticipantsBar"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="16dp"
+            android:max="8"
+            android:progress="5"
+            app:layout_constraintBottom_toBottomOf="@+id/textView6"
+            app:layout_constraintEnd_toStartOf="@+id/maxParticipantsValue"
+            app:layout_constraintStart_toEndOf="@+id/textView6"
+            app:layout_constraintTop_toTopOf="@+id/textView6" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="48dp"
+            android:text="Max. partecipanti"
+            android:textColor="@android:color/secondary_text_light"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/newTableDescription" />
+
+        <TextView
+            android:id="@+id/maxParticipantsValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/maxParticipantsBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/maxParticipantsBar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

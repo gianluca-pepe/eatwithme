@@ -75,7 +75,6 @@ class CreateTableMapFragment : FormPage() {
             }
 
     private val callback = OnMapReadyCallback { googleMap ->
-
         /**
          * Manipulates the map once available.
          * This callback is triggered when the map is ready to be used.
@@ -96,6 +95,14 @@ class CreateTableMapFragment : FormPage() {
             hideRestaurantCard()
             googleMap.clear()
         }
+
+        newTableViewModel.table.observe(viewLifecycleOwner, {
+            it.restaurant?.let { restaurant ->
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(restaurant.geometry?.location?.latLng!!,18.0f))
+                updateRestaurantData(restaurant)
+                this.restaurant = restaurant
+            }
+        })
     }
 
     override fun onCreateView(
@@ -129,9 +136,6 @@ class CreateTableMapFragment : FormPage() {
 
         // Initialize the SDK
         Places.initialize(this.requireActivity().application, BuildConfig.MAPS_KEY)
-        // Create a new PlacesClient instance
-        val placesClient = Places.createClient(this.requireActivity().application)
-
 
         val btn_search = view.findViewById<TextView>(R.id.btn_search)
 
@@ -144,7 +148,6 @@ class CreateTableMapFragment : FormPage() {
                     .build(this.requireActivity().application)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
-
     }
 
     private fun setPoiClick(map: GoogleMap) {
@@ -274,7 +277,6 @@ class CreateTableMapFragment : FormPage() {
 
     //Update restaurant info and add to the
     private fun updateRestaurantData(restaurant: Restaurant){
-        println(restaurant.photos[0])
         txtct_RestaurantName.text = restaurant.name
         txtct_RestaurantAddress.text = restaurant.formatted_address
         ratingBar.rating = restaurant.rating

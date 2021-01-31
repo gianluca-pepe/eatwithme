@@ -86,6 +86,14 @@ class CreateTablePagerFragment : Fragment() {
 
         nextBackButtonsView = view.findViewById(R.id.nextBackButtonsContainer)
         stepperView = view.findViewById(R.id.stepper)
+
+        findNavController().addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.label != "CreateTablePagerFragment") {
+                newTableViewModel.reset()
+                newTableViewModel.editing = false
+            }
+        }
+
         return view
     }
 

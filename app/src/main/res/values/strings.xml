@@ -53,6 +53,7 @@
     <string name="currency_symbol">€</string>
     <string name="success_title">Tavolo creato correttamente!</string>
     <string name="success_subtitle">Adesso gli utenti nei paraggi del luogo scelto vedranno il tuo tavolo.</string>
+    <string name="success_editing_title">Tavolo modificato correttamente!</string>
     <string name="success_button">Entra</string>
 
     <!-- Menu -->

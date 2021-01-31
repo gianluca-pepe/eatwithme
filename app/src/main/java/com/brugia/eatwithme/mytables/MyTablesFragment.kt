@@ -39,7 +39,7 @@ class MyTablesFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        myTablesListViewModel.listenMyTables()
+        //myTablesListViewModel.listenMyTables()
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_my_tables, container, false)
     }
