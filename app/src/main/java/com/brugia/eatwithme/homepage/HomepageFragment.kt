@@ -1,5 +1,8 @@
 package com.brugia.eatwithme.homepage
 
+import android.app.Activity
+import android.content.Intent
+import android.location.Location
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,11 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.brugia.eatwithme.BuildConfig
 import com.brugia.eatwithme.R
 import com.brugia.eatwithme.data.Table
 import com.brugia.eatwithme.data.city.City
@@ -26,10 +30,17 @@ import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.brugia.eatwithme.tablelist.TablesListViewModel
 import com.brugia.eatwithme.tablelist.TablesListViewModelFactory
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
 val DEFAULT_CITY_RADIUS = 20
 
 class HomepageFragment : Fragment() {
+    private val AUTOCOMPLETE_REQUEST_CODE = 2
+
     private val tablesListViewModel by activityViewModels<TablesListViewModel> {
         TablesListViewModelFactory(this.requireContext())
     }
@@ -64,6 +75,7 @@ class HomepageFragment : Fragment() {
     private val cityAdapter = CityAdapter { city -> onCityClick(city) }
 
     private lateinit var locationCityTextView: TextView
+    private lateinit var searchButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -150,6 +162,21 @@ class HomepageFragment : Fragment() {
         citiesRecyclerView = view.findViewById(R.id.citiesRecyclerView)
         citiesRecyclerView.adapter = cityAdapter
         initCitiesRecyclerView()
+
+        /**
+         * SEARCH PLACES
+         */
+        Places.initialize(this.requireActivity().application, BuildConfig.MAPS_KEY)
+        searchButton = view.findViewById(R.id.searchButton)
+        searchButton.setOnClickListener {
+            // Set the fields to specify which types of place data to
+            // return after the user has made a selection.
+            val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS, Place.Field.LAT_LNG)
+            // Start the autocomplete intent.
+            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                    .build(this.requireActivity().application)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+        }
     }
 
     private fun initMealCategoriesRecyclerView() {
@@ -181,6 +208,39 @@ class HomepageFragment : Fragment() {
     private fun onTableClick(table: Table) {
         selectedTableViewModel.setSelectedTable(table)
         findNavController().navigate(R.id.tableInfoFragment)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    data?.let {
+                        val place = Autocomplete.getPlaceFromIntent(data)
+                        place.latLng?.let {
+                            val tempLocation = Location("")
+                            tempLocation.latitude = it.latitude
+                            tempLocation.longitude = it.longitude
+                            tablesListViewModel.location.value = tempLocation
+                            tablesListViewModel.radius.value = DEFAULT_CITY_RADIUS
+                            tablesListViewModel.refresh()
+                            findNavController().navigate(R.id.action_search)
+                        }
+                    }
+                }
+                AutocompleteActivity.RESULT_ERROR -> {
+                    Toast.makeText(this.context,R.string.generic_error_message, Toast.LENGTH_SHORT).show()
+                    data?.let {
+                        val status = Autocomplete.getStatusFromIntent(data)
+                        println(status.statusMessage.toString())
+                    }
+                }
+                Activity.RESULT_CANCELED -> {
+                    // The user canceled the operation.
+                }
+            }
+            return
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
 }

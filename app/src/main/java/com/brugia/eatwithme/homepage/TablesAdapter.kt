@@ -23,27 +23,12 @@ import java.util.*
 val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
 
 class TablesAdapter(private val onClick: (Table) -> Unit) :
-        ListAdapter<Table, RecyclerView.ViewHolder>(TableDiffCallback) {
+        ListAdapter<Table, TablesAdapter.TableViewHolder>(TableDiffCallback) {
 
-    private val VIEW_TYPE_ITEM = 0
-    private val VIEW_TYPE_LOADING = 1
-
-    /**
-     * Two types of view holders:
-     * - one for tables (receives a table)
-     * - one for progress bar at the bottom (receives null)
-     *
-     * this interface is needed in order to have a generic "type" of
-     * view holder so we can call .bind() in 'onBindViewHolder'
-     * no matter the type of the view holder we need.
-     */
-    interface ItemViewHolder {
-        fun bind(item: Table?) {}
-    }
 
     /* ViewHolder for Table, takes in the inflated view and the onClick behavior. */
     class TableViewHolder(itemView: View, val onClick: (Table) -> Unit) :
-            RecyclerView.ViewHolder(itemView), ItemViewHolder {
+            RecyclerView.ViewHolder(itemView) {
         private val tableTextViewTitle: TextView = itemView.findViewById(R.id.tableTitle)
         private val tableTextViewSubtitle: TextView = itemView.findViewById(R.id.tableSubtitle)
         private val tableTextViewNumPartecipants: TextView = itemView.findViewById(R.id.numParticipants)
@@ -64,7 +49,7 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
         }
 
         /* Bind table to the respective views */
-        override fun bind(table: Table?) {
+        fun bind(table: Table?) {
 
             if (table == null) return
             currentTable = table
@@ -103,24 +88,17 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
         }
     }
 
-    class LoadingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), ItemViewHolder {
-        private val progressBar = itemView.findViewById<ProgressBar>(R.id.progress_bar)
-
-        override fun bind(item: Table?) {
-        }
-    }
-
     /* Creates and inflates view and return TableViewHolder. */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TablesAdapter.TableViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.card_table, parent, false)
         return TableViewHolder(view, onClick)
     }
 
     /* Gets current table and uses it to bind view. */
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TablesAdapter.TableViewHolder, position: Int) {
         val table = getItem(position)
-        (holder as ItemViewHolder).bind(table)
+        holder.bind(table)
     }
 }
 
