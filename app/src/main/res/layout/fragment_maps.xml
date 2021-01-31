@@ -18,23 +18,37 @@
 
         <TextView
             android:id="@+id/txtPlaceName"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:text="Via Aldo Moro 3, Aprilia (LT)"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:hint="Inserisci un indirizzo"
+            android:textSize="14sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/btnChangePos"
+            app:layout_constraintEnd_toStartOf="@+id/btnChangePos"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/btnChangePos"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:text="Change position"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="76dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/design_default_color_surface"
+            app:cornerRadius="20dp"
+            app:icon="@drawable/ic_baseline_search_24"
+            app:iconGravity="textEnd"
+            app:iconPadding="0dp"
+            app:iconSize="32dp"
+            app:iconTint="@android:color/secondary_text_light"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.952"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtPlaceName" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <fragment

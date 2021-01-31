@@ -69,10 +69,10 @@ class MapsFragment : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-
         locationViewModel.getLocationData().observe(viewLifecycleOwner, {
             it?.let {
                 val currentPos = LatLng(it.latitude, it.longitude)
+                googleMap.clear()//remove previous marker
                 googleMap.addMarker(MarkerOptions().position(currentPos).title("My current position"))
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPos,10.0f))
             }
@@ -94,7 +94,11 @@ class MapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
 
         txtPos = view.findViewById<TextView>(R.id.txtPlaceName)
-
+        if(locationViewModel.address.value != null) {
+            txtPos.text = locationViewModel.address.value
+        }else{
+            txtPos.text = ""
+        }
         // Initialize the SDK
         Places.initialize(this.requireActivity().application, BuildConfig.MAPS_KEY)
         // Create a new PlacesClient instance
