@@ -2,10 +2,8 @@ package com.brugia.eatwithme.createtable.pages
 
 import android.app.Activity
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -135,9 +133,9 @@ class CreateTableMapFragment : FormPage() {
         val placesClient = Places.createClient(this.requireActivity().application)
 
 
-        val txtct_searchPlace = view.findViewById<TextView>(R.id.txtct_searchPlace)
+        val btn_search = view.findViewById<TextView>(R.id.btn_search)
 
-        txtct_searchPlace.setOnClickListener {
+        btn_search.setOnClickListener {
             // Set the fields to specify which types of place data to
             // return after the user has made a selection.
             val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS, Place.Field.LAT_LNG)
