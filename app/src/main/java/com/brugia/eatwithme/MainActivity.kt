@@ -4,10 +4,12 @@ import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -58,11 +60,11 @@ class MainActivity : AppCompatActivity() {
         //appBarConfiguration = AppBarConfiguration(topLevelDestinations, drawerLayout)
         //setupActionBarWithNavController(navController, appBarConfiguration)
 
-        //val navigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-        //navigationView.menu.findItem(R.id.logout).setOnMenuItemClickListener{ _ ->
-           // this.logout()
-           // return@setOnMenuItemClickListener true
-        //}
+        val navigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        navigationView.menu.findItem(R.id.createTablePagerFragment).setOnMenuItemClickListener{
+            onCreateTableNavigation()
+            return@setOnMenuItemClickListener true
+        }
 
         // retrieve custom location previously stored
         val sharedPreferences = this.getSharedPreferences(
@@ -91,6 +93,24 @@ class MainActivity : AppCompatActivity() {
         Firebase.auth.signOut()
         startActivity(Intent(this, LoginRegisterActivity::class.java))
         this.finish()
+    }
+
+    private fun onCreateTableNavigation() {
+        val person = personViewModel.myprofileLiveData.value
+        if ( person == null || person.isProfileIncomplete() ) {
+            val alert = AlertDialog.Builder(this)
+            alert
+                    .setTitle(R.string.incomplete_account_title)
+                    .setMessage(R.string.incomplete_account_message)
+                    .setNegativeButton(R.string.not_now) { _, _ -> }
+                    .setPositiveButton(R.string.incomplete_account_pos_button) { _, _ ->
+                        // user accept to update profile, go to profile settings fragment
+                        navController.navigate(R.id.myProfileSettingsFragment)
+                    }
+                    .create().show()
+        } else {
+            navController.navigate(R.id.createTablePagerFragment)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
