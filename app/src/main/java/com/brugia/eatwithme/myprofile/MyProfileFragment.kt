@@ -102,7 +102,15 @@ class MyProfileFragment : Fragment() {
         personViewModel.myprofileLiveData.observe(viewLifecycleOwner, {
             pers_name.setText(it.name)
             pers_surname.setText(it.surname)
-            pers_birthday.text = it.birthday?.toString() ?: ""
+            if(it.birthday != null) {
+                val str = it.birthday!!.split("/")
+                val month = str[1]
+                val day = str[2]
+                val year = str[0]
+                pers_birthday.text = "$day/$month/$year"
+            }else{
+                pers_birthday.text = ""
+            }
             pers_telephone.setText(it.telephone)
             pers_description.setText(it.description)
             if(it.profile_pic != null){
@@ -138,21 +146,21 @@ class MyProfileFragment : Fragment() {
         //Update user info
         if(pers_name.text.toString() == ""){
             ok = false
-            Toast.makeText(context, "Insert your name", Toast.LENGTH_SHORT).show()
+            pers_name.error = "Inserisci il tuo nome"
         }
         if(pers_surname.text.toString() == ""){
             ok = false
-            Toast.makeText(context, "Insert your surname", Toast.LENGTH_SHORT).show()
+            pers_surname.error = "Inserisci il tuo cognome"
         }
         if(pers_birthday.text.toString() == ""){
             ok = false
-            Toast.makeText(context, "Insert your birthday date", Toast.LENGTH_SHORT).show()
+            pers_birthday.error = "Inserisci la tua data di nascita"
         }
-        if(pers_telephone.text.toString() == ""){
-            ok = false
-            Toast.makeText(context, "Insert your telephone", Toast.LENGTH_SHORT).show()
-        }
-
+        val str = pers_birthday.text.split("/")
+        val month = str[1]
+        val day = str[0]
+        val year = str[2]
+        val dateOfBirth = "$year/$month/$day"
         if(ok){
 
             //val datebirth = SimpleDateFormat("yyyy/MM/dd").parse(pers_birthday.text.toString())
@@ -160,7 +168,7 @@ class MyProfileFragment : Fragment() {
                     name = pers_name.text.toString(),
                     surname = pers_surname.text.toString(),
                     telephone = pers_telephone.text.toString(),
-                    birthday = pers_birthday.text.toString(),
+                    birthday = dateOfBirth,
                     description = pers_description.text?.toString()
             )
 
@@ -173,18 +181,23 @@ class MyProfileFragment : Fragment() {
     }
 
     private fun onDateSet(year: Int, month: Int, day: Int) {
-        var dateString: String = "$year"
+
+        var dateString: String = "$day"
+
+        if(day>9){
+            dateString = "$day"
+        }else{
+            dateString = "0$day"
+        }
+
         if(month>9){
             dateString = "$dateString/$month"
         }else{
             dateString = "$dateString/0$month"
         }
 
-        if(day>9){
-            dateString = "$dateString/$day"
-        }else{
-            dateString = "$dateString/0$day"
-        }
+        dateString = "$dateString/$year"
+
         pers_birthday.setText(dateString)
 
     }
