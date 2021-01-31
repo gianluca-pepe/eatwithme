@@ -5,7 +5,7 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TableInfo">
+    tools:context=".TableInfoFragment">
 
     <Button
         android:id="@+id/join_table_button2"
@@ -326,5 +326,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/recycler_view_person_list" />
+
+    <include layout="@layout/fragment_table_info_person_details"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

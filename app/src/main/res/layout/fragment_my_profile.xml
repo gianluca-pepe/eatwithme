@@ -232,7 +232,7 @@
         android:backgroundTint="@color/fui_transparent"
         android:forceDarkAllowed="false"
         android:text="@string/logout"
-        android:textColor="@color/purple_700"
+        android:textColor="@color/colorPrimary"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

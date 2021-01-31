@@ -10,13 +10,18 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.brugia.eatwithme.data.Person
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.brugia.eatwithme.userlist.PersonsAdapter
+import com.bumptech.glide.signature.ObjectKey
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 
 class TableInfoFragment : Fragment() {
     private val tableViewModel by activityViewModels<SelectedTableViewModel> {
@@ -38,6 +43,15 @@ class TableInfoFragment : Fragment() {
     private lateinit var txtct_RestaurantReviewsCount: TextView
     private lateinit var txtct_RestaurantPriceLevel: TextView
     private lateinit var txt_table_completed: TextView
+    private lateinit var userModalLayout: ConstraintLayout
+    private lateinit var btnCloseUserModal: Button
+    private lateinit var img_userpic: ImageView
+    private lateinit var txt_user_nomecognome: TextView
+    private lateinit var txt_user_descrizione: TextView
+
+    private val personsAdapter = PersonsAdapter { person ->
+        onPersonClick(person)
+    }
 
     private val personViewModel: MyProfileViewModel = MyProfileViewModel()
     init {
@@ -79,6 +93,17 @@ class TableInfoFragment : Fragment() {
 
         txt_table_completed = view.findViewById(R.id.txt_table_completed)
 
+        txt_user_nomecognome = view.findViewById(R.id.txtusernomecognome)
+        txt_user_descrizione = view.findViewById(R.id.txtuserdescrizione)
+        img_userpic = view.findViewById(R.id.img_userpic)
+        btnCloseUserModal = view.findViewById(R.id.btnCloseUserModal)
+        userModalLayout = view.findViewById(R.id.userModalLayout)
+        userModalLayout.visibility = INVISIBLE
+
+        btnCloseUserModal.setOnClickListener { hideModal() }
+
+        userList.adapter = personsAdapter
+
         tableViewModel.getSelectedTable().observe(viewLifecycleOwner, {
             it?.let {
 
@@ -115,6 +140,8 @@ class TableInfoFragment : Fragment() {
                     ratingBar.visibility = INVISIBLE
                     txtct_RestaurantReviewsCount.visibility = INVISIBLE
                 }
+
+                personsAdapter.tableOwner = it.ownerId.toString()
             }
         })
 
@@ -125,8 +152,6 @@ class TableInfoFragment : Fragment() {
             userList.visibility = VISIBLE
             /* If the person participate to the table, populate the recyclerview*/
             /* Persons list management (RecyclerView) */
-            val personsAdapter = PersonsAdapter()
-            userList.adapter = personsAdapter
 
             tableViewModel.personsList.observe(viewLifecycleOwner, {
                 personsAdapter.submitList(it)
@@ -152,7 +177,7 @@ class TableInfoFragment : Fragment() {
         }
     }
 
-    fun joinTable(view: View) {
+    private fun joinTable(view: View) {
         val person = personViewModel.myprofileLiveData.value
         if (person == null) return
 
@@ -211,8 +236,6 @@ class TableInfoFragment : Fragment() {
         userList.visibility = VISIBLE
         /* If the person participate to the table, populate the recyclerview*/
         /* Persons list management (RecyclerView) */
-        val personsAdapter = PersonsAdapter()
-        userList.adapter = personsAdapter
 
         tableViewModel.personsList.observe(viewLifecycleOwner, {
             personsAdapter.submitList(it)
@@ -224,6 +247,26 @@ class TableInfoFragment : Fragment() {
                 Toast.makeText(context, "Ti sei unito al tavolo", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun onPersonClick(person: Person) {
+
+        txt_user_nomecognome.text = person.name + " " + person.surname
+        txt_user_descrizione.text = person.description
+
+        if (person.profile_pic != null) {
+            val imgRef = Firebase.storage.reference.child("profile-pic/${person.id}")
+            GlideApp.with(this)
+                    .load(imgRef)
+                    .signature(ObjectKey(System.currentTimeMillis()))
+                    .into(img_userpic)
+        }
+
+        userModalLayout.visibility = VISIBLE
+    }
+
+    private fun hideModal() {
+        userModalLayout.visibility = INVISIBLE
     }
 
 }
