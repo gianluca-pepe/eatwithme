@@ -17,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.brugia.eatwithme.data.Person
+import com.brugia.eatwithme.data.mealcategory.MealCategory
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
@@ -132,17 +133,17 @@ class TableInfoFragment : Fragment() {
 
                 nameTextView.text = it.name
                 descriptionTextView.text = it.description
+
                 // set image
-                val hours = it.tableHourText()
-                //Check the hour and set the image according it
-                if (hours >= "05:00" && hours < "11:30") {
-                    tableImageView.setImageResource(R.drawable.colazione)
-                } else if (hours >= "11:30" && hours < "15:00") {
-                    tableImageView.setImageResource(R.drawable.pranzo)
-                } else if (hours >= "19:00" && hours < "22:30") {
-                    tableImageView.setImageResource(R.drawable.cena)
-                } else {
-                    tableImageView.setImageResource(R.drawable.cocktail)//in every other hours, just a cocktail..
+                val photo = when (it.getCategory()) {
+                    MealCategory.LUNCH -> R.drawable.pranzo
+                    MealCategory.DINNER -> R.drawable.cena
+                    MealCategory.BREAKFAST -> R.drawable.colazione
+                    MealCategory.APERITIF -> R.drawable.cocktail
+                    else -> null
+                }
+                if (photo != null) {
+                    tableImageView.setImageResource(photo)
                 }
 
                 txt_restaurant_name.text = it.restaurant?.name
