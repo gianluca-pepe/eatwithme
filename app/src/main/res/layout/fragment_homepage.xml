@@ -82,10 +82,11 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
+                android:paddingStart="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/upcomingTablesTitle"
-                tools:listitem="@layout/card_table">
+                tools:listitem="@layout/card_table_horizontal_container">
 
             </androidx.recyclerview.widget.RecyclerView>
 
@@ -142,10 +143,11 @@
                 android:layout_marginTop="16dp"
                 android:animateLayoutChanges="false"
                 android:orientation="horizontal"
+                android:paddingStart="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/nearbyTanlesTitle"
-                tools:listitem="@layout/card_table" />
+                tools:listitem="@layout/card_table_horizontal_container" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
@@ -190,6 +192,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
             android:orientation="horizontal"
+            android:paddingStart="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

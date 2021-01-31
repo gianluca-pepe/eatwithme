@@ -10,17 +10,26 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Raggio"
+            app:layout_constraintBottom_toBottomOf="@+id/imgMarker"
+            app:layout_constraintStart_toEndOf="@+id/imgMarker"
+            app:layout_constraintTop_toTopOf="@+id/imgMarker" />
 
         <SeekBar
             android:id="@+id/seekBar"
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="3dp"
             android:layout_marginEnd="16dp"
             android:max="500"
             android:min="10"
@@ -28,36 +37,39 @@
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
             android:progress="20"
+            app:layout_constraintBottom_toBottomOf="@+id/textView5"
             app:layout_constraintEnd_toStartOf="@+id/txtchilometri"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/imgMarker"
-            app:layout_constraintTop_toBottomOf="@+id/addressTextView" />
+            app:layout_constraintStart_toEndOf="@+id/textView5"
+            app:layout_constraintTop_toTopOf="@+id/textView5" />
 
         <TextView
             android:id="@+id/txtchilometri"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
             android:layout_marginEnd="16dp"
             android:text="@tools:sample/lorem"
+            app:layout_constraintBottom_toBottomOf="@+id/seekBar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/seekBar" />
 
         <ImageView
             android:id="@+id/imgMarker"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:src="@drawable/ic_baseline_place_24"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/addressTextView" />
 
         <TextView
             android:id="@+id/addressTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:text="Via Aldo Moro 3, Aprilia (LT)"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
@@ -84,7 +96,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
             tools:itemCount="6"
-            tools:listitem="@layout/table_row_item" />
+            tools:listitem="@layout/card_table_vertical_container" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

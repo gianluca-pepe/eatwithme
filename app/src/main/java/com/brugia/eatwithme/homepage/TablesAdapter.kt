@@ -1,12 +1,9 @@
 package com.brugia.eatwithme.homepage
 
-import android.location.Address
-import android.location.Geocoder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -17,7 +14,6 @@ import com.brugia.eatwithme.data.mealcategory.MealCategory
 import com.brugia.eatwithme.location.LocationViewModel
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
-import java.util.*
 
 
 val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
@@ -91,7 +87,7 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
     /* Creates and inflates view and return TableViewHolder. */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TablesAdapter.TableViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.card_table, parent, false)
+                .inflate(R.layout.card_table_horizontal_container, parent, false)
         return TableViewHolder(view, onClick)
     }
 

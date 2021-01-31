@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.brugia.eatwithme.R
 import com.brugia.eatwithme.data.Table
+import com.brugia.eatwithme.data.mealcategory.MealCategory
+import com.brugia.eatwithme.location.LocationViewModel
+import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 
 val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
@@ -40,16 +43,19 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
     /* ViewHolder for Table, takes in the inflated view and the onClick behavior. */
     class TableViewHolder(itemView: View, val onClick: (Table) -> Unit) :
             RecyclerView.ViewHolder(itemView), ItemViewHolder {
-        private val tableTextViewTitle: TextView = itemView.findViewById(R.id.table_list_title)
-        private val tableTextViewPartecipants: TextView = itemView.findViewById(R.id.table_list_lbl_num_partecipants)
-        private val tableTextViewDate: TextView = itemView.findViewById(R.id.table_list_lbl_date)
-        private val tableTextViewHour: TextView = itemView.findViewById(R.id.table_list_lbl_hour)
-        private val tableImageView: ImageView = itemView.findViewById(R.id.table_list_img)
+        private val tableTextViewTitle: TextView = itemView.findViewById(R.id.tableTitle)
+        private val tableTextViewSubtitle: TextView = itemView.findViewById(R.id.tableSubtitle)
+        private val tableTextViewNumPartecipants: TextView = itemView.findViewById(R.id.numParticipants)
+        private val tableTextViewMaxPartecipants: TextView = itemView.findViewById(R.id.maxParticipants)
+        //private val tableTextViewDate: TextView = itemView.findViewById(R.id.table_list_lbl_date)
+        private val tableTextViewHour: TextView = itemView.findViewById(R.id.tableHour)
+        private val tableImageView: ImageView = itemView.findViewById(R.id.tableImage)
+        private val tableTextViewCity: TextView = itemView.findViewById(R.id.tableCity)
         private var currentTable: Table? = null
-        private val tableTextViewOwner: TextView = itemView.findViewById(R.id.table_list_owner)
+        private val tableTextViewOwner: Chip = itemView.findViewById(R.id.tableOwner)
 
         init {
-            itemView.findViewById<Button>(R.id.table_list_btn_view).setOnClickListener {
+            itemView.setOnClickListener {
                 currentTable?.let {
                     onClick(it)
                 }
@@ -60,13 +66,17 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
         override fun bind(table: Table?) {
 
             if (table == null) return
-
-            val hours = table.tableHourText()
             currentTable = table
             tableTextViewTitle.text = table.name
-            tableTextViewPartecipants.text = table.numParticipants.toString() + "/" + table.maxParticipants.toString()
-            tableTextViewDate.text = table.tableDateText()
-            tableTextViewHour.text = hours
+            tableTextViewSubtitle.text = table.description
+            tableTextViewNumPartecipants.text = table.numParticipants.toString()
+            tableTextViewMaxPartecipants.text = table.maxParticipants.toString()
+            tableTextViewHour.text = table.tableHourText()
+
+            val lat = table.restaurant?.geometry?.location?.lat!!
+            val lng = table.restaurant?.geometry?.location?.lng!!
+            tableTextViewCity.text = LocationViewModel.getCityName(lat, lng, itemView.context)
+
 
             /*
             if (table.image != null) {
@@ -75,23 +85,19 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
                 tableImageView.setImageResource(R.drawable.logo_login)
             }
             */
-            
-            //Check the hour and set the image according it
-            if( hours >= "05:00" && hours < "11:30" ){
-                tableImageView.setImageResource(R.drawable.colazione)
-            }else if( hours >= "11:30" && hours < "15:00" ){
-                tableImageView.setImageResource(R.drawable.pranzo)
-            }else if( hours >= "19:00" && hours < "22:30" ){
-                tableImageView.setImageResource(R.drawable.cena)
-            }else{
-                tableImageView.setImageResource(R.drawable.cocktail)//in every other hours, just a cocktail..
+            val photo = when (table.getCategory()) {
+                MealCategory.LUNCH -> R.drawable.pranzo
+                MealCategory.DINNER -> R.drawable.cena
+                MealCategory.BREAKFAST -> R.drawable.colazione
+                MealCategory.APERITIF -> R.drawable.cocktail
+                else -> null
             }
 
+            if (photo != null) tableImageView.setImageResource(photo)
+
             //Add owner label
-            if(personID == table.ownerId){
-                tableTextViewOwner.text = "Owner"
-            }else{
-                tableTextViewOwner.text = ""
+            if(com.brugia.eatwithme.homepage.personID != table.ownerId){
+                tableTextViewOwner.visibility = View.GONE
             }
         }
     }
@@ -117,7 +123,7 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_ITEM) {
             val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.table_row_item, parent, false)
+                .inflate(R.layout.card_table_vertical_container, parent, false)
             TableViewHolder(view, onClick)
         } else {
             val view = LayoutInflater.from(parent.context)

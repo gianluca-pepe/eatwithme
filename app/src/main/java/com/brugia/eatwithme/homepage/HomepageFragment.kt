@@ -120,9 +120,7 @@ class HomepageFragment : Fragment() {
             }
         })
         view.findViewById<Button>(R.id.nextTablesSeeAll2).setOnClickListener {
-            tablesListViewModel.location.value = locationViewModel.getLocationData().value
-            tablesListViewModel.radius.value = DEFAULT_CITY_RADIUS
-            tablesListViewModel.refresh()
+            updateTableListViewModel(locationViewModel.getLocationData().value)
             findNavController().navigate(R.id.action_search)
         }
 
@@ -192,16 +190,12 @@ class HomepageFragment : Fragment() {
     }
 
     private fun onCityClick(city: City) {
-        tablesListViewModel.location.value = city.location
-        tablesListViewModel.radius.value = DEFAULT_CITY_RADIUS
-        tablesListViewModel.refresh()
+        updateTableListViewModel(city.location)
         findNavController().navigate(R.id.action_search)
     }
 
     private fun onMealCategoryClick(category: MealCategory) {
-        tablesListViewModel.location.value = null
-        tablesListViewModel.radius.value = null
-        tablesListViewModel.refresh(mealCategory = category.id)
+        updateTableListViewModel(mealCategory = category.id)
         findNavController().navigate(R.id.action_search)
     }
 
@@ -220,9 +214,7 @@ class HomepageFragment : Fragment() {
                             val tempLocation = Location("")
                             tempLocation.latitude = it.latitude
                             tempLocation.longitude = it.longitude
-                            tablesListViewModel.location.value = tempLocation
-                            tablesListViewModel.radius.value = DEFAULT_CITY_RADIUS
-                            tablesListViewModel.refresh()
+                            updateTableListViewModel(tempLocation, address = place.address)
                             findNavController().navigate(R.id.action_search)
                         }
                     }
@@ -241,6 +233,20 @@ class HomepageFragment : Fragment() {
             return
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun updateTableListViewModel(
+            location : Location? = null,
+            radius: Int = DEFAULT_CITY_RADIUS,
+             address: String? = null,
+            mealCategory: Int = MealCategory.ALL
+    ) {
+        tablesListViewModel.location.value = location
+        tablesListViewModel.radius.value = radius
+        if (location != null) {
+            tablesListViewModel.address.value = address?: LocationViewModel.getAddressLine(location.latitude, location.longitude, this.requireContext())
+        }
+        tablesListViewModel.refresh(mealCategory = mealCategory)
     }
 
 }

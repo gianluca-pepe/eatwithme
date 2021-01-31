@@ -155,9 +155,9 @@ class TableListFragment : Fragment() {
         }
 
         address = view.findViewById(R.id.addressTextView)
-//        locationViewModel.address.observe(viewLifecycleOwner, {
-  //          address.text = it
-    //    })
+        tablesListViewModel.address.observe(viewLifecycleOwner, {
+            address.text = it
+        })
 
         swipeRefreshLayout = view.findViewById(R.id.swipeAllTablesContainer)
         swipeRefreshLayout.setOnRefreshListener {

@@ -38,7 +38,17 @@ class LocationViewModel(application: Application) : AndroidViewModel(application
             val geocoder = Geocoder(context, Locale.getDefault())
 
             addresses = geocoder.getFromLocation(latitude, longitude,1)
+
             return addresses[0].locality?: ""
+        }
+
+        fun getAddressLine(latitude: Double, longitude: Double, context: Context): String {
+            val addresses: List<Address>
+            val geocoder = Geocoder(context, Locale.getDefault())
+
+            addresses = geocoder.getFromLocation(latitude, longitude,1)
+
+            return addresses[0].getAddressLine(0)
         }
     }
 }

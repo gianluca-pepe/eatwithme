@@ -17,6 +17,7 @@ class TablesListViewModel(private val dataSource: TablesDataSource) : ViewModel(
     val BATCHSIZE = dataSource.BATCHSIZE
     val location = MutableLiveData<Location?>(null)
     val radius = MutableLiveData<Int?>(null)
+    val address = MutableLiveData("")
 /*
     /* If the name and description are present, create new Table and add it to the datasource */
     fun insertTable(
