@@ -19,6 +19,14 @@ class SelectedTableViewModel(val dataSource: TablesDataSource): ViewModel() {
     val joinState: LiveData<Boolean>
         get() = _joinState
 
+    private var _exitState = MutableLiveData<Boolean>()
+    val exitState: LiveData<Boolean>
+        get() = _exitState
+
+    private var _deleteState = MutableLiveData<Boolean>()
+    val deleteState: LiveData<Boolean>
+        get() = _deleteState
+
     private lateinit var _personsList : LiveData<List<Person>>
     val personsList: LiveData<List<Person>>
         get() = _personsList
@@ -72,6 +80,27 @@ class SelectedTableViewModel(val dataSource: TablesDataSource): ViewModel() {
         }
 
         return false
+    }
+
+    fun exitTable(){
+
+        _selectedTable.value?.let {
+            db.collection("Tables").document(it.id).update(
+                    "participantsList",
+                    FieldValue.arrayRemove(auth_id)
+            )
+                    .addOnSuccessListener { _exitState.value = true }
+                    .addOnFailureListener { _exitState.value = false }
+        }
+    }
+
+    fun deleteTable(){
+
+        _selectedTable.value?.let {
+            db.collection("Tables").document(it.id).delete()
+                    .addOnSuccessListener { _deleteState.value = true }
+                    .addOnFailureListener { _deleteState.value = false }
+        }
     }
 }
 

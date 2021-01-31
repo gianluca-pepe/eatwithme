@@ -1,7 +1,9 @@
 package com.brugia.eatwithme
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,8 +23,10 @@ import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.brugia.eatwithme.userlist.PersonsAdapter
 import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.chip.Chip
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.NonCancellable.cancel
 
 class TableInfoFragment : Fragment() {
     private val tableViewModel by activityViewModels<SelectedTableViewModel> {
@@ -53,6 +57,7 @@ class TableInfoFragment : Fragment() {
     private lateinit var btnModifyTable: Chip
     private lateinit var btnDeleteTable: Chip
     private lateinit var btnExitTable: Chip
+
 
     private val personsAdapter = PersonsAdapter { person ->
         onPersonClick(person)
@@ -234,6 +239,10 @@ class TableInfoFragment : Fragment() {
         findNavController().navigate(R.id.homepageFragment)
     }
 
+    private fun navigateToMyTables() {
+        findNavController().navigate(R.id.myTablesFragment)
+    }
+
     private fun observeJoinState() {
         tableViewModel.joinState.observe(viewLifecycleOwner, {
             if (it) {
@@ -307,11 +316,84 @@ class TableInfoFragment : Fragment() {
 
     private fun exitTableClicked(){
         /*User click on exit table*/
+        val alertDialog: AlertDialog? = activity?.let {
+            val builder = AlertDialog.Builder(it)
+            builder.apply {
+                setTitle(R.string.table_exit_title)
+                setMessage(R.string.table_exit_description)
+                setPositiveButton( R.string.yes,
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User clicked OK button
+                            tableViewModel.exitTable()
+                            observeExitState()
+                        })
+                setNegativeButton(R.string.no,
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User cancelled the dialog
+                        })
+            }
+            // Set other dialog properties
+
+            // Create the AlertDialog
+            builder.create()
+        }
+        alertDialog?.show()
+    }
+
+    private fun observeExitState() {
+        tableViewModel.exitState.observe(viewLifecycleOwner, {
+            if (it) {
+                Toast.makeText(context, R.string.table_exit_toast, Toast.LENGTH_SHORT).show()
+                Handler().postDelayed(Runnable {
+                    //anything you want to start after 1.5s
+                    navigateToMyTables()
+                }, 1500)
+
+            }else {
+                Toast.makeText(context, R.string.table_exit_toast_error, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun deleteTableClicked() {
         /*User click on delete table*/
+        val alertDialog: AlertDialog? = activity?.let {
+            val builder = AlertDialog.Builder(it)
+            builder.apply {
+                setTitle(R.string.table_delete_title)
+                setMessage(R.string.table_delete_description)
+                setPositiveButton( R.string.yes,
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User clicked OK button
+                            tableViewModel.deleteTable()
+                            observeDeleteState()
+                        })
+                setNegativeButton(R.string.no,
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User cancelled the dialog
+                        })
+            }
+            // Set other dialog properties
+
+            // Create the AlertDialog
+            builder.create()
+        }
+        alertDialog?.show()
     }
 
+    private fun observeDeleteState() {
+        tableViewModel.deleteState.observe(viewLifecycleOwner, {
+            if (it) {
+                Toast.makeText(context, R.string.table_delete_toast, Toast.LENGTH_SHORT).show()
+                Handler().postDelayed(Runnable {
+                    //anything you want to start after 1.5s
+                    navigateToMyTables()
+                }, 1500)
+
+            }else {
+                Toast.makeText(context, R.string.table_delete_toast_error, Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 }
 

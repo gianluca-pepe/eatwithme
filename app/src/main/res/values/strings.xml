@@ -69,8 +69,22 @@
     <string name="short_description">Breve descrizione di me</string>
     <string name="modify_profile">Modifica profilo</string>
     <string name="logout"><u>Logout</u></string>
-    <string name="join">Partecipa</string>
 
+    <!-- Info tavolo -->
+    <string name="join">Partecipa</string>
+    <string name="delete_table">Elimina tavolo</string>
+    <string name="exit_table">Esci dal tavolo</string>
+    <string name="modify_table">Modifica il tavolo</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="table_exit_title">Uscita dal tavolo</string>
+    <string name="table_exit_description">Sei sicuro di voler abbandonare il tavolo?</string>
+    <string name="table_exit_toast">Uscita in corso..</string>
+    <string name="table_exit_toast_error">Si è verificato un errore, non sei uscito dal tavolo!</string>
+    <string name="table_delete_title">Elimizione tavolo</string>
+    <string name="table_delete_description">Sei sicuro di voler eliminare il tavolo?</string>
+    <string name="table_delete_toast">Eliminazione in corso..</string>
+    <string name="table_delete_toast_error">Si è verificato un errore, tavolo non eliminato!</string>
 
     <!-- Homepage -->
     <string name="homepage.title">Esplora</string>
