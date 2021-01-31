@@ -20,6 +20,7 @@ import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.brugia.eatwithme.userlist.PersonsAdapter
 import com.bumptech.glide.signature.ObjectKey
+import com.google.android.material.chip.Chip
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
@@ -48,6 +49,10 @@ class TableInfoFragment : Fragment() {
     private lateinit var img_userpic: ImageView
     private lateinit var txt_user_nomecognome: TextView
     private lateinit var txt_user_descrizione: TextView
+
+    private lateinit var btnModifyTable: Chip
+    private lateinit var btnDeleteTable: Chip
+    private lateinit var btnExitTable: Chip
 
     private val personsAdapter = PersonsAdapter { person ->
         onPersonClick(person)
@@ -99,6 +104,15 @@ class TableInfoFragment : Fragment() {
         btnCloseUserModal = view.findViewById(R.id.btnCloseUserModal)
         userModalLayout = view.findViewById(R.id.userModalLayout)
         userModalLayout.visibility = INVISIBLE
+
+
+        btnModifyTable = view.findViewById(R.id.btnModifyTable)
+        btnExitTable = view.findViewById(R.id.btnExitTable)
+        btnDeleteTable = view.findViewById(R.id.btnDeleteTable)
+
+        btnModifyTable.setOnClickListener { modifyTableClicked() }
+        btnExitTable.setOnClickListener { exitTableClicked() }
+        btnDeleteTable.setOnClickListener { deleteTableClicked() }
 
         btnCloseUserModal.setOnClickListener { hideModal() }
 
@@ -157,7 +171,22 @@ class TableInfoFragment : Fragment() {
                 personsAdapter.submitList(it)
             })
 
+            if(tableViewModel.UserIsCreator()){
+                btnModifyTable.visibility = VISIBLE
+                btnExitTable.visibility = INVISIBLE
+                btnDeleteTable.visibility = VISIBLE
+            }else{
+                btnModifyTable.visibility = INVISIBLE
+                btnExitTable.visibility = VISIBLE
+                btnDeleteTable.visibility = INVISIBLE
+            }
+
         } else {
+            /*Hide all button*/
+            btnModifyTable.visibility = INVISIBLE
+            btnExitTable.visibility = INVISIBLE
+            btnDeleteTable.visibility = INVISIBLE
+
             //Prevent user joins table if it is full
             if (tableViewModel.doesTableIsFull()) {
                 txt_table_completed.visibility = VISIBLE
@@ -234,6 +263,9 @@ class TableInfoFragment : Fragment() {
     private fun updateTableData(){
         btnJoin.visibility = INVISIBLE
         userList.visibility = VISIBLE
+
+        /*Show quit button*/
+        btnExitTable.visibility = VISIBLE
         /* If the person participate to the table, populate the recyclerview*/
         /* Persons list management (RecyclerView) */
 
@@ -269,4 +301,17 @@ class TableInfoFragment : Fragment() {
         userModalLayout.visibility = INVISIBLE
     }
 
+    private fun modifyTableClicked(){
+        /*User click on modify table*/
+    }
+
+    private fun exitTableClicked(){
+        /*User click on exit table*/
+    }
+
+    private fun deleteTableClicked() {
+        /*User click on delete table*/
+    }
+
 }
+

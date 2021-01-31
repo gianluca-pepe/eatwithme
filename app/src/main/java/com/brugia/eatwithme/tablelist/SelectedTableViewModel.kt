@@ -58,6 +58,14 @@ class SelectedTableViewModel(val dataSource: TablesDataSource): ViewModel() {
         return false
     }
 
+    fun UserIsCreator(): Boolean {
+        _selectedTable.value?.let {
+            return it.ownerId == auth_id
+        }
+
+        return false
+    }
+
     fun doesTableIsFull(): Boolean{
         _selectedTable.value?.let {
             return it.numParticipants == it.maxParticipants
