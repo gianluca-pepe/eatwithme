@@ -55,6 +55,7 @@
     <string name="success_subtitle">Adesso gli utenti nei paraggi del luogo scelto vedranno il tuo tavolo.</string>
     <string name="success_editing_title">Tavolo modificato correttamente!</string>
     <string name="success_button">Entra</string>
+    <string name="my_position">Tu</string>
 
     <!-- Menu -->
     <string name="menu_explore">Esplora</string>

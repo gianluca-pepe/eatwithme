@@ -86,7 +86,11 @@ class CreateTableMapFragment : FormPage() {
          */
 
         location?.let {
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it,16.0f))
+            googleMap.addMarker(MarkerOptions()
+                    .position(it)
+                    .title(getString(R.string.my_position))
+            )
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 16.0f))
         }
 
         setPoiClick(googleMap)
@@ -98,7 +102,7 @@ class CreateTableMapFragment : FormPage() {
 
         newTableViewModel.table.observe(viewLifecycleOwner, {
             it.restaurant?.let { restaurant ->
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(restaurant.geometry?.location?.latLng!!,18.0f))
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(restaurant.geometry?.location?.latLng!!, 18.0f))
                 updateRestaurantData(restaurant)
                 this.restaurant = restaurant
             }
@@ -151,10 +155,9 @@ class CreateTableMapFragment : FormPage() {
     }
 
     private fun setPoiClick(map: GoogleMap) {
-        map.clear()
         hideRestaurantCard()
         map.setOnPoiClickListener { poi ->
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(poi.latLng,18.0f))
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(poi.latLng, 18.0f))
             placeID = poi.placeId
             placeName = poi.name
             /*Looking for place info*/
@@ -179,7 +182,7 @@ class CreateTableMapFragment : FormPage() {
 
                             restaurant = response.body()?.result ?: null
 
-                            if(restaurant != null){
+                            if (restaurant != null) {
                                 //Get place category (understand it from icon name since there isn't a specific field)
                                 /*ES:
                                 * https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/bar-71.png
