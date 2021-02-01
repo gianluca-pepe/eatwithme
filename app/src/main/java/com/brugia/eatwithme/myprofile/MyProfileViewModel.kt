@@ -14,6 +14,7 @@ import java.util.*
 class MyProfileViewModel: ViewModel() {
     private val db = Firebase.firestore
     private val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
+    private val personNameSurname: String =  FirebaseAuth.getInstance().currentUser?.displayName.toString()
 
     val myprofileLiveData: MutableLiveData<Person> = MutableLiveData(
         Person(
@@ -195,8 +196,11 @@ class MyProfileViewModel: ViewModel() {
                         println("La persona è già presente nel DB..")
                         getCurrentPerson()
                     }else{
+                        val n_s = personNameSurname.split(" ")
+                        val nome = n_s[0]
+                        val cognome = n_s[1]
                         println("Creazione persona in corso..")
-                        createPerson(name, surname, telephone, birthday, profile_pic, preferences, description)
+                        createPerson(nome, cognome, telephone, birthday, profile_pic, preferences, description)
                     }
                 }
     }
