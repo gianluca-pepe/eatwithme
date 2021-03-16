@@ -7,7 +7,7 @@ import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.INVISIBLE
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
@@ -24,6 +24,11 @@ import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.brugia.eatwithme.userlist.PersonsAdapter
 import com.bumptech.glide.signature.ObjectKey
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
@@ -72,6 +77,36 @@ class TableInfoFragment : Fragment() {
         personViewModel.getCurrentPerson()
     }
 
+    private val callback = OnMapReadyCallback { googleMap ->
+
+        /**
+         * Manipulates the map once available.
+         * This callback is triggered when the map is ready to be used.
+         * This is where we can add markers or lines, add listeners or move the camera.
+         * In this case, we just add a marker near Sydney, Australia.
+         * If Google Play services is not installed on the device, the user will be prompted to
+         * install it inside the SupportMapFragment. This method will only be triggered once the
+         * user has installed Google Play services and returned to the app.
+         */
+
+        googleMap.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                        context,
+                        R.raw.map_style
+                )
+        )
+
+        tableViewModel.getSelectedTable().observe(viewLifecycleOwner, { it ->
+            it.restaurant?.geometry?.location?.latLng?.let { location ->
+                googleMap.addMarker(MarkerOptions()
+                        .position(location)
+                        .title(getString(R.string.my_position))
+                )
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16.0f))
+            }
+        })
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -87,6 +122,8 @@ class TableInfoFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.createTableMap) as SupportMapFragment?
+        mapFragment?.getMapAsync(callback)
 
         nameTextView = view.findViewById(R.id.table_name)
         descriptionTextView = view.findViewById(R.id.table_description)
@@ -112,7 +149,7 @@ class TableInfoFragment : Fragment() {
         img_userpic = view.findViewById(R.id.img_userpic)
         btnCloseUserModal = view.findViewById(R.id.btnCloseUserModal)
         userModalLayout = view.findViewById(R.id.userModalLayout)
-        userModalLayout.visibility = INVISIBLE
+        userModalLayout.visibility = GONE
 
 
         btnModifyTable = view.findViewById(R.id.btnModifyTable)
@@ -154,14 +191,14 @@ class TableInfoFragment : Fragment() {
                 if(it.restaurant?.price_level != null) {
                     txtct_RestaurantPriceLevel.text = getString(R.string.currency_symbol).repeat(it.restaurant?.price_level!!)
                 }else{
-                    txtct_RestaurantPriceLevel.visibility = INVISIBLE
+                    txtct_RestaurantPriceLevel.visibility = GONE
                 }
                 if (it.restaurant?.rating != null){
                     ratingBar.rating = it.restaurant?.rating!!
                     txtct_RestaurantReviewsCount.text = it.restaurant?.rating.toString() + " / " + it.restaurant?.user_ratings_total.toString()
                 }else{
-                    ratingBar.visibility = INVISIBLE
-                    txtct_RestaurantReviewsCount.visibility = INVISIBLE
+                    ratingBar.visibility = GONE
+                    txtct_RestaurantReviewsCount.visibility = GONE
                 }
 
                 personsAdapter.tableOwner = it.ownerId.toString()
@@ -170,8 +207,8 @@ class TableInfoFragment : Fragment() {
 
         //Check if the user partecipate to the table, show partecipants list
         if (tableViewModel.doesUserParticipate()) {
-            txt_table_completed.visibility = INVISIBLE
-            btnJoin.visibility = INVISIBLE
+            txt_table_completed.visibility = GONE
+            btnJoin.visibility = GONE
             userList.visibility = VISIBLE
             /* If the person participate to the table, populate the recyclerview*/
             /* Persons list management (RecyclerView) */
@@ -182,29 +219,29 @@ class TableInfoFragment : Fragment() {
 
             if(tableViewModel.UserIsCreator()){
                 btnModifyTable.visibility = VISIBLE
-                btnExitTable.visibility = INVISIBLE
+                btnExitTable.visibility = GONE
                 btnDeleteTable.visibility = VISIBLE
             }else{
-                btnModifyTable.visibility = INVISIBLE
+                btnModifyTable.visibility = GONE
                 btnExitTable.visibility = VISIBLE
-                btnDeleteTable.visibility = INVISIBLE
+                btnDeleteTable.visibility = GONE
             }
 
         } else {
             /*Hide all button*/
-            btnModifyTable.visibility = INVISIBLE
-            btnExitTable.visibility = INVISIBLE
-            btnDeleteTable.visibility = INVISIBLE
+            btnModifyTable.visibility = GONE
+            btnExitTable.visibility = GONE
+            btnDeleteTable.visibility = GONE
 
             //Prevent user joins table if it is full
             if (tableViewModel.doesTableIsFull()) {
                 txt_table_completed.visibility = VISIBLE
-                btnJoin.visibility = INVISIBLE
-                userList.visibility = INVISIBLE
+                btnJoin.visibility = GONE
+                userList.visibility = GONE
             } else {
-                txt_table_completed.visibility = INVISIBLE
+                txt_table_completed.visibility = GONE
                 btnJoin.visibility = VISIBLE
-                userList.visibility = INVISIBLE
+                userList.visibility = GONE
                 /* If the person don't participate to the table, give him/she the possibility to join*/
                 btnJoin.setOnClickListener {
                     personViewModel.myprofileLiveData.value?.let {
@@ -274,7 +311,7 @@ class TableInfoFragment : Fragment() {
     }
 
     private fun updateTableData(){
-        btnJoin.visibility = INVISIBLE
+        btnJoin.visibility = GONE
         userList.visibility = VISIBLE
 
         /*Show quit button*/
@@ -311,7 +348,7 @@ class TableInfoFragment : Fragment() {
     }
 
     private fun hideModal() {
-        userModalLayout.visibility = INVISIBLE
+        userModalLayout.visibility = GONE
     }
 
     private fun modifyTableClicked(){
