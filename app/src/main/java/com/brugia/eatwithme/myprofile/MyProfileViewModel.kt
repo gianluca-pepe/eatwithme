@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.brugia.eatwithme.data.Person
@@ -16,6 +17,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import org.json.JSONObject
 import java.util.*
+import kotlin.collections.HashMap
 
 class MyProfileViewModel(application: Application) : AndroidViewModel(application) {
     private val db = Firebase.firestore
@@ -37,10 +39,10 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
     )
 
     // Instantiate the RequestQueue.
-    private val queue = Volley.newRequestQueue(application)
-    private val url = "http://sapienzaengineering.eu.pythonanywhere.com/api/v1.0/users/"
+    val queue = Volley.newRequestQueue(application)
+    private val url = "https://sapienzaengineering.eu.pythonanywhere.com/api/v1.0/users"
 
-    fun createPerson(name:String?, surname:String?, telephone:String?, birthday:String?, profile_pic:String?, preferences: ArrayList<String> = arrayListOf<String>(), description: String? = null) {
+    fun createPerson(name:String?, surname:String?, telephone:String? = null, birthday:String? = null, profile_pic:String? = null, preferences: ArrayList<String> = arrayListOf<String>(), description: String? = null) {
 
         myprofileLiveData.value = myprofileLiveData.value?.copy(
                 id = personID,
@@ -54,34 +56,38 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
                 preferences = preferences
         )
 
-        //create the document whose name is the id of the person (from FireBase)
-        myprofileLiveData.value?.let {
-            db.collection("Users").document(personID).set(it)
-        }
+        val bodyJSON = JSONObject()
+        bodyJSON.put("gid", personID)
+        bodyJSON.put( "name", name)
+        bodyJSON.put( "surname", surname)
+        bodyJSON.put( "telephone", telephone)
+        bodyJSON.put("description", description)
+        //bodyJSON["birthday"] = birthday
+        bodyJSON.put("profile_pic", profile_pic)
+
+
+        // Request a string response from the provided URL.
+        val stringRequest = JsonObjectRequest(Request.Method.POST, url, bodyJSON,
+                { response ->
+                    println(response)
+                    setResponseInLiveData(response.toString())
+                },
+                { error -> println(error.networkResponse.statusCode) }
+        )
+        queue.add(stringRequest)
     }
 
     //Function to get the current user..
     fun getCurrentPerson(){
-        val getUserUrl = url + 1
+        val getUserUrl = "$url/$personID"
 
         // Request a string response from the provided URL.
         val stringRequest = StringRequest(Request.Method.GET, getUserUrl,
                 { response ->
                     println(response)
-                    val result = JSONObject(response.toString())
-                    myprofileLiveData.value = myprofileLiveData.value?.copy(
-                        id = result.getString("id"),
-                        name = result.getString("name"),
-                        surname = result.getString("surname"),
-                        telephone = result.getString("telephone"),
-                        description = result.getString("description"),
-                        email = result.getString("email"),
-                        //birthday = result.getString("birthday"),
-                        profile_pic = result.getString("profile_pic"),
-                        preferences = arrayListOf<String>()
-                    )
+                    setResponseInLiveData(response)
                 },
-                { error -> println(error) }
+                { error -> println(error.networkResponse.statusCode) }
         )
         queue.add(stringRequest)
         /*
@@ -218,6 +224,7 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
     fun checkPersonData(name:String? = null, surname:String? = null, telephone:String? = null, birthday:String? = null, profile_pic:String? = null, preferences: ArrayList<String> = arrayListOf<String>(), description: String? = null){
 
         println("ID persona: $personID")
+        /*
         val docRef = db.collection("Users").document(personID)
 
         docRef.get()
@@ -235,6 +242,42 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
                         createPerson(nome, cognome, telephone, birthday, profile_pic, preferences, description)
                     }
                 }
+*/
+        // Request a string response from the provided URL.
+        val stringRequest = StringRequest(Request.Method.GET, "$url/$personID",
+            { response ->
+                println("La persona è già presente nel DB..")
+                //setResponseInLiveData(response)
+                getCurrentPerson()
+            },
+            { error ->
+                if (error.networkResponse.statusCode == 404) {
+                    val n_s = personNameSurname.split(" ")
+                    val nome = n_s[0]
+                    val cognome = n_s[1]
+                    println("Creazione persona in corso..")
+                    createPerson(nome,cognome)
+                }
+            }
+        )
+
+        queue.add(stringRequest)
+    }
+
+    private fun setResponseInLiveData(response: String) {
+        val result = JSONObject(response)
+        // GESTIRE VALORI NULL
+        myprofileLiveData.value = myprofileLiveData.value?.copy(
+                id = result.getString("id"),
+                name = result.getString("name"),
+                surname = result.getString("surname"),
+                telephone = result.getString("telephone"),
+                description = result.getString("description"),
+                email = result.getString("email"),
+                //birthday = result.getString("birthday"),
+                profile_pic = result.getString("profile_pic"),
+                //preferences = arrayListOf<String>()
+        )
     }
 }
 

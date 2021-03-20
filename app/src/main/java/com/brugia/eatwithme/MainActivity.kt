@@ -121,4 +121,10 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
+
+    override fun onStop() {
+        super.onStop()
+        // delete all Volley requests in the queue
+        personViewModel.queue.cancelAll(this.application)
+    }
 }
