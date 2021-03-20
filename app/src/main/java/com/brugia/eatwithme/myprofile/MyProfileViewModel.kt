@@ -21,7 +21,7 @@ import kotlin.collections.HashMap
 
 class MyProfileViewModel(application: Application) : AndroidViewModel(application) {
     private val db = Firebase.firestore
-    private val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
+    private val personID: String = FirebaseAuth.getInstance().currentUser?.uid.toString()
     private val personNameSurname: String =  FirebaseAuth.getInstance().currentUser?.displayName.toString()
 
     val myprofileLiveData: MutableLiveData<Person> = MutableLiveData(
@@ -268,14 +268,14 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
         val result = JSONObject(response)
         // GESTIRE VALORI NULL
         myprofileLiveData.value = myprofileLiveData.value?.copy(
-                id = result.getString("id"),
-                name = result.getString("name"),
-                surname = result.getString("surname"),
-                telephone = result.getString("telephone"),
-                description = result.getString("description"),
-                email = result.getString("email"),
-                //birthday = result.getString("birthday"),
-                profile_pic = result.getString("profile_pic"),
+                id = result.optString("id"),
+                name = result.optString("name"),
+                surname = result.optString("surname"),
+                telephone = result.optString("telephone"),
+                description = result.optString("description"),
+                email = result.optString("email"),
+                birthday = result.optString("birthday"),
+                profile_pic = result.optString("profile_pic"),
                 //preferences = arrayListOf<String>()
         )
     }
