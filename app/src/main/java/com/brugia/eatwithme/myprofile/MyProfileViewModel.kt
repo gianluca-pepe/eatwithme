@@ -1,17 +1,23 @@
 package com.brugia.eatwithme.myprofile
 
+import android.app.Application
 import android.content.ContentValues.TAG
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.brugia.eatwithme.data.Person
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import org.json.JSONObject
 import java.util.*
 
-class MyProfileViewModel: ViewModel() {
+class MyProfileViewModel(application: Application) : AndroidViewModel(application) {
     private val db = Firebase.firestore
     private val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
     private val personNameSurname: String =  FirebaseAuth.getInstance().currentUser?.displayName.toString()
@@ -29,6 +35,10 @@ class MyProfileViewModel: ViewModel() {
             preferences = arrayListOf<String>()
         )
     )
+
+    // Instantiate the RequestQueue.
+    private val queue = Volley.newRequestQueue(application)
+    private val url = "http://sapienzaengineering.eu.pythonanywhere.com/api/v1.0/users/"
 
     fun createPerson(name:String?, surname:String?, telephone:String?, birthday:String?, profile_pic:String?, preferences: ArrayList<String> = arrayListOf<String>(), description: String? = null) {
 
@@ -52,7 +62,29 @@ class MyProfileViewModel: ViewModel() {
 
     //Function to get the current user..
     fun getCurrentPerson(){
+        val getUserUrl = url + 1
 
+        // Request a string response from the provided URL.
+        val stringRequest = StringRequest(Request.Method.GET, getUserUrl,
+                { response ->
+                    println(response)
+                    val result = JSONObject(response.toString())
+                    myprofileLiveData.value = myprofileLiveData.value?.copy(
+                        id = result.getString("id"),
+                        name = result.getString("name"),
+                        surname = result.getString("surname"),
+                        telephone = result.getString("telephone"),
+                        description = result.getString("description"),
+                        email = result.getString("email"),
+                        //birthday = result.getString("birthday"),
+                        profile_pic = result.getString("profile_pic"),
+                        preferences = arrayListOf<String>()
+                    )
+                },
+                { error -> println(error) }
+        )
+        queue.add(stringRequest)
+        /*
         //Obtain the document whoose id field is = personID
         val docRef = db.collection("Users").document(personID)
 
@@ -81,7 +113,7 @@ class MyProfileViewModel: ViewModel() {
                 .addOnFailureListener { exception ->
                     Log.w(TAG, "Error getting documents: ", exception)
                 }
-
+*/
         /*
         TO DO:
             Manage preferences
@@ -204,6 +236,17 @@ class MyProfileViewModel: ViewModel() {
                     }
                 }
     }
+}
 
+class MyProfileViewModelFactory(private val context: Application) : ViewModelProvider.Factory {
 
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MyProfileViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return MyProfileViewModel(
+                    application = context
+            ) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }

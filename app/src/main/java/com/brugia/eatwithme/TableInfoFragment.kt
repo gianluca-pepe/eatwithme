@@ -14,12 +14,14 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.brugia.eatwithme.createtable.CreateTableViewModel
 import com.brugia.eatwithme.data.Person
 import com.brugia.eatwithme.data.mealcategory.MealCategory
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
+import com.brugia.eatwithme.myprofile.MyProfileViewModelFactory
 import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.brugia.eatwithme.tablelist.SelectedTableViewModelFactory
 import com.brugia.eatwithme.userlist.PersonsAdapter
@@ -72,7 +74,9 @@ class TableInfoFragment : Fragment() {
         onPersonClick(person)
     }
 
-    private val personViewModel: MyProfileViewModel = MyProfileViewModel()
+    private val personViewModel: MyProfileViewModel by viewModels {
+        MyProfileViewModelFactory(requireActivity().application)
+    }
     init {
         personViewModel.getCurrentPerson()
     }

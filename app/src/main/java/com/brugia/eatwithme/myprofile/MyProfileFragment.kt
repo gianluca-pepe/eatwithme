@@ -23,8 +23,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
+import com.brugia.eatwithme.myprofile.MyProfileViewModelFactory
 import com.bumptech.glide.signature.ObjectKey
 
 import com.google.android.gms.tasks.Continuation
@@ -56,7 +58,9 @@ class MyProfileFragment : Fragment() {
     private val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
 
     private val calendar: Calendar = Calendar.getInstance()
-    private val personViewModel: MyProfileViewModel = MyProfileViewModel()
+    private val personViewModel: MyProfileViewModel by viewModels {
+        MyProfileViewModelFactory(requireActivity().application)
+    }
 
     private lateinit var pers_name: TextInputEditText
     private lateinit var pers_surname: TextInputEditText

@@ -18,6 +18,7 @@ import com.brugia.eatwithme.createtable.CreateTableViewModel
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
+import com.brugia.eatwithme.myprofile.MyProfileViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -29,9 +30,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController : NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var destinationListener: NavController.OnDestinationChangedListener
-    private val personViewModel: MyProfileViewModel = MyProfileViewModel()
+    // private lateinit var drawerLayout: DrawerLayout
+    // private lateinit var destinationListener: NavController.OnDestinationChangedListener
+    private val personViewModel: MyProfileViewModel by viewModels {
+        MyProfileViewModelFactory(this.application)
+    }
     private val locationViewModel by viewModels<LocationViewModel> {
         LocationViewModelFactory(this.application)
     }
