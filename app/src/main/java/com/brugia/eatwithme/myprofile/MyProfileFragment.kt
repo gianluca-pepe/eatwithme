@@ -106,7 +106,7 @@ class MyProfileFragment : Fragment() {
         personViewModel.myprofileLiveData.observe(viewLifecycleOwner, {
             pers_name.setText(it.name)
             pers_surname.setText(it.surname)
-            if(it.birthday != null) {
+            if( !it.birthday.isNullOrEmpty() ) {
                 val str = it.birthday!!.split("/")
                 val month = str[1]
                 val day = str[2]
@@ -146,6 +146,7 @@ class MyProfileFragment : Fragment() {
 
     fun modifyProfile(){
         var ok: Boolean = true
+        var dateOfBirth = ""
 
         //Update user info
         if(pers_name.text.toString() == ""){
@@ -159,12 +160,13 @@ class MyProfileFragment : Fragment() {
         if(pers_birthday.text.toString() == ""){
             ok = false
             pers_birthday.error = "Inserisci la tua data di nascita"
+        } else {
+            val str = pers_birthday.text.split("/")
+            val month = str[1]
+            val day = str[0]
+            val year = str[2]
+            dateOfBirth = "$year/$month/$day"
         }
-        val str = pers_birthday.text.split("/")
-        val month = str[1]
-        val day = str[0]
-        val year = str[2]
-        val dateOfBirth = "$year/$month/$day"
         if(ok){
 
             //val datebirth = SimpleDateFormat("yyyy/MM/dd").parse(pers_birthday.text.toString())

@@ -62,7 +62,7 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
         bodyJSON.put( "surname", surname)
         bodyJSON.put( "telephone", telephone)
         bodyJSON.put("description", description)
-        //bodyJSON["birthday"] = birthday
+        bodyJSON.put( "birthday", birthday)
         bodyJSON.put("profile_pic", profile_pic)
 
 
@@ -128,6 +128,25 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
 
     //Update person data on db
     fun updateCurrentPerson(name:String?, surname:String?, telephone:String?, description:String?, birthday:String?, preferences: ArrayList<String> = arrayListOf<String>()){
+
+        val bodyJSON = JSONObject()
+        bodyJSON.put( "name", name)
+        bodyJSON.put( "surname", surname)
+        bodyJSON.put( "telephone", telephone)
+        bodyJSON.put("description", description)
+        bodyJSON.put( "birthday", birthday)
+
+        // Request a string response from the provided URL.
+        val stringRequest = JsonObjectRequest(Request.Method.PUT, "$url/$personID", bodyJSON,
+                { response ->
+                    println(response)
+                    setResponseInLiveData(response.toString())
+                },
+                { error -> println(error.networkResponse.statusCode) }
+        )
+        queue.add(stringRequest)
+
+        /*
         //Obtain the document whoose id field is = personID
         val docRef = db.collection("Users").document(personID)
 
@@ -168,7 +187,7 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
                 .addOnFailureListener { exception ->
                     Log.w(TAG, "Error getting documents: ", exception)
                 }
-
+*/
     }
 
     fun updatePersonPic(profile_pic: String?){
