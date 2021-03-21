@@ -66,7 +66,7 @@ class MyProfileFragment : Fragment() {
     private lateinit var pers_surname: TextInputEditText
     private lateinit var pers_birthday: TextView
     private lateinit var pers_birthday_calendar: ImageView
-    private lateinit var pers_telephone: TextInputEditText
+    //private lateinit var pers_telephone: TextInputEditText
     private lateinit var pers_description: TextInputEditText
     private lateinit var pers_email: TextInputEditText
     private lateinit var modifyProfile: Button
@@ -87,7 +87,7 @@ class MyProfileFragment : Fragment() {
         pers_birthday = view.findViewById(R.id.input_user_birthday)
         pers_birthday_calendar = view.findViewById(R.id.img_user_calendar)
         //pers_email = view.findViewById(R.id.input_user_mail)
-        pers_telephone = view.findViewById(R.id.input_user_telephone)
+        //pers_telephone = view.findViewById(R.id.input_user_telephone)
         pers_description = view.findViewById(R.id.input_user_description)
 
         modifyProfile = view.findViewById(R.id.btn_modify_profile)
@@ -115,7 +115,7 @@ class MyProfileFragment : Fragment() {
             }else{
                 pers_birthday.text = ""
             }
-            pers_telephone.setText(it.telephone)
+            //pers_telephone.setText(it.telephone)
             pers_description.setText(it.description)
             if(it.profile_pic != null){
 
@@ -173,7 +173,6 @@ class MyProfileFragment : Fragment() {
             personViewModel.updateCurrentPerson(
                     name = pers_name.text.toString(),
                     surname = pers_surname.text.toString(),
-                    telephone = pers_telephone.text.toString(),
                     birthday = dateOfBirth,
                     description = pers_description.text?.toString()
             )

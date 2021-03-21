@@ -6,63 +6,63 @@
     android:layout_height="match_parent"
     android:id="@+id/frameLayoutMyProfile"
     tools:context=".MyProfileFragment">
-<androidx.constraintlayout.widget.ConstraintLayout
 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    <androidx.constraintlayout.widget.ConstraintLayout
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_user_name_cont"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:textColorHint="@android:color/secondary_text_light"
-        app:boxBackgroundColor="@color/white"
-        app:boxBackgroundMode="filled"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout5">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_user_name"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_user_name_cont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:hint="@string/name_hint"
-            android:inputType="textPersonName" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:textColorHint="@android:color/secondary_text_light"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="filled"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout5">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:hint="@string/name_hint"
+                android:inputType="textPersonName" />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_user_surname_cont"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:textColorHint="@android:color/secondary_text_light"
-        app:boxBackgroundColor="@color/white"
-        app:boxBackgroundMode="filled"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_name_cont">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_user_surname"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_user_surname_cont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:hint="@string/surname_hint"
-            android:inputType="textPersonName"
-            android:textColor="#000000" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:textColorHint="@android:color/secondary_text_light"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="filled"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_user_name_cont">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_user_surname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:hint="@string/surname_hint"
+                android:inputType="textPersonName"
+                android:textColor="#000000" />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-    <!--<com.google.android.material.textfield.TextInputEditText
+        <!--<com.google.android.material.textfield.TextInputEditText
         android:id="@+id/input_user_mail"
         android:layout_width="351dp"
         android:layout_height="54dp"
@@ -75,170 +75,146 @@
         app:layout_constraintTop_toBottomOf="@+id/input_user_telephone" />-->
 
 
-    <TextView
-        android:id="@+id/input_user_birthday"
-        android:layout_width="133dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="18dp"
-        android:hint="@string/birthday_date"
-        android:textColor="#000000"
-        android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.079"
-        app:layout_constraintStart_toEndOf="@+id/img_user_calendar"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_surname_cont" />
+        <TextView
+            android:id="@+id/input_user_birthday"
+            android:layout_width="133dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="18dp"
+            android:hint="@string/birthday_date"
+            android:textColor="#000000"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.079"
+            app:layout_constraintStart_toEndOf="@+id/img_user_calendar"
+            app:layout_constraintTop_toBottomOf="@+id/input_user_surname_cont" />
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_user_telephone_cont"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:textColorHint="@android:color/secondary_text_light"
-        app:boxBackgroundColor="@color/white"
-        app:boxBackgroundMode="filled"
-        app:helperText="Opzionale"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_birthday" >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_user_telephone"
-            android:layout_width="match_parent"
+        <FrameLayout
+            android:id="@+id/frameLayout5"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:hint="@string/telephone"
-            android:inputType="textPersonName"
-            android:textColor="#000000" />
-    </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <FrameLayout
-        android:id="@+id/frameLayout5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            app:cardBackgroundColor="@color/colorPrimaryDark"
-            app:cardCornerRadius="80dp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/img_userpic"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <androidx.cardview.widget.CardView
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_gravity="center_horizontal"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_baseline_person_outline_240" />
+                android:layout_marginTop="10dp"
+                app:cardBackgroundColor="@color/colorPrimaryDark"
+                app:cardCornerRadius="80dp">
 
-        </androidx.cardview.widget.CardView>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/img_userpic"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_person_outline_240" />
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="30dp"
-            android:layout_gravity="end|bottom"
-            app:cardBackgroundColor="@color/colorPrimary"
-            app:cardCornerRadius="25dp">
+            </androidx.cardview.widget.CardView>
 
-            <Button
-                android:id="@+id/btn_upload_image"
-                android:layout_width="60dp"
-                android:layout_height="65dp"
-                android:layout_gravity="center"
-                android:backgroundTint="@color/colorPrimary"
-                android:elevation="0dp"
-                android:textSize="40dp"
-                app:icon="@drawable/ic_baseline_photo_camera_24"
-                app:iconSize="28dp"
-                app:iconTint="@color/white" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginTop="30dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="25dp">
 
-        </androidx.cardview.widget.CardView>
+                <Button
+                    android:id="@+id/btn_upload_image"
+                    android:layout_width="60dp"
+                    android:layout_height="65dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:elevation="0dp"
+                    android:textSize="40dp"
+                    app:icon="@drawable/ic_baseline_photo_camera_24"
+                    app:iconSize="28dp"
+                    app:iconTint="@color/white" />
 
-    </FrameLayout>
+            </androidx.cardview.widget.CardView>
+
+        </FrameLayout>
 
 
-    <Button
-        android:id="@+id/btn_modify_profile"
-        android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/modify_profile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.519"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_desc_cont" />
+        <Button
+            android:id="@+id/btn_modify_profile"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/modify_profile"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.519"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_user_desc_cont" />
 
-    <ImageView
-        android:id="@+id/img_user_calendar"
-        android:layout_width="38dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_baseline_calendar_today_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_surname_cont" />
+        <ImageView
+            android:id="@+id/img_user_calendar"
+            android:layout_width="38dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_baseline_calendar_today_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/input_user_surname_cont" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/birthday"
-        app:layout_constraintStart_toEndOf="@+id/input_user_birthday"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_surname_cont" />
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/birthday"
+            app:layout_constraintStart_toEndOf="@+id/input_user_birthday"
+            app:layout_constraintTop_toBottomOf="@+id/input_user_surname_cont" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/input_user_desc_cont"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:textColorHint="@android:color/secondary_text_light"
-        app:boxBackgroundColor="@color/white"
-        app:boxBackgroundMode="filled"
-        app:helperText="Opzionale"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_user_telephone_cont" >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_user_description"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_user_desc_cont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:hint="@string/short_description"
-            android:inputType="textMultiLine"
-            android:lines="3"
-            android:textColor="#000000" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:textColorHint="@android:color/secondary_text_light"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="filled"
+            app:helperText="Opzionale"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
 
-    <Button
-        android:id="@+id/btn_user_logout"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_width="80sp"
-        android:layout_height="36dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:backgroundTint="@color/fui_transparent"
-        android:forceDarkAllowed="false"
-        android:text="@string/logout"
-        android:textColor="@color/colorPrimary"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_user_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:hint="@string/short_description"
+                android:inputType="textMultiLine"
+                android:lines="3"
+                android:textColor="#000000" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_user_logout"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="80sp"
+            android:layout_height="36dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/fui_transparent"
+            android:forceDarkAllowed="false"
+            android:text="@string/logout"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

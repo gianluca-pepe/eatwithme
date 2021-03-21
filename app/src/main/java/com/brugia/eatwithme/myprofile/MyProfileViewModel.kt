@@ -29,12 +29,10 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
             id = personID,
             name = null,
             surname = null,
-            telephone = null,
             description = null,
             email = FirebaseAuth.getInstance().currentUser?.email,
             birthday = null,
-            profile_pic = null,
-            preferences = arrayListOf<String>()
+            profile_pic = null
         )
     )
 
@@ -42,25 +40,22 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
     val queue = Volley.newRequestQueue(application)
     private val url = "https://sapienzaengineering.eu.pythonanywhere.com/api/v1.0/users"
 
-    fun createPerson(name:String?, surname:String?, telephone:String? = null, birthday:String? = null, profile_pic:String? = null, preferences: ArrayList<String> = arrayListOf<String>(), description: String? = null) {
+    fun createPerson(name:String?, surname:String?, birthday:String? = null, profile_pic:String? = null, description: String? = null) {
 
         myprofileLiveData.value = myprofileLiveData.value?.copy(
                 id = personID,
                 name = name,
                 surname = surname,
-                telephone = telephone,
                 description = description,
                 email = FirebaseAuth.getInstance().currentUser?.email,
                 birthday = birthday,
-                profile_pic = profile_pic,
-                preferences = preferences
+                profile_pic = profile_pic
         )
 
         val bodyJSON = JSONObject()
         bodyJSON.put("gid", personID)
         bodyJSON.put( "name", name)
         bodyJSON.put( "surname", surname)
-        bodyJSON.put( "telephone", telephone)
         bodyJSON.put("description", description)
         bodyJSON.put( "birthday", birthday)
         bodyJSON.put("profile_pic", profile_pic)
@@ -127,12 +122,11 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     //Update person data on db
-    fun updateCurrentPerson(name:String?, surname:String?, telephone:String?, description:String?, birthday:String?, preferences: ArrayList<String> = arrayListOf<String>()){
+    fun updateCurrentPerson(name:String?, surname:String?, description:String?, birthday:String?){
 
         val bodyJSON = JSONObject()
         bodyJSON.put( "name", name)
         bodyJSON.put( "surname", surname)
-        bodyJSON.put( "telephone", telephone)
         bodyJSON.put("description", description)
         bodyJSON.put( "birthday", birthday)
 
@@ -193,7 +187,21 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
     fun updatePersonPic(profile_pic: String?){
         println("Aggiornamento immagine profilo della persona")
         //Obtain the document whoose id field is = personID
-        val docRef = db.collection("Users").document(personID)
+        val bodyJSON = JSONObject()
+        bodyJSON.put( "profile_pic", profile_pic)
+
+        // Request a string response from the provided URL.
+        val stringRequest = JsonObjectRequest(Request.Method.PUT, "$url/$personID", bodyJSON,
+                { response ->
+                    println(response)
+                    setResponseInLiveData(response.toString())
+                },
+                { error -> println(error.networkResponse.statusCode) }
+        )
+        queue.add(stringRequest)
+
+
+        /*val docRef = db.collection("Users").document(personID)
 
         docRef.get()
             .addOnSuccessListener { document ->
@@ -219,17 +227,28 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
-            }
+            }*/
     }
 
     /*Delete current person data from DB (keep care to logout the person on the end and redirect to the login page..)*/
     fun deleteCurrentPersonData(){
+        println("Eliminazione dati profilo della persona dal DB")
         //Delete the document of the Person, note that this doesn't delete its subdrirectories
+
+        val stringRequest = StringRequest(Request.Method.DELETE, "$url/$personID",
+                { response ->
+                    println(response)
+                    //setResponseInLiveData(response.toString())
+                },
+                { error -> println(error.networkResponse.statusCode) }
+        )
+        queue.add(stringRequest)
+        /*
         db.collection("Users").document(personID)
                 .delete()
                 .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
                 .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
-
+        */
     }
 
     /*
@@ -240,7 +259,7 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
     * We can call this functions without arguments or with arguments (ex: we have the data from Facebook or Google login)
     *
     * */
-    fun checkPersonData(name:String? = null, surname:String? = null, telephone:String? = null, birthday:String? = null, profile_pic:String? = null, preferences: ArrayList<String> = arrayListOf<String>(), description: String? = null){
+    fun checkPersonData(name:String? = null, surname:String? = null, birthday:String? = null, profile_pic:String? = null, description: String? = null){
 
         println("ID persona: $personID")
         /*
@@ -290,12 +309,10 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
                 id = result.optString("id"),
                 name = result.optString("name"),
                 surname = result.optString("surname"),
-                telephone = result.optString("telephone"),
                 description = result.optString("description"),
-                email = result.optString("email"),
+                email = FirebaseAuth.getInstance().currentUser?.email,
                 birthday = result.optString("birthday"),
-                profile_pic = result.optString("profile_pic"),
-                //preferences = arrayListOf<String>()
+                profile_pic = result.optString("profile_pic")
         )
     }
 }
