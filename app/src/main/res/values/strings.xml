@@ -71,6 +71,11 @@
     <string name="short_description">Breve descrizione di me</string>
     <string name="modify_profile">Modifica profilo</string>
     <string name="logout"><u>Logout</u></string>
+    <string name="elimina_account">Elimina account</string>
+    <string name="profile_logoutalert_title">Disconnessione</string>
+    <string name="profile_logoutalert_description">Vuoi effettuare il logout?</string>
+    <string name="profile_deletealert_title">Eliminazione account</string>
+    <string name="profile_deletealert_description">Desideri eliminare definitivamente il tuo accuount? Cliccando su "si", tutti i tue dati verranno rimossi e non sarà più possibile recuperarli.</string>
 
     <!-- Info tavolo -->
     <string name="join">Partecipa</string>
@@ -109,4 +114,5 @@
     <string name="meal_breakfast">Colazione</string>
     <string name="meal_dinner">Cena</string>
     <string name="meal_cocktail">Aperitivo</string>
+
 </resources>

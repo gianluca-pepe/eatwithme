@@ -10,10 +10,13 @@ package com.brugia.eatwithme
 import android.R.string
 import android.app.Activity
 import android.content.ContentResolver
+import android.content.ContentValues.TAG
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +25,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
@@ -74,6 +78,7 @@ class MyProfileFragment : Fragment() {
     private lateinit var btn_upload_image: Button
     private lateinit var img_userpic: ImageView
     private lateinit var btn_logout: Button
+    private lateinit var btn_delete: Button
 
     private val datePicker = DatePickerFragment(::onDateSet)
 
@@ -96,6 +101,7 @@ class MyProfileFragment : Fragment() {
         img_userpic = view.findViewById(R.id.img_userpic)
 
         btn_logout = view.findViewById(R.id.btn_user_logout)
+        btn_delete = view.findViewById(R.id.btn_user_delete_account)
 
         personViewModel.checkPersonData()//check if person data are loaded and load them
 
@@ -132,7 +138,9 @@ class MyProfileFragment : Fragment() {
 
         pers_birthday_calendar.setOnClickListener { this.showDatePickerDialog() }
         modifyProfile.setOnClickListener { this.modifyProfile() }
-        btn_logout.setOnClickListener { this.logout() }
+
+        btn_logout.setOnClickListener { this.logoutDialog() }
+        btn_delete.setOnClickListener { this.deleteDialog() }
 
         firebaseStore = FirebaseStorage.getInstance()
         storageReference = FirebaseStorage.getInstance().reference
@@ -271,10 +279,75 @@ class MyProfileFragment : Fragment() {
         }
     }
 
+    private fun logoutDialog() {
+
+        val alertDialog: AlertDialog? = activity?.let {
+            val builder = AlertDialog.Builder(it)
+            builder.apply {
+                setTitle(R.string.profile_logoutalert_title)
+                setMessage(R.string.profile_logoutalert_description)
+                setPositiveButton(R.string.yes,
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User clicked OK button
+                            logout()
+                        })
+                setNegativeButton(R.string.no,
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User cancelled the dialog
+                        })
+            }
+            // Set other dialog properties
+
+            // Create the AlertDialog
+            builder.create()
+        }
+        alertDialog?.show()
+    }
+
     private fun logout(){
         Firebase.auth.signOut()
         startActivity(Intent(context, LoginRegisterActivity::class.java))
         activity?.finish()
+    }
+
+    private fun deleteDialog() {
+
+        val alertDialog: AlertDialog? = activity?.let {
+            val builder = AlertDialog.Builder(it)
+            builder.apply {
+                setTitle(R.string.profile_deletealert_title)
+                setMessage(R.string.profile_deletealert_description)
+                setPositiveButton(R.string.yes,
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User clicked OK button
+                            delete_user()
+                        })
+                setNegativeButton(R.string.no,
+                        DialogInterface.OnClickListener { dialog, id ->
+                            // User cancelled the dialog
+                        })
+            }
+            // Set other dialog properties
+
+            // Create the AlertDialog
+            builder.create()
+        }
+        alertDialog?.show()
+    }
+
+    private fun delete_user(){
+
+        val user = Firebase.auth.currentUser!!
+
+        user.delete()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "User account deleted.")
+                        personViewModel.deleteCurrentPersonData()
+                        startActivity(Intent(context, LoginRegisterActivity::class.java))
+                        activity?.finish()
+                    }
+                }
     }
 
 
