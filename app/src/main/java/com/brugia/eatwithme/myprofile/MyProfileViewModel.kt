@@ -10,28 +10,14 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.brugia.eatwithme.data.Person
-import com.google.android.gms.tasks.Tasks.await
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import org.json.JSONObject
 
 
 class MyProfileViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = Firebase.firestore
     private val mUser = FirebaseAuth.getInstance().currentUser
     private val personID: String = mUser?.uid.toString()
     private var personTkn: String? = null
-
-    private val personTknTask = mUser!!.getIdToken(true)
-    .addOnCompleteListener { task ->
-        if (task.isSuccessful) {
-            personTkn = task.result.token.toString()
-            println("token:" + task.result.token.toString())
-        } else {
-            // Handle error -> task.getException();
-        }
-    }
 
     private val personNameSurname: String =  mUser?.displayName.toString()
 
@@ -51,7 +37,7 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
     val queue = Volley.newRequestQueue(application)
     private val url = "https://sapienzaengineering.eu.pythonanywhere.com/api/v1.0/users"
 
-    fun createPerson(name: String?, surname: String?, birthday: String? = null, profile_pic: String? = null, description: String? = null) {
+    private fun createPerson(name: String?, surname: String?, birthday: String? = null, profile_pic: String? = null, description: String? = null) {
 
         myprofileLiveData.value = myprofileLiveData.value?.copy(
                 id = personID,
@@ -72,36 +58,39 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
         bodyJSON.put("profile_pic", profile_pic)
 
 
-        // Request a string response from the provided URL.
-        val stringRequest = JsonObjectRequest(Request.Method.POST, url, bodyJSON,
-                { response ->
-                    println(response)
-                    setResponseInLiveData(response.toString())
-                },
-                { error -> println(error.networkResponse.statusCode) }
-        )
-        queue.add(stringRequest)
+        val task = fun () {
+            // Request a string response from the provided URL.
+            val stringRequest = JsonObjectRequest(Request.Method.POST, url, bodyJSON,
+                    { response ->
+                        println(response)
+                        setResponseInLiveData(response.toString())
+                    },
+                    { error -> println(error.networkResponse.statusCode) }
+            )
+            queue.add(stringRequest)
+        }
 
-
-
-
+        performTask(task)
     }
 
     //Function to get the current user..
     fun getCurrentPerson(){
 
+        val task = fun() {
+            val getUserUrl = "$url/$personTkn"
 
-        val getUserUrl = "$url/$personTkn"
+            // Request a string response from the provided URL.
+            val stringRequest = StringRequest(Request.Method.GET, getUserUrl,
+                    { response ->
+                        println(response)
+                        setResponseInLiveData(response)
+                    },
+                    { error -> println(error.networkResponse.statusCode) }
+            )
+            queue.add(stringRequest)
+        }
 
-        // Request a string response from the provided URL.
-        val stringRequest = StringRequest(Request.Method.GET, getUserUrl,
-                { response ->
-                    println(response)
-                    setResponseInLiveData(response)
-                },
-                { error -> println(error.networkResponse.statusCode) }
-        )
-        queue.add(stringRequest)
+        performTask(task)
         /*
         //Obtain the document whoose id field is = personID
         val docRef = db.collection("Users").document(personID)
@@ -276,7 +265,7 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
     * We can call this functions without arguments or with arguments (ex: we have the data from Facebook or Google login)
     *
     * */
-    fun checkPersonData(name: String? = null, surname: String? = null, birthday: String? = null, profile_pic: String? = null, description: String? = null){
+    fun checkPersonData() {
 
         println("ID persona: $personID")
         println("Token persona: $personTkn")
@@ -299,25 +288,28 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
                     }
                 }
 */
-        // Request a string response from the provided URL.
-        val stringRequest = StringRequest(Request.Method.GET, "$url/$personTkn",
-                { response ->
-                    println("La persona è già presente nel DB..")
-                    //setResponseInLiveData(response)
-                    getCurrentPerson()
-                },
-                { error ->
-                    if (error.networkResponse.statusCode == 404) {
-                        val n_s = personNameSurname.split(" ")
-                        val nome = n_s[0]
-                        val cognome = n_s[1]
-                        println("Creazione persona in corso..")
-                        createPerson(nome, cognome)
+        val task = fun() {
+            // Request a string response from the provided URL.
+            val stringRequest = StringRequest(Request.Method.GET, "$url/$personTkn",
+                    { response ->
+                        println("La persona è già presente nel DB..")
+                        setResponseInLiveData(response)
+                        //getCurrentPerson()
+                    },
+                    { error ->
+                        if (error.networkResponse.statusCode == 404) {
+                            val n_s = personNameSurname.split(" ")
+                            val nome = n_s[0]
+                            val cognome = n_s[1]
+                            println("Creazione persona in corso..")
+                            createPerson(nome, cognome)
+                        }
                     }
-                }
-        )
+            )
+            queue.add(stringRequest)
+        }
 
-        queue.add(stringRequest)
+        performTask(task)
     }
 
     private fun setResponseInLiveData(response: String) {
@@ -332,6 +324,26 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
                 birthday = result.optString("birthday"),
                 profile_pic = result.optString("profile_pic")
         )
+    }
+
+    /**
+     *  task is basically a request needing the idToken for authentication on backend.
+      */
+    private fun performTask( task: () -> Unit) {
+        if ( personTkn.isNullOrEmpty() ) {
+            mUser!!.getIdToken(true).addOnCompleteListener { getIdTokenTask ->
+                if (getIdTokenTask.isSuccessful) {
+                    this.personTkn = getIdTokenTask.result.token
+                    // println("token:" + personTkn)
+                    task()
+                } else {
+                    // Handle error -> task.getException();
+                }
+            }
+        } else {
+            println("token già presente")
+            task()
+        }
     }
 }
 

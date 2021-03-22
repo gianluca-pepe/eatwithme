@@ -27,6 +27,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
@@ -58,11 +59,11 @@ class MyProfileFragment : Fragment() {
     private var storageReference: StorageReference? = null
 
     //private val storage = Firebase.storage
-    private val db = Firebase.firestore
+    //private val db = Firebase.firestore
     private val personID: String =  FirebaseAuth.getInstance().currentUser?.uid.toString()
 
     private val calendar: Calendar = Calendar.getInstance()
-    private val personViewModel: MyProfileViewModel by viewModels {
+    private val personViewModel: MyProfileViewModel by activityViewModels {
         MyProfileViewModelFactory(requireActivity().application)
     }
 
@@ -103,7 +104,7 @@ class MyProfileFragment : Fragment() {
         btn_logout = view.findViewById(R.id.btn_user_logout)
         btn_delete = view.findViewById(R.id.btn_user_delete_account)
 
-        personViewModel.checkPersonData()//check if person data are loaded and load them
+        //personViewModel.checkPersonData()//check if person data are loaded and load them
 
 
         // Reference to an image file in Cloud Storage

@@ -77,9 +77,6 @@ class TableInfoFragment : Fragment() {
     private val personViewModel: MyProfileViewModel by viewModels {
         MyProfileViewModelFactory(requireActivity().application)
     }
-    init {
-        personViewModel.getCurrentPerson()
-    }
 
     private val callback = OnMapReadyCallback { googleMap ->
 
