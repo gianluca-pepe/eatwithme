@@ -104,36 +104,41 @@ class MyProfileFragment : Fragment() {
         btn_logout = view.findViewById(R.id.btn_user_logout)
         btn_delete = view.findViewById(R.id.btn_user_delete_account)
 
-        //personViewModel.checkPersonData()//check if person data are loaded and load them
+        //personViewModel.getCurrentPerson()
 
 
         // Reference to an image file in Cloud Storage
         var imageref = Firebase.storage.reference.child("profile-pic/$personID")
         //Fill variables from DB
         personViewModel.myprofileLiveData.observe(viewLifecycleOwner, {
-            pers_name.setText(it.name)
-            pers_surname.setText(it.surname)
-            if( !it.birthday.isNullOrEmpty() ) {
-                val str = it.birthday!!.split("/")
-                val month = str[1]
-                val day = str[2]
-                val year = str[0]
-                pers_birthday.text = "$day/$month/$year"
-            }else{
-                pers_birthday.text = ""
-            }
-            //pers_telephone.setText(it.telephone)
-            pers_description.setText(it.description)
-            if(it.profile_pic != null){
+            println(it)
+            println("bbb")
+            it?.let {
+                println(it.profile_pic)
+                pers_name.setText(it.name)
+                pers_surname.setText(it.surname)
+                if( !it.birthday.isNullOrEmpty() ) {
+                    val str = it.birthday!!.split("/")
+                    val month = str[1]
+                    val day = str[2]
+                    val year = str[0]
+                    pers_birthday.text = "$day/$month/$year"
+                }else{
+                    pers_birthday.text = ""
+                }
+                //pers_telephone.setText(it.telephone)
+                pers_description.setText(it.description)
 
-                //val storage = FirebaseStorage.getInstance()
-                // Create a reference to a file from a Google Cloud Storage URI
-                //val gsReference = storage.getReferenceFromUrl("gs://bucket/images/stars.jpg")
-                GlideApp.with(this)
-                        .load(imageref)
-                        .signature(ObjectKey(System.currentTimeMillis()))
-                        .into(img_userpic)
+                if(it.profile_pic != null){
+                    //val storage = FirebaseStorage.getInstance()
+                    // Create a reference to a file from a Google Cloud Storage URI
+                    //val gsReference = storage.getReferenceFromUrl("gs://bucket/images/stars.jpg")
+                    GlideApp.with(this)
+                            .load(imageref)
+                            .signature(ObjectKey(System.currentTimeMillis()))
+                            .into(img_userpic)
 
+                }
             }
         })
 
@@ -244,7 +249,6 @@ class MyProfileFragment : Fragment() {
                     personViewModel.updatePersonPic(downloadUri.toString())
 
                     Toast.makeText(context, "Profile pic was successfully modified", Toast.LENGTH_SHORT).show()
-
                 } else {
                     // Handle failures
                 }

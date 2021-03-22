@@ -6,21 +6,17 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.brugia.eatwithme.createtable.CreateTableViewModel
+import com.brugia.eatwithme.data.user.UserRepository
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
 import com.brugia.eatwithme.myprofile.MyProfileViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -39,15 +35,18 @@ class MainActivity : AppCompatActivity() {
         LocationViewModelFactory(this.application)
     }
 
+    private lateinit var userRepository: UserRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        userRepository = UserRepository(this.application)
 
         if (FirebaseAuth.getInstance().currentUser == null) {
             startActivity(Intent(this, LoginRegisterActivity::class.java))
             this.finish()
         }else{
-            personViewModel.checkPersonData()//check if person data are loaded and load them
+            userRepository.checkPersonData()//check if person data are loaded and load them
         }
 
         val navHostFragment = supportFragmentManager.
@@ -125,6 +124,6 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         // delete all Volley requests in the queue
-        personViewModel.queue.cancelAll(this.application)
+        userRepository.queue.cancelAll(this.application)
     }
 }
