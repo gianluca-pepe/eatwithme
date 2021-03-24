@@ -1,5 +1,6 @@
 package com.brugia.eatwithme.createtable.pages
 
+import android.app.Application
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,15 +11,15 @@ import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import com.brugia.eatwithme.R
 import com.brugia.eatwithme.createtable.CreateTableViewModel
+import com.brugia.eatwithme.createtable.CreateTableViewModelFactory
 import com.brugia.eatwithme.createtable.FormPage
 import com.firebase.ui.auth.ui.InvisibleActivityBase
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.util.*
 
-class CreateTableNameFragment: FormPage() {
+class CreateTableNameFragment(private val newTableViewModel: CreateTableViewModel): FormPage() {
 
-    private val newTableViewModel by activityViewModels<CreateTableViewModel>()
     private lateinit var nameInputView: TextInputEditText
     private lateinit var descriptionInputView: TextInputEditText
     private lateinit var maxParticipantsSeekBar: SeekBar

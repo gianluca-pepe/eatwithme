@@ -35,18 +35,16 @@ class MainActivity : AppCompatActivity() {
         LocationViewModelFactory(this.application)
     }
 
-    private lateinit var userRepository: UserRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        userRepository = UserRepository(this.application)
 
         if (FirebaseAuth.getInstance().currentUser == null) {
             startActivity(Intent(this, LoginRegisterActivity::class.java))
             this.finish()
         }else{
-            userRepository.checkPersonData()//check if person data are loaded and load them
+            personViewModel.checkPersonData()//check if person data are loaded and load them
         }
 
         val navHostFragment = supportFragmentManager.
@@ -100,6 +98,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onCreateTableNavigation() {
         val person = personViewModel.myprofileLiveData.value
+        println(person)
         if ( person == null || person.isProfileIncomplete() ) {
             val alert = AlertDialog.Builder(this)
             alert
@@ -124,6 +123,6 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         // delete all Volley requests in the queue
-        userRepository.queue.cancelAll(this.application)
+        //userRepository.queue.cancelAll(this.application)
     }
 }

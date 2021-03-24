@@ -52,7 +52,7 @@ class HomepageFragment : Fragment() {
         LocationViewModelFactory(this.requireActivity().application)
     }
     private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
-        SelectedTableViewModelFactory(this.requireContext())
+        SelectedTableViewModelFactory(this.requireActivity().application)
     }
 
     private lateinit var nearbyTablesContainer: ConstraintLayout

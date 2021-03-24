@@ -10,8 +10,8 @@ import com.brugia.eatwithme.R
 import com.brugia.eatwithme.createtable.CreateTableViewModel
 import com.brugia.eatwithme.createtable.FormPage
 
-class CreateTableConfirmationFragment: FormPage() {
-    private val newTableViewModel by activityViewModels<CreateTableViewModel>()
+class CreateTableConfirmationFragment(private val newTableViewModel: CreateTableViewModel): FormPage() {
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?):
             View = inflater.inflate(R.layout.create_table_confirmation, container, false)
 

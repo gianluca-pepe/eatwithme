@@ -18,7 +18,7 @@ class NextTables : Fragment() {
         MyTablesListViewModelFactory(this.requireContext())
     }
     private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
-        SelectedTableViewModelFactory(this.requireContext())
+        SelectedTableViewModelFactory(this.requireActivity().application)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

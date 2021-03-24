@@ -30,7 +30,7 @@ class TableListFragment : Fragment() {
     }
 
     private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
-        SelectedTableViewModelFactory(this.requireContext())
+        SelectedTableViewModelFactory(this.requireActivity().application)
     }
 
     private val tablesAdapter = TablesAdapter { table -> adapterOnClick(table) }

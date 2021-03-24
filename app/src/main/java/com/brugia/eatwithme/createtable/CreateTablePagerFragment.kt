@@ -29,9 +29,11 @@ class CreateTablePagerFragment : Fragment() {
      */
     private lateinit var viewPager: ViewPager2
     private lateinit var callback:OnBackPressedCallback
-    private val newTableViewModel by activityViewModels<CreateTableViewModel>()
+    private val newTableViewModel by activityViewModels<CreateTableViewModel> {
+        CreateTableViewModelFactory(this.requireActivity().application)
+    }
     private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
-        SelectedTableViewModelFactory(this.requireContext())
+        SelectedTableViewModelFactory(this.requireActivity().application)
     }
     private lateinit var stepper: Stepper
     private lateinit var stepperView: View
@@ -94,15 +96,24 @@ class CreateTablePagerFragment : Fragment() {
             }
         }
 
+        newTableViewModel.creationState.observe(this.viewLifecycleOwner, {
+            if (it) {
+                selectedTableViewModel.setSelectedTable(newTableViewModel.table.value)
+                viewPager.currentItem = viewPager.currentItem + 1
+                stepper.completeStep()
+                buildSurroundingUI()
+            }
+        })
+
         return view
     }
 
     private inner class ScreenSlidePagerAdapter(f: Fragment) : FragmentStateAdapter(f) {
         private val pages = listOf(
-                CreateTableNameFragment(),
-                CreateTableDateFragment(),
-                CreateTableMapFragment(),
-                CreateTableConfirmationFragment(),
+                CreateTableNameFragment(newTableViewModel),
+                CreateTableDateFragment(newTableViewModel),
+                CreateTableMapFragment(newTableViewModel),
+                CreateTableConfirmationFragment(newTableViewModel),
         )
 
         override fun getItemCount(): Int = pages.size
@@ -122,18 +133,18 @@ class CreateTablePagerFragment : Fragment() {
         if (formPage.isValid()) {
             if (viewPager.currentItem +2 == viewPager.adapter?.itemCount) {
                 newTableViewModel.createTable()
-                selectedTableViewModel.setSelectedTable(newTableViewModel.table.value)
-            }
+            } else {
 
-            if (viewPager.currentItem + 1 == viewPager.adapter?.itemCount) {
-                //findNavController().navigate(R.id.tableLobbyFragment)
-                findNavController().navigate(R.id.tableInfoFragment)
-                return
-            }
+                if (viewPager.currentItem + 1 == viewPager.adapter?.itemCount) {
+                    //findNavController().navigate(R.id.tableLobbyFragment)
+                    findNavController().navigate(R.id.tableInfoFragment)
+                    return
+                }
 
-            viewPager.currentItem = viewPager.currentItem + 1
-            stepper.completeStep()
-            buildSurroundingUI()
+                viewPager.currentItem = viewPager.currentItem + 1
+                stepper.completeStep()
+                buildSurroundingUI()
+            }
         }
     }
 

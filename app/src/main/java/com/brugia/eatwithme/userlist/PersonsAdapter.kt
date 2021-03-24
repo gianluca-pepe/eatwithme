@@ -46,16 +46,15 @@ class PersonsAdapter(private val onClick: (Person) -> Unit): ListAdapter<Person,
 
         /* Bind person to the respective views */
         fun bind(person: Person) {
-
+            println("person id:" + person.id)
             currentPerson = person
             personNameTextView.text = person.name
             personSurnameTextView.text = person.surname
             lblTableOwner.visibility = INVISIBLE
 
             if (person.profile_pic != null) {
-                val imgRef = Firebase.storage.reference.child("profile-pic/${person.id}")
                 GlideApp.with(itemView)
-                        .load(imgRef)
+                        .load(person.profile_pic)
                         .signature(ObjectKey(System.currentTimeMillis()))
                         .into(personImageView)
             }

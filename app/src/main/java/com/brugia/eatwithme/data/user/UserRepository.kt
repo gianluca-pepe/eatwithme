@@ -21,21 +21,21 @@ class UserRepository(application: Application) {
     private var personTkn: String = ""
     // Instantiate the RequestQueue.
     val queue: RequestQueue = Volley.newRequestQueue(application)
-    private val url = "https://sapienzaengineering.eu.pythonanywhere.com/api/v1.0/users"
+    private val urlUser = "https://sapienzaengineering.eu.pythonanywhere.com/api/v1.0/users"
+    private val urlTable = "https://sapienzaengineering.eu.pythonanywhere.com/api/v1.0/table"
 
-    private val _currentPersonLiveData: MutableLiveData<Person> = MutableLiveData<Person>()
+    private val _currentPersonLiveData = MutableLiveData<Person>()
     val currentPersonLiveData: LiveData<Person>
         get() = _currentPersonLiveData
 
     fun getUser(token: String): MutableLiveData<Person> {
         val result = MutableLiveData<Person>()
 
-        val getUserUrl = "$url/$token"
+        val getUserUrl = "$urlUser/$token"
 
         // Request a string response from the provided URL.
         val stringRequest = StringRequest(Request.Method.GET, getUserUrl,
                 { response ->
-                    println(response)
                     result.value = getPersonFromResponse(response)
                 },
                 { error ->
@@ -49,11 +49,10 @@ class UserRepository(application: Application) {
 
     fun getCurrentUser() {
         val task = fun () {
-            val getUserUrl = "$url/$personTkn"
+            val getUserUrl = "$urlUser/$personTkn"
             // Request a string response from the provided URL.
             val stringRequest = StringRequest(Request.Method.GET, getUserUrl,
                     { response ->
-                        println(response)
                         _currentPersonLiveData.value = getPersonFromResponse(response)
                     },
                     { error ->
@@ -76,12 +75,12 @@ class UserRepository(application: Application) {
     * */
     fun checkPersonData() {
         val task = fun() {
+            println(personTkn)
             // Request a string response from the provided URL.
-            val stringRequest = StringRequest(Request.Method.GET, "$url/$personTkn",
+            val stringRequest = StringRequest(Request.Method.GET, "$urlUser/$personTkn",
                     { response ->
                         println("La persona è già presente nel DB..")
-                        //setResponseInLiveData(response)
-                        //getCurrentPerson()
+                        _currentPersonLiveData.value = getPersonFromResponse(response)
                     },
                     { error ->
                         if (error.networkResponse.statusCode == 404) {
@@ -91,6 +90,7 @@ class UserRepository(application: Application) {
                             println("Creazione persona in corso..")
                             createPerson(nome, cognome)
                         }
+                        println("checkPersonData: ${error.networkResponse.statusCode}")
                     }
             )
             queue.add(stringRequest)
@@ -108,12 +108,11 @@ class UserRepository(application: Application) {
 
         val task = fun () {
             // Request a string response from the provided URL.
-            val stringRequest = JsonObjectRequest(Request.Method.POST, url, bodyJSON,
+            val stringRequest = JsonObjectRequest(Request.Method.POST, urlUser, bodyJSON,
                     { response ->
-                        println(response)
                         _currentPersonLiveData.value = getPersonFromResponse(response.toString())
                     },
-                    { error -> println(error.networkResponse.statusCode) }
+                    { error -> println("createPerson: ${error.networkResponse.statusCode}") }
             )
             queue.add(stringRequest)
         }
@@ -136,12 +135,11 @@ class UserRepository(application: Application) {
 
         val request = fun() {
             // Request a string response from the provided URL.
-            val stringRequest = JsonObjectRequest(Request.Method.PUT, "$url/$personTkn", bodyJSON,
+            val stringRequest = JsonObjectRequest(Request.Method.PUT, "$urlUser/$personTkn", bodyJSON,
                     { response ->
-                        println(response)
                         _currentPersonLiveData.value = getPersonFromResponse(response.toString())
                     },
-                    { error -> println(error.networkResponse.statusCode) }
+                    { error -> println("updateCurrentPerson: ${error.networkResponse.statusCode}") }
             )
             queue.add(stringRequest)
         }
@@ -156,12 +154,11 @@ class UserRepository(application: Application) {
 
         val request = fun() {
             // Request a string response from the provided URL.
-            val stringRequest = JsonObjectRequest(Request.Method.PUT, "$url/$personTkn", bodyJSON,
+            val stringRequest = JsonObjectRequest(Request.Method.PUT, "$urlUser/$personTkn", bodyJSON,
                     { response ->
-                        println(response)
                         _currentPersonLiveData.value = getPersonFromResponse(response.toString())
                     },
-                    { error -> println(error.networkResponse.statusCode) }
+                    { error -> println("updateCurrentPersonPic: ${error.networkResponse.statusCode}") }
             )
             queue.add(stringRequest)
         }
@@ -175,12 +172,11 @@ class UserRepository(application: Application) {
         //Delete the document of the Person, note that this doesn't delete its subdrirectories
 
         val request = fun() {
-            val stringRequest = StringRequest(Request.Method.DELETE, "$url/$personTkn",
+            val stringRequest = StringRequest(Request.Method.DELETE, "$urlUser/$personTkn",
                     { response ->
-                        println(response)
                         //setResponseInLiveData(response.toString())
                     },
-                    { error -> println(error.networkResponse.statusCode) }
+                    { error -> println("deleteCurrentPersonData: ${error.networkResponse.statusCode}") }
             )
             queue.add(stringRequest)
         }
@@ -189,11 +185,108 @@ class UserRepository(application: Application) {
         _currentPersonLiveData.value = Person() // empty person, allow UI to update
     }
 
+
+    // ====================== TABLE ===========================
+
+    fun getParticipantsOfTable(table: Table): ParticipantsListLiveData {
+        val result = ParticipantsListLiveData()
+        //result.max = table.participantsList.size
+
+        val request = fun() {
+            val stringRequest = StringRequest(Request.Method.GET,
+                    "$urlTable/${table.id}/partecipants?gid=$personTkn",
+                    { response ->
+                        val participantsJSONs = JSONArray(response)
+                        for (i in 0 until participantsJSONs.length()) {
+                            result.add(getPersonFromResponse(participantsJSONs[i].toString()))
+                        }
+                        result.commit()
+                    },
+                    { error -> println("getParticipantsOfTable: ${error.networkResponse.statusCode}")})
+
+            queue.add(stringRequest)
+        }
+
+        performRequest(request)
+        return result
+    }
+
+    /**
+     * Add current user to the given table
+     */
+    fun addParticipantToTable(table: Table, owner: Int = 0, onComplete: (Boolean) -> Unit): MutableLiveData<Boolean> {
+        val result = MutableLiveData<Boolean>()
+
+        val request = fun() {
+            val bodyJSON = JSONObject()
+            bodyJSON.put("gid", personTkn)
+            bodyJSON.put("owner", owner)
+
+            val stringRequest = JsonObjectRequest( Request.Method.POST,
+                    "$urlTable/${table.id}/partecipants", bodyJSON,
+                    { response ->
+                        result.value = true
+                        onComplete(true)
+                    },
+                    { error ->
+                        println("addParticipantToTable: ${error.networkResponse.statusCode}")
+                        onComplete(false)
+                    })
+
+            queue.add(stringRequest)
+        }
+
+        performRequest(request)
+        println("$urlTable/${table.id}/partecipants")
+        return result
+    }
+
+    fun deleteParticipantFromTable(table:Table,  onComplete: (Boolean) -> Unit): MutableLiveData<Boolean> {
+        val result = MutableLiveData<Boolean>()
+
+        val request = fun() {
+            val stringRequest = StringRequest( Request.Method.DELETE, "$urlTable/${table.id}/partecipants/$personTkn",
+                    { response ->
+                        result.value = true
+                        onComplete(true)
+                    },
+                    { error ->
+                        println("deleteParticipantFromTable: ${error.networkResponse.statusCode}")
+                        onComplete(false)
+                    })
+
+            queue.add(stringRequest)
+        }
+
+        performRequest(request)
+        return result
+    }
+
+    fun deleteTable(table:Table, onComplete: (Boolean) -> Unit): MutableLiveData<Boolean> {
+        val result = MutableLiveData<Boolean>()
+
+        val request = fun() {
+            val stringRequest = StringRequest( Request.Method.DELETE, "$urlTable/${table.id}/partecipants?gid=$personTkn",
+                    { response ->
+                        result.value = true
+                        onComplete(true)
+                    },
+                    { error ->
+                        println("deleteTable: ${error.networkResponse.statusCode}")
+                        onComplete(false)
+                    })
+
+            queue.add(stringRequest)
+        }
+
+        performRequest(request)
+        return result
+    }
      /**
      *  task is basically a request needing the idToken for authentication on backend.
      */
     private fun performRequest( request: () -> Unit) {
-        if ( personTkn.isNullOrEmpty() ) {
+        if ( personTkn.isEmpty() ) {
             mUser!!.getIdToken(true).addOnCompleteListener { getIdTokenTask ->
                 if (getIdTokenTask.isSuccessful) {
                     personTkn = getIdTokenTask.result.token.toString()
@@ -220,5 +313,17 @@ class UserRepository(application: Application) {
                 birthday = result.optString("birthday"),
                 profile_pic = result.optString("profile_pic")
         )
+    }
+
+    companion object {
+        private var INSTANCE: UserRepository? = null
+
+        fun getUserRepository(application: Application): UserRepository {
+            return synchronized(UserRepository::class) {
+                val newInstance = INSTANCE ?: UserRepository(application)
+                INSTANCE = newInstance
+                newInstance
+            }
+        }
     }
 }

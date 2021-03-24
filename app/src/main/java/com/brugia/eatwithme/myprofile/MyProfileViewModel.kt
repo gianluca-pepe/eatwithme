@@ -4,13 +4,13 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.brugia.eatwithme.data.Person
 import com.brugia.eatwithme.data.user.UserRepository
+import com.brugia.eatwithme.tablelist.SelectedTableViewModel
 import com.google.firebase.auth.FirebaseAuth
 
-class MyProfileViewModel(application: Application) : AndroidViewModel(application) {
+class MyProfileViewModel(val userRepository: UserRepository) : ViewModel() {
     private val mUser = FirebaseAuth.getInstance().currentUser
     private val personID: String = mUser?.uid.toString()
 
-    private val userRepository: UserRepository = UserRepository(application)
 
     var myprofileLiveData: LiveData<Person> = MutableLiveData(
             Person(
@@ -25,11 +25,14 @@ class MyProfileViewModel(application: Application) : AndroidViewModel(applicatio
     )
 
     init {
+        println("ottengo persona")
         myprofileLiveData = userRepository.currentPersonLiveData
-        userRepository.getCurrentUser()
+        println("persona ottenuta: "+ myprofileLiveData.value)
     }
 
-    private val url = "https://sapienzaengineering.eu.pythonanywhere.com/api/v1.0/users"
+    fun checkPersonData() {
+        userRepository.checkPersonData()
+    }
 
     //Update person data on db
     fun updateCurrentPerson(name: String?, surname: String?, description: String?, birthday: String?){
@@ -52,7 +55,7 @@ class MyProfileViewModelFactory(private val context: Application) : ViewModelPro
         if (modelClass.isAssignableFrom(MyProfileViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return MyProfileViewModel(
-                    application = context
+                    userRepository = UserRepository.getUserRepository(context)
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

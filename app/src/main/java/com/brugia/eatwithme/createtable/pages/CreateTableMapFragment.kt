@@ -1,6 +1,7 @@
 package com.brugia.eatwithme.createtable.pages
 
 import android.app.Activity
+import android.app.Application
 import android.content.ContentValues
 import android.content.Intent
 import android.content.res.Resources
@@ -16,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import com.brugia.eatwithme.BuildConfig
 import com.brugia.eatwithme.R
 import com.brugia.eatwithme.createtable.CreateTableViewModel
+import com.brugia.eatwithme.createtable.CreateTableViewModelFactory
 import com.brugia.eatwithme.createtable.FormPage
 import com.brugia.eatwithme.data.Restaurant
 import com.brugia.eatwithme.location.LocationViewModel
@@ -38,9 +40,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CreateTableMapFragment : FormPage() {
+class CreateTableMapFragment(private val newTableViewModel: CreateTableViewModel): FormPage() {
 
-    private val newTableViewModel by activityViewModels<CreateTableViewModel>()
     private val AUTOCOMPLETE_REQUEST_CODE = 2
     private lateinit var placeID: String
     private lateinit var placeName: String

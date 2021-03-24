@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.brugia.eatwithme.createtable.CreateTableViewModel
+import com.brugia.eatwithme.createtable.CreateTableViewModelFactory
 import com.brugia.eatwithme.data.Restaurant
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
 import com.brugia.eatwithme.datetimepickers.TimePickerFragment
@@ -39,12 +40,14 @@ class CreateTableFragment : Fragment() {
     private lateinit var requestLocationPermissionLauncher : ActivityResultLauncher<String>
     private lateinit var sharedPreferences: SharedPreferences
 
-    private val newTableViewModel: CreateTableViewModel = CreateTableViewModel()
+    private val newTableViewModel by activityViewModels<CreateTableViewModel> {
+        CreateTableViewModelFactory(this.requireActivity().application)
+    }
     private val locationViewModel by activityViewModels<LocationViewModel> {
         LocationViewModelFactory(this.requireActivity().application)
     }
     private val selectedTableViewModel by activityViewModels<SelectedTableViewModel> {
-        SelectedTableViewModelFactory(this.requireContext())
+        SelectedTableViewModelFactory(this.requireActivity().application)
     }
     private val datePicker = DatePickerFragment(::onDateSet)
     init {

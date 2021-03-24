@@ -316,7 +316,7 @@ class TablesDataSource(resources: Resources) {
         return initialTableList[randomNumber].image
     }
      */
-
+/*
     fun getParticipantsList(table: Table): ParticipantsListLiveData {
         val result = ParticipantsListLiveData()
         result.max = table.participantsList.size
@@ -346,7 +346,7 @@ class TablesDataSource(resources: Resources) {
 
         return result
     }
-
+*/
     private fun updateTableList(list: MutableList<Table>, docs: QuerySnapshot,
                                 categoryID: Int = MealCategory.ALL) {
         for(doc in docs) {

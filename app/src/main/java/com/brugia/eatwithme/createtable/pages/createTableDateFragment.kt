@@ -20,9 +20,8 @@ import java.util.*
 import kotlin.properties.Delegates
 import kotlin.time.minutes
 
-class CreateTableDateFragment: FormPage() {
+class CreateTableDateFragment(private val newTableViewModel: CreateTableViewModel): FormPage() {
 
-    private val newTableViewModel by activityViewModels<CreateTableViewModel>()
     private lateinit var dateInputButton: Button
     private lateinit var timeInputButton: Button
     private lateinit var calendarView: CalendarView

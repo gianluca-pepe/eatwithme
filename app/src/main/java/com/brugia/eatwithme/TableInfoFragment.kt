@@ -32,16 +32,14 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.Chip
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.NonCancellable.cancel
 
 class TableInfoFragment : Fragment() {
     // used for editing
     private val newTableViewModel by activityViewModels<CreateTableViewModel>()
     private val tableViewModel by activityViewModels<SelectedTableViewModel> {
-        SelectedTableViewModelFactory(this.requireContext())
+        SelectedTableViewModelFactory(this.requireActivity().application)
     }
     private lateinit var nameTextView: TextView
     private lateinit var descriptionTextView: TextView
@@ -218,7 +216,7 @@ class TableInfoFragment : Fragment() {
                 personsAdapter.submitList(it)
             })
 
-            if(tableViewModel.UserIsCreator()){
+            if(tableViewModel.isUserCreator()){
                 btnModifyTable.visibility = VISIBLE
                 btnExitTable.visibility = GONE
                 btnDeleteTable.visibility = VISIBLE
@@ -235,7 +233,7 @@ class TableInfoFragment : Fragment() {
             btnDeleteTable.visibility = GONE
 
             //Prevent user joins table if it is full
-            if (tableViewModel.doesTableIsFull()) {
+            if (tableViewModel.isTableFull()) {
                 txt_table_completed.visibility = VISIBLE
                 btnJoin.visibility = GONE
                 userList.visibility = GONE
@@ -245,6 +243,7 @@ class TableInfoFragment : Fragment() {
                 userList.visibility = GONE
                 /* If the person don't participate to the table, give him/she the possibility to join*/
                 btnJoin.setOnClickListener {
+                    println(personViewModel.myprofileLiveData.value)
                     personViewModel.myprofileLiveData.value?.let {
                         this.joinTable(view)
                     }
@@ -254,8 +253,7 @@ class TableInfoFragment : Fragment() {
     }
 
     private fun joinTable(view: View) {
-        val person = personViewModel.myprofileLiveData.value
-        if (person == null) return
+        val person = personViewModel.myprofileLiveData.value ?: return
 
         if ( person.isProfileIncomplete() ) {
             val alert = AlertDialog.Builder(this.requireContext())
@@ -338,9 +336,8 @@ class TableInfoFragment : Fragment() {
         txt_user_descrizione.text = person.description
 
         if (person.profile_pic != null) {
-            val imgRef = Firebase.storage.reference.child("profile-pic/${person.id}")
             GlideApp.with(this)
-                    .load(imgRef)
+                    .load(person.profile_pic)
                     .signature(ObjectKey(System.currentTimeMillis()))
                     .into(img_userpic)
         }
@@ -433,7 +430,7 @@ class TableInfoFragment : Fragment() {
                 Toast.makeText(context, R.string.table_delete_toast, Toast.LENGTH_SHORT).show()
                 Handler().postDelayed(Runnable {
                     //anything you want to start after 1.5s
-                    navigateToMyTables()
+                    navigateToMain()
                 }, 1500)
 
             }else {

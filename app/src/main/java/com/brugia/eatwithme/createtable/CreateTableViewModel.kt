@@ -1,10 +1,14 @@
 package com.brugia.eatwithme.createtable
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.brugia.eatwithme.data.OperationState
 import com.brugia.eatwithme.data.Restaurant
 import com.brugia.eatwithme.data.Table
+import com.brugia.eatwithme.data.user.UserRepository
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import com.google.firebase.Timestamp
@@ -13,10 +17,11 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.*
 
-class CreateTableViewModel: ViewModel() {
+class CreateTableViewModel(val userRepository: UserRepository): ViewModel() {
     private val calendar: Calendar = Calendar.getInstance()
     private val db = Firebase.firestore
-    private var _creationState = MutableLiveData<Boolean>()
+
+    private var _creationState = OperationState()
     val creationState: LiveData<Boolean>
         get() = _creationState
     var editing: Boolean = false
@@ -100,17 +105,21 @@ class CreateTableViewModel: ViewModel() {
             editTable()
         else {
             _tableLiveData.value?.let {
-                db.collection("Tables").add(it).addOnSuccessListener {
-                    _creationState.value = true
+                db.collection("Tables").add(it).addOnSuccessListener { tableRef ->
+                    _creationState.firebase = true
+                    // create a temp Table to pass the userRepository for performing the request
+                    val dummyTable = Table(tableRef.id)
+                    userRepository.addParticipantToTable(dummyTable, 1) { state -> _creationState.py = state }
+                    it.id = tableRef.id // the table didn't have its id yet. if we don't do this, following requests using this object will fail
                 }.addOnFailureListener { e ->
-                    _creationState.value = false
+                    _creationState.firebase = false
                     println(e)
                 }
             }
         }
     }
 
-    fun editTable() {
+    private fun editTable() {
         println(description)
         println(name)
         _tableLiveData.value?.let {
@@ -121,5 +130,18 @@ class CreateTableViewModel: ViewModel() {
     fun reset() {
         _tableLiveData.value = emptyTable
         calendar.timeInMillis = Calendar.getInstance().timeInMillis
+    }
+}
+
+class CreateTableViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(CreateTableViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return CreateTableViewModel(
+                    userRepository = UserRepository.getUserRepository(application)
+            ) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
