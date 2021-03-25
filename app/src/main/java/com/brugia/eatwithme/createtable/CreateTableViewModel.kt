@@ -123,7 +123,9 @@ class CreateTableViewModel(val userRepository: UserRepository): ViewModel() {
         println(description)
         println(name)
         _tableLiveData.value?.let {
-            db.collection("Tables").document(it.id).set(it)
+            db.collection("Tables").document(it.id).set(it).addOnSuccessListener {
+                _creationState.value = true // in this case we can set value directly because python backend is not affected
+            }
         }
     }
 

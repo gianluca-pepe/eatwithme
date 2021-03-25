@@ -38,11 +38,15 @@ class SelectedTableViewModel(val dataSource: UserRepository): ViewModel() {
     fun setSelectedTable(table: Table?) {
         table?.let {
             _selectedTable.value = table
-            _personsList = dataSource.getParticipantsOfTable(table)
+            getParticipants()
         }
     }
 
     fun getSelectedTable() = _selectedTable
+
+    fun getParticipants() {
+        _selectedTable.value?.let { _personsList = dataSource.getParticipantsOfTable(it) }
+    }
 
     fun joinTable() {
 

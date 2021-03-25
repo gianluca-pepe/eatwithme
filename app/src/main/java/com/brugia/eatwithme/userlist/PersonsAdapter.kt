@@ -5,7 +5,6 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -15,11 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.brugia.eatwithme.GlideApp
 import com.brugia.eatwithme.R
 import com.brugia.eatwithme.data.Person
-import com.brugia.eatwithme.data.Table
 import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.chip.Chip
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 
 class PersonsAdapter(private val onClick: (Person) -> Unit): ListAdapter<Person, PersonsAdapter.PersonViewHolder>(PersonDiffCallback) {
 
@@ -59,7 +55,7 @@ class PersonsAdapter(private val onClick: (Person) -> Unit): ListAdapter<Person,
                         .into(personImageView)
             }
 
-            if( tableOwner == person.id.toString() ){
+            if( person.isOwner != null && person.isOwner == true ){
                 lblTableOwner.visibility = VISIBLE
             }
 

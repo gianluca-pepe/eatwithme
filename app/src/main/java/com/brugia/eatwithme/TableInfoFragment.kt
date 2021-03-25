@@ -18,6 +18,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.brugia.eatwithme.createtable.CreateTableViewModel
+import com.brugia.eatwithme.createtable.CreateTableViewModelFactory
 import com.brugia.eatwithme.data.Person
 import com.brugia.eatwithme.data.mealcategory.MealCategory
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
@@ -37,7 +38,9 @@ import com.google.firebase.storage.ktx.storage
 
 class TableInfoFragment : Fragment() {
     // used for editing
-    private val newTableViewModel by activityViewModels<CreateTableViewModel>()
+    private val newTableViewModel by activityViewModels<CreateTableViewModel> {
+       CreateTableViewModelFactory(this.requireActivity().application)
+    }
     private val tableViewModel by activityViewModels<SelectedTableViewModel> {
         SelectedTableViewModelFactory(this.requireActivity().application)
     }
@@ -317,7 +320,7 @@ class TableInfoFragment : Fragment() {
         btnExitTable.visibility = VISIBLE
         /* If the person participate to the table, populate the recyclerview*/
         /* Persons list management (RecyclerView) */
-
+        tableViewModel.getParticipants()
         tableViewModel.personsList.observe(viewLifecycleOwner, {
             personsAdapter.submitList(it)
         })
@@ -389,7 +392,7 @@ class TableInfoFragment : Fragment() {
                 Toast.makeText(context, R.string.table_exit_toast, Toast.LENGTH_SHORT).show()
                 Handler().postDelayed(Runnable {
                     //anything you want to start after 1.5s
-                    navigateToMyTables()
+                    navigateToMain()
                 }, 1500)
 
             }else {

@@ -237,7 +237,6 @@ class UserRepository(application: Application) {
         }
 
         performRequest(request)
-        println("$urlTable/${table.id}/partecipants")
         return result
     }
 
@@ -311,7 +310,8 @@ class UserRepository(application: Application) {
                 surname = result.optString("surname"),
                 description = result.optString("description"),
                 birthday = result.optString("birthday"),
-                profile_pic = result.optString("profile_pic")
+                profile_pic = result.optString("profile_pic"),
+                isOwner = result.optBoolean("owner"),
         )
     }
 

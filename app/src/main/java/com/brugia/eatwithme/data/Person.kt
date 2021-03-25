@@ -18,6 +18,7 @@ data class Person(
         var birthday: String? = null,
         var profile_pic: String? = null,
         var preferences: ArrayList<String>? = null,
+        var isOwner: Boolean? = null,
 ) {
     fun isProfileIncomplete(): Boolean {
         return name.isNullOrEmpty() || surname.isNullOrEmpty() || birthday.isNullOrEmpty()
