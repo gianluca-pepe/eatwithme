@@ -7,17 +7,11 @@
 
 package com.brugia.eatwithme
 
-import android.R.string
 import android.app.Activity
-import android.content.ContentResolver
-import android.content.ContentValues.TAG
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,18 +22,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
 import com.brugia.eatwithme.myprofile.MyProfileViewModelFactory
 import com.bumptech.glide.signature.ObjectKey
-
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -48,6 +39,7 @@ import com.google.firebase.storage.ktx.storage
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class MyProfileFragment : Fragment() {
@@ -112,24 +104,24 @@ class MyProfileFragment : Fragment() {
         //Fill variables from DB
         personViewModel.myprofileLiveData.observe(viewLifecycleOwner, {
             println(it)
-            println("bbb")
+
             it?.let {
                 println(it.profile_pic)
                 pers_name.setText(it.name)
                 pers_surname.setText(it.surname)
-                if( !it.birthday.isNullOrEmpty() ) {
+                if (!it.birthday.isNullOrEmpty()) {
                     val str = it.birthday!!.split("/")
                     val month = str[1]
                     val day = str[2]
                     val year = str[0]
                     pers_birthday.text = "$day/$month/$year"
-                }else{
+                } else {
                     pers_birthday.text = ""
                 }
                 //pers_telephone.setText(it.telephone)
                 pers_description.setText(it.description)
 
-                if(it.profile_pic != null){
+                if (it.profile_pic != null) {
                     //val storage = FirebaseStorage.getInstance()
                     // Create a reference to a file from a Google Cloud Storage URI
                     //val gsReference = storage.getReferenceFromUrl("gs://bucket/images/stars.jpg")
@@ -180,9 +172,18 @@ class MyProfileFragment : Fragment() {
             val day = str[0]
             val year = str[2]
             dateOfBirth = "$year/$month/$day"
+            var simpleFormat =  SimpleDateFormat("yyyy/MM/dd");
+            var convertedDate = simpleFormat.parse(dateOfBirth)
+            val currentTime = Calendar.getInstance()
+            val timeDiff = currentTime.timeInMillis - convertedDate.time
+            val diffInYear: Long = TimeUnit.MILLISECONDS.toDays(timeDiff) / 365
+            if(diffInYear < 18){
+                ok = false
+                pers_birthday.error = "Devi avere compiuto 18 anni per poter utilizzare l'app!"
+            }
         }
         if(ok){
-
+            pers_birthday.error = null
             //val datebirth = SimpleDateFormat("yyyy/MM/dd").parse(pers_birthday.text.toString())
             personViewModel.updateCurrentPerson(
                     name = pers_name.text.toString(),
@@ -341,18 +342,16 @@ class MyProfileFragment : Fragment() {
     }
 
     private fun delete_user(){
-
-        val user = Firebase.auth.currentUser!!
-
-        user.delete()
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Log.d(TAG, "User account deleted.")
-                        personViewModel.deleteCurrentPersonData()
-                        startActivity(Intent(context, LoginRegisterActivity::class.java))
-                        activity?.finish()
-                    }
-                }
+        Toast.makeText(context, "Elminazione account in corso..", Toast.LENGTH_SHORT).show()
+        personViewModel.deleteCurrentPersonData()
+        //Check if the user is deleted and then start login activity..
+        personViewModel.myprofileLiveData.observe(viewLifecycleOwner, {
+            //println("This is the deleted person:" + it.name)
+            if (it.id == null) {
+                startActivity(Intent(context, LoginRegisterActivity::class.java))
+                activity?.finish()
+            }
+        })
     }
 
 

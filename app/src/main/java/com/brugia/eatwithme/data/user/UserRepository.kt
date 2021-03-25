@@ -1,6 +1,8 @@
 package com.brugia.eatwithme.data.user
 
 import android.app.Application
+import android.content.ContentValues
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.android.volley.Request
@@ -12,6 +14,8 @@ import com.brugia.eatwithme.data.ParticipantsListLiveData
 import com.brugia.eatwithme.data.Person
 import com.brugia.eatwithme.data.Table
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -67,7 +71,7 @@ class UserRepository(application: Application) {
 
     /*
     * This function check if person data already exists
-    * if not, create the person document into Firestore
+    * if not, create the person document into Firestore & Python Backend
     * if yes, load the data of the person
     *
     * We can call this functions without arguments or with arguments (ex: we have the data from Facebook or Google login)
@@ -174,7 +178,18 @@ class UserRepository(application: Application) {
         val request = fun() {
             val stringRequest = StringRequest(Request.Method.DELETE, "$urlUser/$personTkn",
                     { response ->
-                        //setResponseInLiveData(response.toString())
+
+                        //val user = Firebase.auth.currentUser!!
+                        mUser!!.delete()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                //rimuovi la persona da tutti i tavoli in cui partecipa
+
+                                Log.d(ContentValues.TAG, "User account deleted.")
+                                _currentPersonLiveData.value = resetPerson() // empty person, allow UI to update
+                            }
+                        }
+
                     },
                     { error -> println("deleteCurrentPersonData: ${error.networkResponse.statusCode}") }
             )
@@ -182,7 +197,6 @@ class UserRepository(application: Application) {
         }
 
         performRequest(request)
-        _currentPersonLiveData.value = Person() // empty person, allow UI to update
     }
 
 
@@ -247,6 +261,7 @@ class UserRepository(application: Application) {
             val stringRequest = StringRequest( Request.Method.DELETE, "$urlTable/${table.id}/partecipants/$personTkn",
                     { response ->
                         result.value = true
+                        onComplete(true)
                         onComplete(true)
                     },
                     { error ->
@@ -313,6 +328,20 @@ class UserRepository(application: Application) {
                 profile_pic = result.optString("profile_pic"),
                 isOwner = result.optBoolean("owner"),
         )
+    }
+
+    private fun resetPerson(): Person {
+
+        return Person (
+                id = null,
+                name = null,
+                surname = null,
+                description = null,
+                birthday = null,
+                profile_pic = null,
+                isOwner = null,
+        )
+
     }
 
     companion object {
