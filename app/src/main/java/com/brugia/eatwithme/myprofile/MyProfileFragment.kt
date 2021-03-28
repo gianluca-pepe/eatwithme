@@ -41,9 +41,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-
 class MyProfileFragment : Fragment() {
-
 
     private val PICK_IMAGE_REQUEST = 71
     private var filePath: Uri? = null
@@ -326,7 +324,7 @@ class MyProfileFragment : Fragment() {
                 setPositiveButton(R.string.yes,
                         DialogInterface.OnClickListener { dialog, id ->
                             // User clicked OK button
-                            delete_user()
+                            deleteUser()
                         })
                 setNegativeButton(R.string.no,
                         DialogInterface.OnClickListener { dialog, id ->
@@ -341,7 +339,7 @@ class MyProfileFragment : Fragment() {
         alertDialog?.show()
     }
 
-    private fun delete_user(){
+    private fun deleteUser(){
         Toast.makeText(context, "Elminazione account in corso..", Toast.LENGTH_SHORT).show()
         personViewModel.deleteCurrentPersonData()
         //Check if the user is deleted and then start login activity..

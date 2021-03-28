@@ -90,7 +90,9 @@ class UserRepository(application: Application) {
                         if (error.networkResponse.statusCode == 404) {
                             val n_s = personNameSurname.split(" ")
                             val nome = n_s[0]
-                            val cognome = n_s[1]
+                            var cognome = ""
+                            if(n_s.size>1)
+                                cognome = n_s[1]
                             println("Creazione persona in corso..")
                             createPerson(nome, cognome)
                         }
