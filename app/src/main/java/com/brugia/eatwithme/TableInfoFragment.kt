@@ -356,7 +356,7 @@ class TableInfoFragment : Fragment() {
         tableViewModel.getSelectedTable().value?.let {
             newTableViewModel.setTable(it)
             newTableViewModel.editing = true
-            findNavController().navigate(R.id.action_EditTable)
+            findNavController().navigate(R.id.action_edit_table)
         }
     }
 

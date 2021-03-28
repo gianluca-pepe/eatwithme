@@ -37,9 +37,6 @@
         android:id="@+id/createTablePagerFragment"
         android:name="com.brugia.eatwithme.createtable.CreateTablePagerFragment"
         android:label="CreateTablePagerFragment" />
-    <action
-        android:id="@+id/action_EditTable"
-        app:destination="@id/createTablePagerFragment" />
     <fragment
         android:id="@+id/homepageFragment"
         android:name="com.brugia.eatwithme.homepage.HomepageFragment"
@@ -64,5 +61,9 @@
     <fragment
         android:id="@+id/tableInfoFragment"
         android:name="com.brugia.eatwithme.TableInfoFragment"
-        android:label="TableInfoFragment" />
+        android:label="TableInfoFragment" >
+        <action
+            android:id="@+id/action_edit_table"
+            app:destination="@id/createTablePagerFragment" />
+    </fragment>
 </navigation>

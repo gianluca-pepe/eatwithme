@@ -132,6 +132,8 @@ class CreateTableViewModel(val userRepository: UserRepository): ViewModel() {
     fun reset() {
         _tableLiveData.value = emptyTable
         calendar.timeInMillis = Calendar.getInstance().timeInMillis
+        _creationState.py = false
+        _creationState.firebase = false
     }
 }
 
