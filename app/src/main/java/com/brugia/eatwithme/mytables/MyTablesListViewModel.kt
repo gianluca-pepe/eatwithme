@@ -1,10 +1,14 @@
 package com.brugia.eatwithme.mytables
 
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.brugia.eatwithme.data.TablesDataSource
-import com.brugia.eatwithme.tablelist.TablesListViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class MyTablesListViewModel (private val dataSource: TablesDataSource): ViewModel() {
     val myNextTablesLiveData = dataSource.getMyNextTablesList()
@@ -24,6 +28,26 @@ class MyTablesListViewModel (private val dataSource: TablesDataSource): ViewMode
 
     fun listenMyTables() {
        //dataSource.listenMyTables()
+    }
+
+    fun exitAllTables(): MutableLiveData<Int> {
+        val db = Firebase.firestore
+        val auth_id = Firebase.auth.uid
+        val num_done = MutableLiveData(myNextTablesLiveData.value?.size ?: 0)
+
+        myNextTablesLiveData.value?.forEach {
+            db.collection("Tables").document(it.id).update(
+                    "participantsList",
+                    FieldValue.arrayRemove(auth_id)
+            ).addOnFailureListener {
+                println("uscita tavolo fallita" + it)
+            }.addOnSuccessListener {
+                println("uscita tavolo riuscita")
+                num_done.value = num_done.value?.minus(1)
+            }
+        }
+
+        return num_done
     }
 }
 

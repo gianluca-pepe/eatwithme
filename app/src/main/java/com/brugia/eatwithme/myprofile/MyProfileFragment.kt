@@ -25,6 +25,8 @@ import androidx.fragment.app.activityViewModels
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
 import com.brugia.eatwithme.myprofile.MyProfileViewModel
 import com.brugia.eatwithme.myprofile.MyProfileViewModelFactory
+import com.brugia.eatwithme.mytables.MyTablesListViewModel
+import com.brugia.eatwithme.mytables.MyTablesListViewModelFactory
 import com.bumptech.glide.signature.ObjectKey
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
@@ -55,6 +57,10 @@ class MyProfileFragment : Fragment() {
     private val calendar: Calendar = Calendar.getInstance()
     private val personViewModel: MyProfileViewModel by activityViewModels {
         MyProfileViewModelFactory(requireActivity().application)
+    }
+
+    private val mytablesListViewModel: MyTablesListViewModel by activityViewModels {
+        MyTablesListViewModelFactory(requireContext())
     }
 
     private lateinit var pers_name: TextInputEditText
@@ -341,7 +347,12 @@ class MyProfileFragment : Fragment() {
 
     private fun deleteUser(){
         Toast.makeText(context, "Elminazione account in corso..", Toast.LENGTH_SHORT).show()
-        personViewModel.deleteCurrentPersonData()
+        val exitTablesResult = mytablesListViewModel.exitAllTables()
+
+        exitTablesResult.observe(viewLifecycleOwner, {
+            println(it)
+            if (it == 0) personViewModel.deleteCurrentPersonData()
+        })
         //Check if the user is deleted and then start login activity..
         personViewModel.myprofileLiveData.observe(viewLifecycleOwner, {
             //println("This is the deleted person:" + it.name)

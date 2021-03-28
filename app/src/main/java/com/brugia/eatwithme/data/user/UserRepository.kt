@@ -264,7 +264,6 @@ class UserRepository(application: Application) {
                     { response ->
                         result.value = true
                         onComplete(true)
-                        onComplete(true)
                     },
                     { error ->
                         println("deleteParticipantFromTable: ${error.networkResponse.statusCode}")
