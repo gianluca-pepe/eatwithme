@@ -18,6 +18,7 @@ class TablesListViewModel(private val dataSource: TablesDataSource) : ViewModel(
     val location = MutableLiveData<Location?>(null)
     val radius = MutableLiveData<Int?>(null)
     val address = MutableLiveData("")
+    var mealCategory: Int = MealCategory.ALL
 /*
     /* If the name and description are present, create new Table and add it to the datasource */
     fun insertTable(
@@ -52,7 +53,11 @@ class TablesListViewModel(private val dataSource: TablesDataSource) : ViewModel(
  */
 
     fun loadMoreTables(location: Location? = this.location.value, radius: Int? = this.radius.value,
-            mealCategory: Int = MealCategory.ALL) {
+            mealCategory: Int = this.mealCategory) {
+
+        if (mealCategory != this.mealCategory)
+            this.mealCategory = mealCategory
+
         if (location != null)
             dataSource.loadTablesBatchWithLocation(location, radius?: 0, categoryID = mealCategory)
         else
@@ -60,7 +65,11 @@ class TablesListViewModel(private val dataSource: TablesDataSource) : ViewModel(
     }
 
     fun refresh(location: Location?= this.location.value, radius: Int?= this.radius.value,
-        mealCategory: Int = MealCategory.ALL) {
+        mealCategory: Int = this.mealCategory) {
+
+        if (mealCategory != this.mealCategory)
+            this.mealCategory = mealCategory
+
         if (location != null)
             dataSource.loadTablesBatchWithLocation(location, radius?: 0, true, mealCategory)
         else
