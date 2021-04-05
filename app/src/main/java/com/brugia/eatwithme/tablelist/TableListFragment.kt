@@ -166,6 +166,10 @@ class TableListFragment : Fragment() {
                 tablesListViewModel.refresh()
             }
         }
+
+        if (tablesListViewModel.location.value == null) {
+            view.findViewById<View>(R.id.locationConstraintLayout).visibility = View.GONE
+        }
     }
 
     /* Opens Table detail when RecyclerView item is clicked. */

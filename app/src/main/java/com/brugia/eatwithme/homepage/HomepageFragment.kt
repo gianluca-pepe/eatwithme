@@ -36,7 +36,7 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 
-val DEFAULT_CITY_RADIUS = 20
+const val DEFAULT_CITY_RADIUS = 10
 
 class HomepageFragment : Fragment() {
     private val AUTOCOMPLETE_REQUEST_CODE = 2
@@ -190,12 +190,12 @@ class HomepageFragment : Fragment() {
     }
 
     private fun onCityClick(city: City) {
-        updateTableListViewModel(city.location)
+        updateTableListViewModel(location = city.location)
         findNavController().navigate(R.id.action_search)
     }
 
     private fun onMealCategoryClick(category: MealCategory) {
-        updateTableListViewModel(mealCategory = category.id)
+        updateTableListViewModel(location = locationViewModel.getLocationData().value, mealCategory = category.id)
         findNavController().navigate(R.id.action_search)
     }
 

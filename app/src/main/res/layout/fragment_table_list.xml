@@ -8,7 +8,7 @@
     tools:context=".tablelist.TableListFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+        android:id="@+id/locationConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,7 +84,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/locationConstraintLayout">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_table_list"
@@ -94,7 +94,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/locationConstraintLayout"
             tools:itemCount="6"
             tools:listitem="@layout/card_table_vertical_container" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
