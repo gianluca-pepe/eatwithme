@@ -31,13 +31,16 @@
         <item name="android:textColor">@android:color/secondary_text_light</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="subtitle">
         <item name="android:textSize">18sp</item>
     </style>
+
     <style name="category_title">
         <item name="android:textColor">@android:color/secondary_text_light</item>
         <item name="android:textSize">18sp</item>
     </style>
+
     <style name="roundedButton">
         <item name="cornerRadius">20dp</item>
     </style>
@@ -56,5 +59,14 @@
         <item name="elevation">4dp</item>
         <item name="android:layout_margin">8dp</item>
         <item name="cardCornerRadius">20dp</item>
+    </style>
+
+    <style name="Widget.Theme.EatWithMe.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <style name="Widget.Theme.EatWithMe.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
 </resources>

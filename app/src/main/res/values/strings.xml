@@ -114,5 +114,8 @@
     <string name="meal_breakfast">Colazione</string>
     <string name="meal_dinner">Cena</string>
     <string name="meal_cocktail">Aperitivo</string>
+    <string name="title_activity_splashscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>
