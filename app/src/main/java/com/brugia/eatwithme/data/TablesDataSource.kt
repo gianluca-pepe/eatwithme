@@ -20,7 +20,7 @@ import java.util.*
 
 /* Handles operations on tablesLiveData and holds details about it. */
 class TablesDataSource(resources: Resources) {
-    val BATCHSIZE: Long = 10
+    val BATCHSIZE: Long = 5
     private val currentTableNumber: Long
         get() {
             tablesLiveData.value?.let {
@@ -138,10 +138,13 @@ class TablesDataSource(resources: Resources) {
                             if (    newTable.timestamp!! >= todayDate &&
                                     (categoryID == MealCategory.ALL || newTable.getCategory() == categoryID)
                             ) {
-                                newTable.distance = distanceInM
-                                tempList.add(newTable)
+
+                                if (!tempList.contains(newTable)) {
+                                    newTable.distance = distanceInM
+                                    tempList.add(newTable)
+                                    lastDocument = doc
+                                }
                             }
-                            lastDocument = doc
                             count++
                         }
                     }
