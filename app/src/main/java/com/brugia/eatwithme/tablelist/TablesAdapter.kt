@@ -49,6 +49,7 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
         private val tableTextViewMaxPartecipants: TextView = itemView.findViewById(R.id.maxParticipants)
         //private val tableTextViewDate: TextView = itemView.findViewById(R.id.table_list_lbl_date)
         private val tableTextViewHour: TextView = itemView.findViewById(R.id.tableHour)
+        private val tableTextViewDate: TextView = itemView.findViewById(R.id.tableDate)
         private val tableImageView: ImageView = itemView.findViewById(R.id.tableImage)
         private val tableTextViewCity: TextView = itemView.findViewById(R.id.tableCity)
         private var currentTable: Table? = null
@@ -72,6 +73,7 @@ class TablesAdapter(private val onClick: (Table) -> Unit) :
             tableTextViewNumPartecipants.text = table.numParticipants.toString()
             tableTextViewMaxPartecipants.text = table.maxParticipants.toString()
             tableTextViewHour.text = table.tableHourText()
+            tableTextViewDate.text = table.tableDateText("E, dd MMM")
 
             val lat = table.restaurant?.geometry?.location?.lat!!
             val lng = table.restaurant?.geometry?.location?.lng!!

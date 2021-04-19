@@ -90,6 +90,7 @@
             android:layout_height="18dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_groups_24" />
 
         <ImageView
@@ -98,8 +99,8 @@
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/tableHour"
-            app:layout_constraintStart_toEndOf="@+id/tableHour"
-            app:layout_constraintTop_toTopOf="@+id/tableHour"
+            app:layout_constraintStart_toEndOf="@+id/tableDate"
+            app:layout_constraintTop_toTopOf="@+id/tableDate"
             app:srcCompat="@drawable/ic_baseline_place_24" />
 
         <TextView
@@ -144,9 +145,25 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/tableHour"
             app:layout_constraintStart_toEndOf="@+id/maxParticipants"
+            app:layout_constraintTop_toTopOf="@+id/tableDate"
             app:srcCompat="@drawable/ic_baseline_access_time_24" />
+
+        <TextView
+            android:id="@+id/tableDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="4dp"
+            android:singleLine="true"
+            android:text="@tools:sample/lorem[0]"
+            android:textColor="@color/quantum_black_hint_text"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/tableHour"
+            app:layout_constraintStart_toEndOf="@+id/imageView11"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tableHour"
@@ -157,9 +174,9 @@
             android:textColor="@color/quantum_black_hint_text"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView11"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/tableDate"
             app:layout_constraintStart_toEndOf="@+id/imageView11"
-            app:layout_constraintTop_toTopOf="@+id/imageView11"
             tools:text="@tools:sample/lorem" />
 
         <TextView
