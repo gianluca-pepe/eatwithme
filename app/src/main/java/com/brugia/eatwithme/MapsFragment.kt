@@ -16,9 +16,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.brugia.eatwithme.data.mealcategory.MealCategory
+import com.brugia.eatwithme.homepage.DEFAULT_CITY_RADIUS
 import com.brugia.eatwithme.location.LocationViewModel
 import com.brugia.eatwithme.location.LocationViewModelFactory
 import com.brugia.eatwithme.tablelist.TablesListViewModel
@@ -39,6 +42,10 @@ import org.w3c.dom.Text
 
 
 class MapsFragment : Fragment() {
+
+    private val tablesListViewModel by activityViewModels<TablesListViewModel> {
+        TablesListViewModelFactory(this.requireContext())
+    }
 
     lateinit var txtPos: TextView
 
@@ -94,11 +101,12 @@ class MapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
 
         txtPos = view.findViewById<TextView>(R.id.txtPlaceName)
-        if(locationViewModel.address.value != null) {
+        txtPos.text = "Cerca il posto dove desideri trovare tavoli.."
+        /*if(locationViewModel.address.value != null) {
             txtPos.text = locationViewModel.address.value
         }else{
             txtPos.text = ""
-        }
+        }*/
         // Initialize the SDK
         Places.initialize(this.requireActivity().application, BuildConfig.MAPS_KEY)
         // Create a new PlacesClient instance
@@ -112,6 +120,11 @@ class MapsFragment : Fragment() {
             val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
                     .build(this.requireActivity().application)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+        }
+        hideRestaurantCard()
+        view.findViewById<Button>(R.id.positionTablesSeeAll).setOnClickListener {
+            updateTableListViewModel(locationViewModel.getLocationData().value)
+            findNavController().navigate(R.id.action_mapsFragment_to_tableListFragment)
         }
     }
 
@@ -153,6 +166,9 @@ class MapsFragment : Fragment() {
                         mapFragment?.getMapAsync(callback)
                         //Update address label
                         txtPos.text = place.address
+
+                        showRestaurantCard()
+
                     }
                 }
                 AutocompleteActivity.RESULT_ERROR -> {
@@ -171,4 +187,25 @@ class MapsFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun updateTableListViewModel(
+            location : Location? = null,
+            radius: Int = DEFAULT_CITY_RADIUS,
+            address: String? = null,
+            mealCategory: Int = MealCategory.ALL
+    ) {
+        tablesListViewModel.location.value = location
+        tablesListViewModel.radius.value = radius
+        if (location != null) {
+            tablesListViewModel.address.value = address?: LocationViewModel.getAddressLine(location.latitude, location.longitude, this.requireContext())
+        }
+        tablesListViewModel.refresh(mealCategory = mealCategory)
+    }
+
+    private fun hideRestaurantCard(){
+        view?.findViewById<CardView>(R.id.seeAllRestaurantContainer)?.visibility = View.INVISIBLE
+    }
+
+    private fun showRestaurantCard(){
+        view?.findViewById<CardView>(R.id.seeAllRestaurantContainer)?.visibility = View.VISIBLE
+    }
 }

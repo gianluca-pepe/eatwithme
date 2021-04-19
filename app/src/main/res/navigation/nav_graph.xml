@@ -18,7 +18,11 @@
         android:id="@+id/mapsFragment"
         android:name="com.brugia.eatwithme.MapsFragment"
         android:label="Change location"
-        tools:layout="@layout/fragment_maps" />
+        tools:layout="@layout/fragment_maps" >
+        <action
+            android:id="@+id/action_mapsFragment_to_tableListFragment"
+            app:destination="@id/tableListFragment" />
+    </fragment>
     <fragment
         android:id="@+id/myProfileSettingsFragment"
         android:name="com.brugia.eatwithme.MyProfileFragment"
@@ -36,7 +40,11 @@
     <fragment
         android:id="@+id/createTablePagerFragment"
         android:name="com.brugia.eatwithme.createtable.CreateTablePagerFragment"
-        android:label="CreateTablePagerFragment" />
+        android:label="CreateTablePagerFragment" >
+        <action
+            android:id="@+id/action_createTablePagerFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/homepageFragment"
         android:name="com.brugia.eatwithme.homepage.HomepageFragment"
