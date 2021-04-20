@@ -22,7 +22,7 @@ fun citiesList(): MutableList<City> {
         ),
         City(
             R.string.naples,
-            43.71740024836206, 10.400182786523535,
+            40.851424044139776, 14.268136128419146,
             R.drawable.naples,
         ),
 
