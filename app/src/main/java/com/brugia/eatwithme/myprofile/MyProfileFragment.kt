@@ -7,11 +7,14 @@
 
 package com.brugia.eatwithme
 
+import android.R.drawable
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +45,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 
 class MyProfileFragment : Fragment() {
 
@@ -280,7 +284,31 @@ class MyProfileFragment : Fragment() {
                 //println(bitmap)
                 img_userpic.setImageBitmap(bitmap)
                 */
-                uploadImage()
+
+                val alertDialog: AlertDialog? = activity?.let {
+                    val builder = AlertDialog.Builder(it)
+                    builder.apply {
+                        setTitle("Caricamento immagine")
+                        val bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, filePath)
+                        val drawable = BitmapDrawable(context.resources, bitmap)
+                        builder.setIcon(drawable)
+                        setMessage("Confermi di voler caricare l'immagine per impostarla come nuova immagine profilo?")
+                        setPositiveButton(R.string.yes,
+                                DialogInterface.OnClickListener { dialog, id ->
+                                    // User clicked OK button
+                                    uploadImage()
+                                })
+                        setNegativeButton(R.string.no,
+                                DialogInterface.OnClickListener { dialog, id ->
+                                    // User cancelled the dialog
+                                })
+                    }
+                    // Set other dialog properties
+
+                    // Create the AlertDialog
+                    builder.create()
+                }
+                alertDialog?.show()
 
 
             } catch (e: IOException) {
