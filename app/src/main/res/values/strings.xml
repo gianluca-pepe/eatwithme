@@ -118,4 +118,12 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
+    <!-- Conferma modifiche utente -->
+    <string name="txt_usr_data_confirm_cognome">Cognome:</string>
+    <string name="txt_usr_data_confirm_modifica_informazioni">Modifica informazioni</string>
+    <string name="txt_usr_data_confirm_nome">Nome:</string>
+    <string name="txt_usr_data_confirm_data_di_nascita">Data di nascita:</string>
+    <string name="txt_usr_data_confirm_descrizione">Descrizione:</string>
+    <string name="txt_usr_data_confirm_conferma_modifiche">Conferma modifiche</string>
+
 </resources>

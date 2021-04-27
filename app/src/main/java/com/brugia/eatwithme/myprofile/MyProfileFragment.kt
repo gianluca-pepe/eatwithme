@@ -4,7 +4,6 @@
    *see this: https://medium.com/@egemenhamutcu/displaying-images-from-firebase-storage-using-glide-for-kotlin-projects-3e4950f6c103
  */
 
-
 package com.brugia.eatwithme
 
 import android.R.drawable
@@ -23,6 +22,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.brugia.eatwithme.datetimepickers.DatePickerFragment
@@ -45,7 +45,6 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-
 
 class MyProfileFragment : Fragment() {
 
@@ -80,6 +79,14 @@ class MyProfileFragment : Fragment() {
     private lateinit var img_userpic: ImageView
     private lateinit var btn_logout: Button
     private lateinit var btn_delete: Button
+    private lateinit var confirmationModalLayout: ConstraintLayout
+
+    private lateinit var view_pers_name: TextView
+    private lateinit var view_pers_surname: TextView
+    private lateinit var view_pers_birthday: TextView
+    private lateinit var view_pers_description: TextView
+    private lateinit var saveProfile: Button
+    private lateinit var btn_closeModal: Button
 
     private val datePicker = DatePickerFragment(::onDateSet)
 
@@ -103,6 +110,16 @@ class MyProfileFragment : Fragment() {
 
         btn_logout = view.findViewById(R.id.btn_user_logout)
         btn_delete = view.findViewById(R.id.btn_user_delete_account)
+
+        view_pers_name = view.findViewById(R.id.txt_usrNome)
+        view_pers_surname = view.findViewById(R.id.txt_usrCognome)
+        view_pers_birthday = view.findViewById(R.id.txt_usrCompleanno)
+        view_pers_description = view.findViewById(R.id.txt_usrDescrizione)
+        saveProfile = view.findViewById(R.id.btn_save_profile)
+        btn_closeModal = view.findViewById(R.id.btnCloseProfileDataModal)
+        confirmationModalLayout = view.findViewById(R.id.modifyProfileModalLayout)
+
+        this.hideModal()
 
         //personViewModel.getCurrentPerson()
 
@@ -144,16 +161,17 @@ class MyProfileFragment : Fragment() {
 
         pers_birthday_calendar.setOnClickListener { this.showDatePickerDialog() }
         modifyProfile.setOnClickListener { this.modifyProfile() }
+        saveProfile.setOnClickListener { this.saveProfile() }
 
         btn_logout.setOnClickListener { this.logoutDialog() }
         btn_delete.setOnClickListener { this.deleteDialog() }
+        btn_closeModal.setOnClickListener { this.hideModal() }
 
         firebaseStore = FirebaseStorage.getInstance()
         storageReference = FirebaseStorage.getInstance().reference
 
         //btn_choose_image.setOnClickListener { launchGallery() }
         btn_upload_image.setOnClickListener { launchGallery() }
-
 
         return view
     }
@@ -192,16 +210,34 @@ class MyProfileFragment : Fragment() {
         }
         if(ok){
             pers_birthday.error = null
-            //val datebirth = SimpleDateFormat("yyyy/MM/dd").parse(pers_birthday.text.toString())
-            personViewModel.updateCurrentPerson(
-                    name = pers_name.text.toString(),
-                    surname = pers_surname.text.toString(),
-                    birthday = dateOfBirth,
-                    description = pers_description.text?.toString()
-            )
 
-            Toast.makeText(context, "Profile info succesfully modified", Toast.LENGTH_SHORT).show()
+            view_pers_name.text = pers_name.text.toString()
+            view_pers_surname.text = pers_surname.text.toString()
+            view_pers_birthday.text = pers_birthday.text.toString()
+            view_pers_description.text = pers_description.text.toString()
+
+            this.showModal()
         }
+    }
+
+    fun saveProfile(){
+
+        val str = pers_birthday.text.split("/")
+        val month = str[1]
+        val day = str[0]
+        val year = str[2]
+        val dateOfBirth = "$year/$month/$day"
+
+        this.hideModal()
+
+        personViewModel.updateCurrentPerson(
+            name = pers_name.text.toString(),
+            surname = pers_surname.text.toString(),
+            birthday = dateOfBirth,
+            description = pers_description.text?.toString()
+        )
+
+        Toast.makeText(context, "Profile info succesfully modified", Toast.LENGTH_SHORT).show()
     }
 
     private fun showDatePickerDialog() {
@@ -389,6 +425,13 @@ class MyProfileFragment : Fragment() {
                 activity?.finish()
             }
         })
+    }
+    private fun showModal() {
+        confirmationModalLayout.visibility = View.VISIBLE
+
+    }
+    private fun hideModal() {
+        confirmationModalLayout.visibility = View.GONE
     }
 
 
