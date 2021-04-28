@@ -141,19 +141,30 @@
 
         </FrameLayout>
 
-
-        <Button
-            android:id="@+id/btn_modify_profile"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
+        <FrameLayout
+            android:id="@+id/frameLayout6"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:text="@string/modify_profile"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.519"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/input_user_desc_cont" />
+            app:layout_constraintTop_toBottomOf="@+id/input_user_desc_cont">
+
+            <Button
+                android:id="@+id/btn_modify_profile"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/modify_profile"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.519"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/input_user_desc_cont" />
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/img_user_calendar"
@@ -231,7 +242,7 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_modify_profile" />
+            app:layout_constraintTop_toBottomOf="@+id/frameLayout6" />
 
         <include
             layout="@layout/account_data_confirmation"
