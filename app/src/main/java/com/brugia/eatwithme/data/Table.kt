@@ -84,7 +84,7 @@ data class Table(
         return ""
     }
 
-    fun tableDateText(pattern: String = "MM/dd/yyyy"): String {
+    fun tableDateText(pattern: String = "dd/MM/yyyy"): String {
         tableDate?.let {
             return SimpleDateFormat(pattern).format(it)
         }
